@@ -1,0 +1,27 @@
+83c83
+< module M24FC1025 (A0, A1, A2, WP, SDA, SCL, RESET);
+---
+> module i2c_if (A0, A1, A2, WP, SDA, SCL, RESET,pdm_ddr,pdm_en,lsb_first,i2s_rst, i2s_mode, i2s_enable,transf_size,i2s_snap_enable);
+95a96,105
+>    output wire pdm_ddr;
+>    output wire pdm_en;
+>    output wire lsb_first;
+>    output wire i2s_rst;
+>    output wire i2s_mode;
+>    output wire i2s_enable;
+>    output wire i2s_snap_enable;
+>    output wire [1:0] transf_size;
+> 
+> 
+471a482,492
+> 
+>    assign pdm_ddr    = MemoryByte_000[0];
+>    assign pdm_en     = MemoryByte_000[1];    
+>    assign lsb_first  = MemoryByte_000[2];
+>    assign i2s_rst         = MemoryByte_000[3];
+>    assign i2s_mode        = MemoryByte_000[4];
+>    assign i2s_enable      = MemoryByte_000[5];
+>    assign transf_size[0]  = MemoryByte_000[6];
+>    assign transf_size[1]  = MemoryByte_000[7];
+>    assign i2s_snap_enable = MemoryByte_001[0];
+>    

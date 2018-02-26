@@ -1,0 +1,15 @@
+#
+# List of RTL sources. Contrarily to IPs, these reside in
+# the current Git repository.
+# Uses the YAML syntax.
+# 'domain' refers to the two soc,cluster domains for FPGA
+# emulator synthesis
+#
+
+tb:
+  path: tb
+vip:
+  path: vip
+pulp:
+  path: pulp
+

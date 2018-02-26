@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+if [ ! -e pulp-sdk ]; then
+   echo "Please first execute update-sw to get the SDK"
+   exit 1
+fi  
+
+cd pulp-sdk
+
+source init.sh
+source setup.sh
+
+plpbuild --p tests checkout

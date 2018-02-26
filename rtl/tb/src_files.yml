@@ -1,0 +1,9 @@
+tb:
+  files: [
+    jtag_pkg.sv,
+    dbg_pkg.sv,
+    tb_clk_gen.sv,
+    tb_fs_handler.sv,
+    dev_dpi/dev_dpi.sv,
+    tb_pulp.sv,
+  ]
