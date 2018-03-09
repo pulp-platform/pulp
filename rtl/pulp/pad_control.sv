@@ -319,17 +319,17 @@ module pad_control
    assign sdio_data_o[3] = (pad_mux_i[25] == 2'b00) ? in_sdio_data3_i : 1'b0;
 
    //    CAMERA
-   assign cam_pclk_o    = (pad_mux_i[10] == 2'b00) ? in_cam_pclk_i  : 1'b0;
-   assign cam_hsync_o   = (pad_mux_i[11] == 2'b00) ? in_cam_hsync_i : 1'b0;
-   assign cam_data_o[0] = (pad_mux_i[12] == 2'b00) ? in_cam_data0_i : 1'b0;
-   assign cam_data_o[1] = (pad_mux_i[13] == 2'b00) ? in_cam_data1_i : 1'b0;
-   assign cam_data_o[2] = (pad_mux_i[14] == 2'b00) ? in_cam_data2_i : 1'b0;
-   assign cam_data_o[3] = (pad_mux_i[15] == 2'b00) ? in_cam_data3_i : 1'b0;
-   assign cam_data_o[4] = (pad_mux_i[16] == 2'b00) ? in_cam_data4_i : 1'b0;
-   assign cam_data_o[5] = (pad_mux_i[17] == 2'b00) ? in_cam_data5_i : 1'b0;
-   assign cam_data_o[6] = (pad_mux_i[18] == 2'b00) ? in_cam_data6_i : 1'b0;
-   assign cam_data_o[7] = (pad_mux_i[19] == 2'b00) ? in_cam_data7_i : 1'b0;
-   assign cam_vsync_o   = (pad_mux_i[21] == 2'b00) ? in_cam_vsync_i : 1'b0;
+   assign cam_pclk_o    = (pad_mux_i[ 9] == 2'b00) ? in_cam_pclk_i  : 1'b0;
+   assign cam_hsync_o   = (pad_mux_i[10] == 2'b00) ? in_cam_hsync_i : 1'b0;
+   assign cam_data_o[0] = (pad_mux_i[11] == 2'b00) ? in_cam_data0_i : 1'b0;
+   assign cam_data_o[1] = (pad_mux_i[12] == 2'b00) ? in_cam_data1_i : 1'b0;
+   assign cam_data_o[2] = (pad_mux_i[13] == 2'b00) ? in_cam_data2_i : 1'b0;
+   assign cam_data_o[3] = (pad_mux_i[14] == 2'b00) ? in_cam_data3_i : 1'b0;
+   assign cam_data_o[4] = (pad_mux_i[15] == 2'b00) ? in_cam_data4_i : 1'b0;
+   assign cam_data_o[5] = (pad_mux_i[16] == 2'b00) ? in_cam_data5_i : 1'b0;
+   assign cam_data_o[6] = (pad_mux_i[17] == 2'b00) ? in_cam_data6_i : 1'b0;
+   assign cam_data_o[7] = (pad_mux_i[18] == 2'b00) ? in_cam_data7_i : 1'b0;
+   assign cam_vsync_o   = (pad_mux_i[19] == 2'b00) ? in_cam_vsync_i : 1'b0;
 
    //    I2C1
    assign i2c1_sda_in_o = (pad_mux_i[2] == 2'b10) ? in_spim_sdio2_i : (pad_mux_i[7] == 2'b10) ? in_uart_rx_i : (pad_mux_i[24] == 2'b10) ? in_sdio_data2_i: 1'b1 ;
