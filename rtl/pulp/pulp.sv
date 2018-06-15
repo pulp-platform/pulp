@@ -747,8 +747,6 @@ module pulp
 
         .soc_tck_o                  ( s_soc_tck                   ),
         .soc_trstn_o                ( s_soc_trstn                 ),
-        .soc_tms_o                  ( s_soc_tms                   ),
-        .soc_tdi_o                  ( s_soc_tdi                   ),
 
         .jtag_shift_dr_o            ( s_jtag_shift_dr             ),
         .jtag_update_dr_o           ( s_jtag_update_dr            ),
@@ -1054,8 +1052,6 @@ module pulp
 
         .jtag_tck_i                   ( s_soc_tck                        ),
         .jtag_trst_ni                 ( s_soc_trstn                      ),
-        .jtag_tms_i                   ( s_soc_tms                        ),
-        .jtag_td_i                    ( s_soc_tdi                        ),
         .jtag_shift_dr_i              ( s_jtag_shift_dr                  ),
         .jtag_update_dr_i             ( s_jtag_update_dr                 ),
         .jtag_capture_dr_i            ( s_jtag_capture_dr                ),

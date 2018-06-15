@@ -23,9 +23,6 @@ module jtag_tap_top
 
     output logic              soc_tck_o,
     output logic              soc_trstn_o,
-    output logic              soc_tms_o,
-    output logic              soc_tdi_o,
-    input  logic              soc_tdo_i,
 
     input  logic              test_clk_i,
     input  logic              test_rstn_i,
@@ -56,12 +53,7 @@ module jtag_tap_top
     logic [7:0] s_soc_jtag_reg_sync;
 
     assign soc_trstn_o = trst_ni;
-    assign soc_tms_o = tms_i;
-    assign soc_tdi_o = td_o_int;
     assign soc_tck_o = tck_i;
-
-    assign td_o = soc_tdo_i;
-
 
     // jtag tap controller
     tap_top tap_top_i
@@ -70,7 +62,7 @@ module jtag_tap_top
         .tck_i             ( tck_i              ),
         .rst_ni            ( trst_ni            ),
         .td_i              ( td_i               ),
-        .td_o              ( td_o_int           ),
+        .td_o              ( td_o               ),
 
         .shift_dr_o        ( jtag_shift_dr_o    ),
         .update_dr_o       ( jtag_update_dr_o   ),

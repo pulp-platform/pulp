@@ -57,8 +57,6 @@ module soc_domain #(
 
     input  logic                             jtag_tck_i,
     input  logic                             jtag_trst_ni,
-    input  logic                             jtag_tms_i,
-    input  logic                             jtag_td_i,
     input  logic                             jtag_axireg_tdi_i,
     output logic                             jtag_axireg_tdo_o,
     input  logic                             jtag_axireg_sel_i,
