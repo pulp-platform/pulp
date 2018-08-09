@@ -60,10 +60,6 @@
 `define FC_APB_START_ADDR        32'h1B30_0000
 `define FC_APB_END_ADDR          32'h1B3F_FFFF
 
-// MASTER PORT TO STDOUT(64KB)
-`define SOC_STDOUT_START_ADDR    32'h1A11_0000
-`define SOC_STDOUT_END_ADDR      32'h1A11_FFFF
-
 `define AXI_ASSIGN_SLAVE(lhs, rhs)        \
     assign lhs.aw_id     = rhs.aw_id;     \
     assign lhs.aw_addr   = rhs.aw_addr;   \
