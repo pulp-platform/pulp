@@ -22,5 +22,5 @@ pulp_soc:
   commit: master
   group:  pulp-platform
 pulp_cluster:
-  commit: master
+  commit: fpu_integration
   group:  pulp-platform
