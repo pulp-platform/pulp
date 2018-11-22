@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: master
+  commit: fpu_integration
   group:  pulp-platform
 pulp_cluster:
   commit: fpu_integration
