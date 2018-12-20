@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: master
+  commit: pulpissimov1
   group:  pulp-platform
 pulp_cluster:
   commit: master
