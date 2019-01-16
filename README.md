@@ -81,14 +81,20 @@ see `ips/hwpe-stream/doc` and https://arxiv.org/abs/1612.05974.
 
 ### Prerequisites
 To be able to use the PULP platform, you need to have installed 
-development kit for PULP. The instructions can be found here:
-https://github.com/pulp-platform/pulp-sdk/blob/master/README.md
-The recommended flow to build the SDK is described in section *SDK build with
-independent dependencies build*.
+development kit for PULP.
 
-Please note that you have to set up an account in GitHub and upload your SSH
-public key to install the SDK. You can find detailed instructions on how to do
-that here: https://help.github.com/articles/connecting-to-github-with-ssh/
+First install the system dependencies indicated here:
+https://github.com/pulp-platform/pulp-builder/blob/master/README.md
+
+Then execute the following commands:
+```
+git clone https://github.com/pulp-platform/pulp-builder.git
+cd pulp-builder
+source configs/pulp.sh
+./scripts/build-runtime
+source sdk-setup.sh
+source configs/rtl.sh
+```
 
 ### Building the RTL simulation platform
 To build the RTL simulation platform, start by getting the latest version of the
