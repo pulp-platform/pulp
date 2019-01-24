@@ -255,7 +255,7 @@ module cluster_domain
 );
    
     pulp_cluster
-`ifndef USE_CLUSTER_NETLIST
+//`ifndef USE_CLUSTER_NETLIST
     #(
         .NB_CORES                     ( NB_CORES                     ),
         .NB_HWACC_PORTS               ( NB_HWACC_PORTS               ),
@@ -309,7 +309,7 @@ module cluster_domain
         .APU_NUSFLAGS_CPU             ( APU_NUSFLAGS_CPU             ),
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
     )
-`endif    
+//`endif    
     cluster_i
     (
         .clk_i                        ( clk_i                        ),
