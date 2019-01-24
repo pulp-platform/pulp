@@ -62,6 +62,11 @@ module cluster_domain
     parameter BOOT_ADDR             = 32'h1C000000,
     parameter INSTR_RDATA_WIDTH     = 128,
 
+    parameter CLUST_FPU               = `CLUST_FPU,
+    parameter CLUST_FP_DIVSQRT        = `CLUST_FP_DIVSQRT,
+    parameter CLUST_SHARED_FP         = `CLUST_SHARED_FP,
+    parameter CLUST_SHARED_FP_DIVSQRT = `CLUST_SHARED_FP_DIVSQRT,
+
     // AXI PARAMETERS
     parameter AXI_ADDR_WIDTH        = 32,
     parameter AXI_DATA_S2C_WIDTH    = 32,
@@ -91,6 +96,13 @@ module cluster_domain
     parameter PE_ROUTING_MSB        = 13, //MSB used as routing BIT in periph interco
 
     parameter EVNT_WIDTH            = 8, //size of the event bus
+
+    parameter APU_NARGS_CPU         = 3,
+    parameter APU_WOP_CPU           = 6,
+    parameter WAPUTYPE              = 3,
+    parameter APU_NDSFLAGS_CPU      = 15,
+    parameter APU_NUSFLAGS_CPU      = 5,
+  
 `ifdef PULP_HSA
     parameter CLUSTER_ALIAS_BASE    = 12'h1B0
 `else
@@ -267,6 +279,10 @@ module cluster_domain
         .ROM_BOOT_ADDR                ( ROM_BOOT_ADDR                ),
         .BOOT_ADDR                    ( BOOT_ADDR                    ),
         .INSTR_RDATA_WIDTH            ( INSTR_RDATA_WIDTH            ),
+        .CLUST_FPU                    ( CLUST_FPU                    ),
+        .CLUST_FP_DIVSQRT             ( CLUST_FP_DIVSQRT             ),
+        .CLUST_SHARED_FP              ( CLUST_SHARED_FP              ),
+        .CLUST_SHARED_FP_DIVSQRT      ( CLUST_SHARED_FP_DIVSQRT      ),
         .AXI_ADDR_WIDTH               ( AXI_ADDR_WIDTH               ),
         .AXI_DATA_C2S_WIDTH           ( AXI_DATA_C2S_WIDTH           ),
         .AXI_DATA_S2C_WIDTH           ( AXI_DATA_S2C_WIDTH           ),
@@ -286,6 +302,11 @@ module cluster_domain
         .PE_ROUTING_LSB               ( PE_ROUTING_LSB               ),
         .PE_ROUTING_MSB               ( PE_ROUTING_MSB               ),
         .EVNT_WIDTH                   ( EVNT_WIDTH                   ),
+        .APU_NARGS_CPU                ( APU_NARGS_CPU                ),
+        .APU_WOP_CPU                  ( APU_WOP_CPU                  ),
+        .WAPUTYPE                     ( WAPUTYPE                     ),
+        .APU_NDSFLAGS_CPU             ( APU_NDSFLAGS_CPU             ),
+        .APU_NUSFLAGS_CPU             ( APU_NUSFLAGS_CPU             ),
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
     )
 `endif    
