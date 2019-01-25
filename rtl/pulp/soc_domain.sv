@@ -17,6 +17,9 @@
  * Pasquale Davide Schiavone <pschiavo@iss.ee.ethz.ch>
  */
 
+`include "pulp_soc_defines.sv"
+`include "soc_bus_defines.sv"
+
 module soc_domain #(
     parameter CORE_TYPE            = 0,
     parameter USE_FPU              = 1,
@@ -29,7 +32,10 @@ module soc_domain #(
     parameter AXI_STRB_IN_WIDTH    = AXI_DATA_IN_WIDTH/8,
     parameter AXI_STRB_OUT_WIDTH   = AXI_DATA_OUT_WIDTH/8,
     parameter BUFFER_WIDTH         = 8,
-    parameter EVNT_WIDTH           = 8
+    parameter EVNT_WIDTH           = 8,
+
+    parameter FC_FPU            = `FC_FPU,
+    parameter FC_FP_DIVSQRT     = `FC_FP_DIVSQRT
 )(
 
     input logic                              ref_clk_i,
@@ -280,7 +286,9 @@ module soc_domain #(
         .AXI_ID_OUT_WIDTH        ( AXI_ID_OUT_WIDTH   ),
         .AXI_USER_WIDTH          ( AXI_USER_WIDTH     ),
         .EVNT_WIDTH              ( EVNT_WIDTH         ),
-        .BUFFER_WIDTH            ( BUFFER_WIDTH       )
+        .BUFFER_WIDTH            ( BUFFER_WIDTH       ),
+        .FC_FPU                  ( FC_FPU                  ),
+        .FC_FP_DIVSQRT           ( FC_FP_DIVSQRT           )
    )
    pulp_soc_i
    (
