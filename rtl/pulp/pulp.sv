@@ -19,9 +19,9 @@
 
 module pulp
 #(
-  parameter CORE_TYPE   = 0,
+  parameter CORE_TYPE   = 0
             // 0 for RISCY, 1 for ZERORISCY, 2 for MICRORISCY
-  parameter USE_FPU     = 1
+  //parameter USE_FPU     = 1
 )
 (
 `ifdef PULP_FPGA_EMUL
@@ -1016,7 +1016,7 @@ module pulp
    // SOC DOMAIN
    soc_domain #(
       .CORE_TYPE          ( CORE_TYPE                  ),
-      .USE_FPU            ( USE_FPU                    ),
+      //.USE_FPU            ( USE_FPU                    ),
       .AXI_ADDR_WIDTH     ( AXI_ADDR_WIDTH             ),
       .AXI_DATA_IN_WIDTH  ( AXI_CLUSTER_SOC_DATA_WIDTH ),
       .AXI_DATA_OUT_WIDTH ( AXI_SOC_CLUSTER_DATA_WIDTH ),

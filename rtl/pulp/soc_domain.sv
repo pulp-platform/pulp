@@ -22,7 +22,7 @@
 
 module soc_domain #(
     parameter CORE_TYPE            = 0,
-    parameter USE_FPU              = 1,
+    //parameter USE_FPU              = 1,
     parameter AXI_ADDR_WIDTH       = 32,
     parameter AXI_DATA_IN_WIDTH    = 64,
     parameter AXI_DATA_OUT_WIDTH   = 32,
@@ -278,7 +278,7 @@ module soc_domain #(
     pulp_soc
     #(
         .CORE_TYPE               ( CORE_TYPE          ),
-        .USE_FPU                 ( USE_FPU            ),
+        //.USE_FPU                 ( USE_FPU            ),
         .AXI_ADDR_WIDTH          ( AXI_ADDR_WIDTH     ),
         .AXI_DATA_IN_WIDTH       ( AXI_DATA_IN_WIDTH  ),
         .AXI_DATA_OUT_WIDTH      ( AXI_DATA_OUT_WIDTH ),
