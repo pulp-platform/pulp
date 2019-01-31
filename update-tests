@@ -1,13 +1,8 @@
 #!/bin/bash -e
 
-if [ ! -e pulp-sdk ]; then
-   echo "Please first execute update-sw to get the SDK"
-   exit 1
-fi  
-
-cd pulp-sdk
-
-source init.sh
-source setup.sh
-
-plpbuild --p tests checkout
+git clone git@iis-git.ee.ethz.ch:pulp-tests/ml_tests.git
+git clone git@iis-git.ee.ethz.ch:pulp-sw/pulp_tests.git
+git clone git@iis-git.ee.ethz.ch:pulp-tests/rt-tests.git
+git clone git@iis-git.ee.ethz.ch:pulp-sw/parallel_bare_tests.git
+git clone git@iis-git.ee.ethz.ch:pulp-sw/riscv_tests.git
+git clone git@iis-git.ee.ethz.ch:pulp-sw/sequential_bare_tests.git
