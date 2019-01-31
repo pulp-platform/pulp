@@ -91,9 +91,11 @@ Then execute the following commands:
 git clone https://github.com/pulp-platform/pulp-builder.git
 cd pulp-builder
 source configs/pulp.sh
+./scripts/clean
 ./scripts/build-runtime
 source sdk-setup.sh
 source configs/rtl.sh
+cd ..
 ```
 
 ### Building the RTL simulation platform
@@ -134,13 +136,13 @@ accessing an external SPI Flash), look at the sections below.
 
 In case you want to see the Modelsim GUI, just type
 ```
-make conf gui=1
+make run gui=1
 ```
 before starting the simulation.
 
 If you want to save a (compressed) VCD for further examination, type
 ```
-make conf vsim/script=export_run.tcl
+make run vsim/script=export_run.tcl
 ```
 before starting the simulation. You will find the VCD in
 `build/<SRC_FILE_NAME>/pulp/export.vcd.gz` where 
