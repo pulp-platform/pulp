@@ -65,7 +65,7 @@ install: $(INSTALL_HEADERS)
 vopt:
 	export VOPT_FLOW=1 && cd $(VSIM_PATH) && vsim -64 -c -do "source tcl_files/config/vsim.tcl; quit"
 
-all: checkout build install vopt
+all: checkout build install vopt sdk
 
 test-checkout:
 	./update-tests
