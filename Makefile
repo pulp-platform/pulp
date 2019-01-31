@@ -1,10 +1,17 @@
 
 SHELL=bash
 
-sdk: pulp-tools
-	 ./pulp-tools/bin/plpsdk src deps build --branch=integration --config=pulp --group runtime --group pkg
-	 @echo "SDK has been successfully installed, now source this file before using it:"
-	 @echo "  source setup/sdk.sh"
+sdk:
+	if [ ! -e pulp-builder ]; then \
+	  git clone https://github.com/pulp-platform/pulp-builder.git; \
+	fi; \
+	cd pulp-builder; \
+	git checkout 5ade076a83c0e243473cc505b75b1c0f83fdfcd6; \
+	. configs/pulp.sh; \
+	. configs/rtl.sh; \
+	./scripts/update-runtime; \
+	./scripts/clean; \
+	./scripts/build-runtime;
 
 .PHONY: pulp-tools
 
