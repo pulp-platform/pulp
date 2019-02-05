@@ -557,7 +557,7 @@ module tb_pulp;
             if(LOAD_L2 == "JTAG") begin
                $display("[TB] %t - Loading L2", $realtime);
                dbg_if_soc.write32(32'h1A104008, 1, 32'h0, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-               dbg_if_soc.write32(32'h1A104004, 1, 32'h1c00_8000, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+               dbg_if_soc.write32(32'h1A104004, 1, 32'h1c00_8080, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
                release tb_pulp.i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.apb_soc_ctrl_i.r_fetchen;
             end
 
