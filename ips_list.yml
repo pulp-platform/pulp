@@ -18,7 +18,7 @@
 #  work, make sure to checkout a branch.
 #
 
-pulp_soc:
+pulp_soc: 
   commit: fpu_integration
   group:  pulp-platform
 pulp_cluster:
