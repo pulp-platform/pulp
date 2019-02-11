@@ -92,6 +92,7 @@ git clone https://github.com/pulp-platform/pulp-builder.git
 cd pulp-builder
 source configs/pulp.sh
 ./scripts/clean
+./scripts/update-runtime
 ./scripts/build-runtime
 source sdk-setup.sh
 source configs/rtl.sh
