@@ -533,47 +533,8 @@ module safe_domain
     assign s_rstn_sync = s_rstn;
 `endif
 
-`ifndef PULP_FPGA_EMUL
 
-        logic ref_clk_div8;
-        logic ref_clk_0;
-        logic ref_clk_1;
-        logic ref_clk_2;
-
-        always_ff @(posedge ref_clk_i or negedge rst_ni) begin
-            if(~rst_ni) begin
-                ref_clk_0 <= 1'b0;
-                ref_clk_1 <= 1'b0;
-                ref_clk_2 <= 1'b0;
-            end else begin
-                ref_clk_0 <= ~ref_clk_2;
-                ref_clk_1 <= ref_clk_0;
-                ref_clk_2 <= ref_clk_1;
-            end
-        end
-
-        assign ref_clk_div8 = ref_clk_2;
-
-        pulp_clock_mux2 slow_clk_mux_i
-        (
-            .clk0_i    ( ref_clk_i      ),
-            .clk1_i    ( ref_clk_div8   ),
-            .clk_sel_i ( sel_fll_clk_o  ),
-            .clk_o     ( slow_clk_o     )
-        );
-
-        /*
-            The slow_clk_o is ref_clk_i / 8
-            It is used in case the FLL is broken,
-            ref_clk_i replaces the FLL clock and
-            slow_clk_o replaces the ref_clk_i for
-            timer, and time unit generators
-            (as the clock must be slower)
-        */
-
-`else
-        assign slow_clk_o = ref_clk_i;
-`endif
+    assign slow_clk_o = ref_clk_i;
 
     assign s_rstn          = rst_ni;
     assign s_jtag_rstn     = jtag_trst_ni;

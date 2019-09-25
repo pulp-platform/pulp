@@ -1,10 +1,17 @@
 
 SHELL=bash
 
-sdk: pulp-tools
-	 ./pulp-tools/bin/plpsdk src deps build --branch=integration --config=pulp --group runtime --group pkg
-	 @echo "SDK has been successfully installed, now source this file before using it:"
-	 @echo "  source setup/sdk.sh"
+sdk:
+	if [ ! -e pulp-builder ]; then \
+	  git clone https://github.com/pulp-platform/pulp-builder.git; \
+	fi; \
+	cd pulp-builder; \
+	git checkout 5ade076a83c0e243473cc505b75b1c0f83fdfcd6; \
+	. configs/pulp.sh; \
+	. configs/rtl.sh; \
+	./scripts/clean; \
+	./scripts/update-runtime; \
+	./scripts/build-runtime;
 
 .PHONY: pulp-tools
 
@@ -58,21 +65,15 @@ install: $(INSTALL_HEADERS)
 vopt:
 	export VOPT_FLOW=1 && cd $(VSIM_PATH) && vsim -64 -c -do "source tcl_files/config/vsim.tcl; quit"
 
-all: checkout build install vopt
+all: checkout build install vopt sdk
 
 test-checkout:
 	./update-tests
 
 test:
-	source setup/sdk.sh && cd pulp-sdk && source init.sh && \
-	  plpbuild --p tests test --threads 32 --db \
-	    --db-info=$(CURDIR)/db_info.txt --stdout --branch=$(BRANCH) \
-	    --env=quentin_validation --commit=`git rev-parse HEAD`
-
-	source setup/sdk.sh && cd pulp-sdk && source init.sh && \
-	  plpdb tests --build=`cat $(CURDIR)/db_info.txt | grep tests.build.id= | sed s/tests.build.id=//` \
-	    --mail="Quentin regression report" --xls=report.xlsx --branch $(BRANCH) \
-	    --config=$$PULP_CURRENT_CONFIG --url=$(BUILD_URL) \
-	    --author-email=`git show -s --pretty=%ae` --env=quentin_validation && \
-	  plpdb check_reg --build=`cat $(CURDIR)/db_info.txt | grep tests.build.id= | sed s/tests.build.id=//` \
-	    --branch master --config=$$PULP_CURRENT_CONFIG --env=quentin_validation
+	cd pulp-builder; \
+	. sdk-setup.sh; \
+	. configs/pulp.sh; \
+	. configs/rtl.sh; \
+	cd ..; \
+	plptest --threads 16 --stdout
