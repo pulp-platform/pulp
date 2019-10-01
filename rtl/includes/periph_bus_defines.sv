@@ -57,11 +57,12 @@
 `define HWPE_START_ADDR          32'h1A10_C000
 `define HWPE_END_ADDR            32'h1A10_CFFF
 
+
 `define STDOUT_START_ADDR        32'h1A10_F000
 `define STDOUT_END_ADDR          32'h1A10_FFFF
 
-`define DEBUG_START_ADDR         32'h1A11_0000
-`define DEBUG_END_ADDR           32'h1A11_FFFF
+`define DEBUG_START_ADDR         32'h1A19_0000
+`define DEBUG_END_ADDR           32'h1A19_FFFF
 
 // // MASTER PORT TO FABRIC CONTROLLER APB BUS
 // `define FC_START_ADDR            32'h1B00_0000

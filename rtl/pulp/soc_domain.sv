@@ -22,7 +22,8 @@
 
 module soc_domain #(
     parameter CORE_TYPE            = 0,
-    //parameter USE_FPU              = 1,
+    parameter USE_FPU              = 1,
+    parameter USE_HWPE             = 1,
     parameter AXI_ADDR_WIDTH       = 32,
     parameter AXI_DATA_IN_WIDTH    = 64,
     parameter AXI_DATA_OUT_WIDTH   = 32,
@@ -32,10 +33,7 @@ module soc_domain #(
     parameter AXI_STRB_IN_WIDTH    = AXI_DATA_IN_WIDTH/8,
     parameter AXI_STRB_OUT_WIDTH   = AXI_DATA_OUT_WIDTH/8,
     parameter BUFFER_WIDTH         = 8,
-    parameter EVNT_WIDTH           = 8,
-
-    parameter FC_FPU            = `FC_FPU,
-    parameter FC_FP_DIVSQRT     = `FC_FP_DIVSQRT
+    parameter EVNT_WIDTH           = 8
 )(
 
     input logic                              ref_clk_i,
@@ -54,6 +52,8 @@ module soc_domain #(
 
     input  logic                             mode_select_i,
 
+    input logic                              bootsel_i,
+
     input  logic                             sel_fll_clk_i,
 
     input  logic [7:0]                       soc_jtag_reg_i,
@@ -63,6 +63,9 @@ module soc_domain #(
 
     input  logic                             jtag_tck_i,
     input  logic                             jtag_trst_ni,
+    input  logic                             jtag_tms_i,
+    input  logic                             jtag_tdi_i,
+    output logic                             jtag_tdo_o,
     input  logic                             jtag_axireg_tdi_i,
     output logic                             jtag_axireg_tdo_o,
     input  logic                             jtag_axireg_sel_i,
@@ -105,6 +108,15 @@ module soc_domain #(
     output logic                             i2c1_sda_o,
     output logic                             i2c1_sda_oe_o,
 
+    input  logic                             i2s_slave_sd0_i,
+    input  logic                             i2s_slave_sd1_i,
+    input  logic                             i2s_slave_ws_i,
+    output logic                             i2s_slave_ws_o,
+    output logic                             i2s_slave_ws_oe,
+    input  logic                             i2s_slave_sck_i,
+    output logic                             i2s_slave_sck_o,
+    output logic                             i2s_slave_sck_oe,
+
     input  logic                             i2s_sd0_i,
     input  logic                             i2s_sd1_i,
     input  logic                             i2s_sck_i,
@@ -119,6 +131,10 @@ module soc_domain #(
     output logic                             spi_master0_clk_o,
     output logic                             spi_master0_csn0_o,
     output logic                             spi_master0_csn1_o,
+    output logic                             spi_master0_oen0_o,
+    output logic                             spi_master0_oen1_o,
+    output logic                             spi_master0_oen2_o,
+    output logic                             spi_master0_oen3_o,
     output logic [1:0]                       spi_master0_mode_o,
     output logic                             spi_master0_sdo0_o,
     output logic                             spi_master0_sdo1_o,
@@ -278,7 +294,8 @@ module soc_domain #(
     pulp_soc
     #(
         .CORE_TYPE               ( CORE_TYPE          ),
-        //.USE_FPU                 ( USE_FPU            ),
+        .USE_FPU                 ( USE_FPU            ),
+        .USE_HWPE                ( USE_HWPE           ),
         .AXI_ADDR_WIDTH          ( AXI_ADDR_WIDTH     ),
         .AXI_DATA_IN_WIDTH       ( AXI_DATA_IN_WIDTH  ),
         .AXI_DATA_OUT_WIDTH      ( AXI_DATA_OUT_WIDTH ),
@@ -286,9 +303,7 @@ module soc_domain #(
         .AXI_ID_OUT_WIDTH        ( AXI_ID_OUT_WIDTH   ),
         .AXI_USER_WIDTH          ( AXI_USER_WIDTH     ),
         .EVNT_WIDTH              ( EVNT_WIDTH         ),
-        .BUFFER_WIDTH            ( BUFFER_WIDTH       ),
-        .FC_FPU                  ( FC_FPU                  ),
-        .FC_FP_DIVSQRT           ( FC_FP_DIVSQRT           )
+        .BUFFER_WIDTH            ( BUFFER_WIDTH       )
    )
    pulp_soc_i
    (

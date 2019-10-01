@@ -35,14 +35,17 @@
 `define NB_L2_CHANNELS 4
 
 
+// JTAG
+`define DMI_JTAG_IDCODE 32'h249511C3
+
 // Hardware Accelerator selection
 `define HWCRYPT
 
 // Uncomment if the SCM is not present (it will still be in the memory map)
 //`define NO_SCM
 
-//`define APU_CLUSTER
-`define SHARED_FPU_CLUSTER
+`define APU_CLUSTER
+//`define SHARED_FPU_CLUSTER
 
 
 // uncomment if you want to place the DEMUX peripherals (EU, MCHAN) rigth before the Test and set region.

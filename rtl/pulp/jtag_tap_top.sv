@@ -68,21 +68,15 @@ module jtag_tap_top
         .update_dr_o       ( jtag_update_dr_o   ),
         .capture_dr_o      ( jtag_capture_dr_o  ),
 
-        .axireg_sel_o      ( axireg_sel_o       ),
-        .bbmuxreg_sel_o    (                    ),
-        .clkgatereg_sel_o  (                    ),
+        .memory_sel_o      ( axireg_sel_o       ),
+        .fifo_sel_o        (                    ),
         .confreg_sel_o     ( confreg_sel        ),
-        .testmodereg_sel_o (                    ),
-        .bistreg_sel_o     (                    ),
 
         .scan_in_o         ( s_scan_i           ),
 
-        .axireg_out_i      ( dbg_axi_scan_out_i ),
-        .bbmuxreg_out_i    ( 1'b0               ),
-        .clkgatereg_out_i  ( 1'b0               ),
+        .memory_out_i      ( dbg_axi_scan_out_i ),
         .confreg_out_i     ( confscan           ),
-        .testmodereg_out_i ( 1'b0               ),
-        .bistreg_out_i     ( 1'b0               )
+        .fifo_out_i        ( 1'b0               )
     );
 
     // pulp configuration register
