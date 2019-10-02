@@ -24,3 +24,8 @@ pulp_soc:
 pulp_cluster:
   commit: fpu_integration
   group:  pulp-platform
+
+tbtools:
+  commit: master
+  server: https://github.com
+  group:  pulp-platform
