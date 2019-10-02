@@ -63,6 +63,9 @@
 `define DEBUG_START_ADDR         32'h1A11_0000
 `define DEBUG_END_ADDR           32'h1A11_FFFF
 
+`define DUMMY_START_ADDR         32'h1A12_0000
+`define DUMMY_END_ADDR           32'h1A12_0008
+
 // // MASTER PORT TO FABRIC CONTROLLER APB BUS
 // `define FC_START_ADDR            32'h1B00_0000
 // `define FC_END_ADDR              32'h1B3F_FFFF

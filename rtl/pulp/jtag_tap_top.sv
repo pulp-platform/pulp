@@ -21,8 +21,8 @@ module jtag_tap_top
     input  logic              td_i,
     output logic              td_o,
 
-    output logic              soc_tck_o,
-    output logic              soc_trstn_o,
+    //output logic              soc_tck_o,
+    //output logic              soc_trstn_o,
 
     input  logic              test_clk_i,
     input  logic              test_rstn_i,
@@ -52,8 +52,8 @@ module jtag_tap_top
 
     logic [7:0] s_soc_jtag_reg_sync;
 
-    assign soc_trstn_o = trst_ni;
-    assign soc_tck_o = tck_i;
+    //assign soc_trstn_o = trst_ni;
+    //assign soc_tck_o = tck_i;
 
     // jtag tap controller
     tap_top tap_top_i
@@ -68,21 +68,29 @@ module jtag_tap_top
         .update_dr_o       ( jtag_update_dr_o   ),
         .capture_dr_o      ( jtag_capture_dr_o  ),
 
-        .axireg_sel_o      ( axireg_sel_o       ),
-        .bbmuxreg_sel_o    (                    ),
-        .clkgatereg_sel_o  (                    ),
+        .memory_sel_o      ( axireg_sel_o       ),
+        .fifo_sel_o        (                    ),
         .confreg_sel_o     ( confreg_sel        ),
-        .testmodereg_sel_o (                    ),
-        .bistreg_sel_o     (                    ),
+
+        // .axireg_sel_o      ( axireg_sel_o       ),
+        // .bbmuxreg_sel_o    (                    ),
+        // .clkgatereg_sel_o  (                    ),
+        // .confreg_sel_o     ( confreg_sel        ),
+        // .testmodereg_sel_o (                    ),
+        // .bistreg_sel_o     (                    ),
 
         .scan_in_o         ( s_scan_i           ),
 
-        .axireg_out_i      ( dbg_axi_scan_out_i ),
-        .bbmuxreg_out_i    ( 1'b0               ),
-        .clkgatereg_out_i  ( 1'b0               ),
-        .confreg_out_i     ( confscan           ),
-        .testmodereg_out_i ( 1'b0               ),
-        .bistreg_out_i     ( 1'b0               )
+        .memory_out_i      ( dbg_axi_scan_out_i ),
+        .fifo_out_i        ( 1'b0               ),
+        .confreg_out_i     ( confscan           )
+
+        // .axireg_out_i      ( dbg_axi_scan_out_i ),
+        // .bbmuxreg_out_i    ( 1'b0               ),
+        // .clkgatereg_out_i  ( 1'b0               ),
+        // .confreg_out_i     ( confscan           ),
+        // .testmodereg_out_i ( 1'b0               ),
+        // .bistreg_out_i     ( 1'b0               )
     );
 
     // pulp configuration register

@@ -502,8 +502,8 @@ module safe_domain
         .td_i                    ( jtag_tdi_i             ),
         .td_o                    ( jtag_tdo_o             ),
 
-        .soc_tck_o               ( soc_tck_o              ),
-        .soc_trstn_o             ( soc_trstn_o            ),
+        //.soc_tck_o               ( soc_tck_o              ),
+        //.soc_trstn_o             ( soc_trstn_o            ),
 
         .test_clk_i              ( s_test_clk             ),
         .test_rstn_i             ( s_rstn_sync            ),
