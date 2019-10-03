@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Francesco Conti <f.conti@unibo.it>
 #
 # Copyright (C) 2016-2018 ETH Zurich, University of Bologna.
 # All rights reserved.
 
 from ipstools_cfg import *
+import fileinput
 
 execute("mkdir -p sim/vcompile/ips")
 execute("rm -rf sim/vcompile/ips/*")
@@ -12,6 +13,15 @@ execute("mkdir -p sim/vcompile/rtl")
 execute("rm -rf sim/vcompile/rtl/*")
 execute("mkdir -p sim/vcompile/tb")
 execute("rm -rf sim/vcompile/tb/*")
+execute("mkdir -p fpga/pulpissimo/tcl")
+execute("rm -rf fpga/pulpissimo/tcl/*")
+
+execute("mkdir -p sim/ncompile/ips")
+execute("rm -rf sim/ncompile/ips/*")
+execute("mkdir -p sim/ncompile/rtl")
+execute("rm -rf sim/ncompile/rtl/*")
+execute("mkdir -p sim/ncompile/tb")
+execute("rm -rf sim/ncompile/tb/*")
 
 # creates an IPApproX database
 ipdb = ipstools.IPDatabase(rtl_dir='rtl', ips_dir='ips', vsim_dir='sim', load_cache=True)
@@ -28,5 +38,33 @@ ipdb.generate_vsim_tcl("sim/tcl_files/config/vsim_rtl.tcl", source='rtl')
 ipdb.generate_makefile("sim/vcompile/ips.mk")
 ipdb.generate_makefile("sim/vcompile/rtl.mk", source='rtl')
 
-print(tcolors.OK + "Generated new scripts for IPs!" + tcolors.ENDC)
+# generate XCELIUM compilation scripts
+ipdb.export_make(script_path="sim/ncompile/ips", simulator='ncsim')
+ipdb.export_make(script_path="sim/ncompile/rtl", simulator='ncsim', source='rtl')
+ipdb.generate_makefile("sim/ncompile/ips.mk")
+ipdb.generate_makefile("sim/ncompile/rtl.mk", source='rtl')
+ipdb.generate_ncsim_command_list(script_path="./sim/ncompile/src_ips_files.f",
+                                 root='.', source='ips')
+ipdb.generate_ncsim_command_list(script_path="./sim/ncompile/src_rtl_files.f",
+                                 root='.', source='rtl')
+# small hack to remove bad tb files until changes propagate
+# this is sed -i '/tb\/tb_hwpe/d' sim/ncompile/src_ips_files.f
+for line in fileinput.input("sim/ncompile/src_ips_files.f", inplace=True):
+    line = line.strip('\n')
+    if not 'tb/tb_hwpe' in line:
+        print(line)
 
+
+# Generate FPGA scripts
+# generate Vivado src_files.tcl
+ipdb.export_vivado(script_path="fpga/pulpissimo/tcl/ips_src_files.tcl", domain='soc')
+ipdb.export_vivado(script_path="fpga/pulpissimo/tcl/rtl_src_files.tcl", domain='soc', source='rtl')
+
+# generate Vivado add_files.tcl
+ipdb.generate_vivado_add_files("fpga/pulpissimo/tcl/ips_add_files.tcl", domain='soc')
+ipdb.generate_vivado_add_files("fpga/pulpissimo/tcl/rtl_add_files.tcl", domain='soc', source='rtl')
+
+# generate Vivado inc_dirs.tcl
+ipdb.generate_vivado_inc_dirs("fpga/pulpissimo/tcl/ips_inc_dirs.tcl", domain='soc')
+
+print(tcolors.OK + "Generated new scripts for IPs!" + tcolors.ENDC)

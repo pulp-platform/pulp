@@ -1,23 +1,6 @@
 
 SHELL=bash
 
-sdk:
-	if [ ! -e pulp-builder ]; then \
-	  git clone https://github.com/pulp-platform/pulp-builder.git; \
-	fi; \
-	cd pulp-builder; \
-	git checkout 5ade076a83c0e243473cc505b75b1c0f83fdfcd6; \
-	. configs/pulp.sh; \
-	. configs/rtl.sh; \
-	./scripts/clean; \
-	./scripts/update-runtime; \
-	./scripts/build-runtime;
-
-.PHONY: pulp-tools
-
-pulp-tools:
-	git submodule update --init
-
 PKG_DIR ?= $(PWD)/install
 
 export VSIM_PATH=$(PKG_DIR)
@@ -53,17 +36,39 @@ checkout:
 	./update-ips
 
 clean:
+	$(MAKE) -C rtl/tb/remote_bitbang clean
 	rm -rf $(VSIM_PATH)
-	cd sim && make clean
+	cd sim && $(MAKE) clean
 
 build:
-	cd sim && make lib build opt
+	$(MAKE) -C rtl/tb/remote_bitbang all
+	cd sim && $(MAKE) lib build opt
 	cp -r rtl/tb/* $(VSIM_PATH)
 
 install: $(INSTALL_HEADERS)
 
 vopt:
 	export VOPT_FLOW=1 && cd $(VSIM_PATH) && vsim -64 -c -do "source tcl_files/config/vsim.tcl; quit"
+
+import_bootcode:
+	cd sim/boot && objcopy --srec-len 1 --output-target=srec ${PULP_SDK_HOME}/install/bin/boot-pulpissimo boot-pulpissimo.s19
+	cd sim/boot && s19toboot.py boot-pulpissimo.s19 pulpissimo
+
+# This target is for continuous integration tests
+sdk:
+	if [ ! -e pulp-builder ]; then \
+	  git clone https://github.com/pulp-platform/pulp-builder.git; \
+	fi; \
+	cd pulp-builder; \
+	git checkout 7f26b4877f000940026788b4debbf89d86e18ff7; \
+	. configs/pulpissimo.sh; \
+	. configs/rtl.sh; \
+	./scripts/clean; \
+	./scripts/update-runtime; \
+	./scripts/build-runtime; \
+	./scripts/update-runner; \
+	./scripts/build-runner;
+
 
 all: checkout build install vopt sdk
 
@@ -73,7 +78,7 @@ test-checkout:
 test:
 	cd pulp-builder; \
 	. sdk-setup.sh; \
-	. configs/pulp.sh; \
+	. configs/pulpissimo.sh; \
 	. configs/rtl.sh; \
 	cd ..; \
 	plptest --threads 16 --stdout

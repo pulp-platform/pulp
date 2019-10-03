@@ -1,0 +1,119 @@
+\section{SoC Control}
+\label{sec:soc_ctrl}
+\pulpissimo features a small and simple APB peripheral which provides information about the platform and provides the means for pad muxing on the ASIC.
+
+The following registers can be accessed.
+
+\regDesc{0x1A10\_4000}{0x0000\_0000}{Info}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{INFO}
+    \bitbox{16}{Number of Cores}
+    \bitbox{16}{Number of Clusters}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{Info}{
+    This register holds the number of clusters and the number of cores in the each cluster. It is a read-only register.
+  }
+}
+
+\regDesc{0x1A10\_4004}{0x1A10\_0000}{Boot Address}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{BOOT\_ADR}
+    \bitbox{32}{Boot Address}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{Boot Address}{
+    This register holds the boot address.
+  }
+}
+
+\regDesc{0x1A10\_4008}{0x0000\_0001}{Fetch Enable}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{FETCH\_ENABLE}
+    \bitbox{31}{Unused}
+    \bitbox{1}{E}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{Fetch Enable}{
+    This register contains the value of the fetch enable signal of the core.
+  }
+}
+
+\regDesc{0x1A10\_4010 - 0x1A10\_401C}{0x0000\_0000}{PAD Mux}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{PAD\_MUX}
+    \bitbox{32}{PADMUX}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{PADMUX}{
+    The content of these registers can be used to multiplex pads when targeting an ASIC.
+    The first register (0x1A10\_4010) can be used to sets the mux (2 bit select) from pin 0 (bits [1:0]) to 15 (bits [31:30]).
+    The second register (0x1A10\_4014) can be used to sets the mux (2 bit select) from pin 16 (bits [1:0]) to 31 (bits [31:30]).
+    The third register (0x1A10\_4018) can be used to sets the mux (2 bit select) from pin 32 (bits [1:0]) to 47 (bits [31:30]).
+    The forth register (0x1A10\_401C) can be used to sets the mux (2 bit select) from pin 48 (bits [1:0]) to 63 (bits [31:30]).
+  }
+}
+
+
+\regDesc{0x1A10\_4020 - 0x1A10\_405C}{0x0000\_0000}{PAD Configuration}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{PAD CFG0-15}
+    \bitbox{32}{PAD Configuration}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{PAD CFG0-15}{
+    These 16 registers can be used for ASIC targets to configure pads, e.g. pull up, pull down values.
+  }
+}
+
+\regDesc{0x1A10\_4074}{0x0000\_0000}{JTAG Register}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{JTAG\_REG}
+    \bitbox{16}{Unused}
+    \bitbox{8}{JTAG Reg In}
+    \bitbox{8}{JTAG Reg Out}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{JTAG Register}{
+    This register contains the value of the input from the JTAG and can be used to write 8bit in the JTAG output register for system-to-JTAG communications.
+  }
+}
+
+\regDesc{0x1A10\_40A0 and 0x1A10\_40C0}{0x0000\_0001}{Core Status}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{CORE\_STATUS}
+    \bitbox{32}{Core Status}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{Core Status}{
+    These 2 registers contain the status of the system for testing/verification purposes like End Of Computation. The 0x1A10\_40C0 register is read-only.
+  }
+}
+
+\regDesc{0x1A10\_40C8}{0x0000\_0000}{FLL Clock Select}{
+  \begin{bytefield}[rightcurly=.,endianness=big]{32}
+  \bitheader{31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0} \\
+  \begin{rightwordgroup}{FLL\_CLOCK\_SELECT}
+    \bitbox{31}{Unused}
+    \bitbox{1}{S}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+}{
+  \regItem{Bit 31:0}{FLL Clock Select}{
+    This register contains whether the system clock is coming from the FLL or the FLL is bypassed. It is a read-only register by the core but it can be written via JTAG.
+  }
+}

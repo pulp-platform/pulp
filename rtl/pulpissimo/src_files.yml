@@ -1,0 +1,14 @@
+pulpissimo:
+  incdirs: [
+    ../includes,
+  ]
+  files: [
+    jtag_tap_top.sv,
+    pad_control.sv,
+    pad_frame.sv,
+    safe_domain.sv,
+    soc_domain.sv,
+    rtc_date.sv,
+    rtc_clock.sv,
+    pulpissimo.sv,
+  ]

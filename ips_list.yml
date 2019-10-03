@@ -20,7 +20,10 @@
 
 pulp_soc:
   commit: master
+  server: https://github.com
   group:  pulp-platform
-pulp_cluster:
+
+tbtools:
   commit: master
+  server: https://github.com
   group:  pulp-platform
