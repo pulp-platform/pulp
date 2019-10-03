@@ -8,6 +8,7 @@ pulpissimo:
     pad_frame.sv,
     safe_domain.sv,
     soc_domain.sv,
+    cluster_domain.sv,
     rtc_date.sv,
     rtc_clock.sv,
     pulpissimo.sv,
