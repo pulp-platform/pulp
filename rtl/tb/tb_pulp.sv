@@ -82,7 +82,7 @@ module tb_pulp;
    parameter  I2S_FILENAME_3 = "i2s_buffer_3.hex";
 
    // for PULPissimo, 1 core
-   parameter NB_CORES = 1;
+   parameter NB_CORES = 8;
 
    // SPI standards, do not change
    parameter logic[1:0] SPI_STD     = 2'b00;
