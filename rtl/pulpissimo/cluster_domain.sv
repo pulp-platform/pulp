@@ -29,7 +29,7 @@ module cluster_domain
     parameter NB_HWACC_PORTS        = 4,
     parameter NB_DMAS               = 4,
     parameter NB_MPERIPHS           = 1,
-    parameter NB_SPERIPHS           = 8,
+    parameter NB_SPERIPHS           = `NB_SPERIPHS,
 
     parameter TCDM_SIZE             = 64*1024,                 // in Byte, POWER of 2
     parameter NB_TCDM_BANKS         = 16,                      // POWER of 2
@@ -90,7 +90,7 @@ module cluster_domain
     //PERIPH PARAMETERS
     parameter LOG_CLUSTER           = 5,  // NOT USED RIGTH NOW
     parameter PE_ROUTING_LSB        = 10, //LSB used as routing BIT in periph interco
-    parameter PE_ROUTING_MSB        = 13, //MSB used as routing BIT in periph interco
+    //parameter PE_ROUTING_MSB        = 13, //MSB used as routing BIT in periph interco
 
     parameter EVNT_WIDTH            = 8, //size of the event bus
 `ifdef PULP_HSA
@@ -114,6 +114,8 @@ module cluster_domain
 
    input  logic                             dma_pe_irq_ack_i,
    output logic                             dma_pe_irq_valid_o,
+
+   input logic  [NB_CORES-1:0] dbg_irq_valid_i,
    
    input  logic                             pf_evt_ack_i,
    output logic                             pf_evt_valid_o,
@@ -286,7 +288,7 @@ module cluster_domain
         .TCDM_ADD_WIDTH               ( TCDM_ADD_WIDTH               ),
         .LOG_CLUSTER                  ( LOG_CLUSTER                  ),
         .PE_ROUTING_LSB               ( PE_ROUTING_LSB               ),
-        .PE_ROUTING_MSB               ( PE_ROUTING_MSB               ),
+        //.PE_ROUTING_MSB               ( PE_ROUTING_MSB               ),
         .EVNT_WIDTH                   ( EVNT_WIDTH                   ),
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
     )
@@ -308,6 +310,7 @@ module cluster_domain
         .dma_pe_evt_valid_o           ( dma_pe_evt_valid_o           ),
         .dma_pe_irq_ack_i             ( dma_pe_irq_ack_i             ),
         .dma_pe_irq_valid_o           ( dma_pe_irq_valid_o           ),
+        .dbg_irq_valid_i              ( dbg_irq_valid_i              ),
         .pf_evt_ack_i                 ( pf_evt_ack_i                 ),
         .pf_evt_valid_o               ( pf_evt_valid_o               ),
         .en_sa_boot_i                 ( 1'b0                         ),

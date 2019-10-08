@@ -8,6 +8,8 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
+`include "pulp_soc_defines.sv"
+
 module soc_domain #(
     parameter CORE_TYPE            = 0,
     parameter USE_FPU              = 1,
@@ -43,6 +45,8 @@ module soc_domain #(
     input  logic                             jtag_tms_i,
     input  logic                             jtag_tdi_i,
     output logic                             jtag_tdo_o,
+
+    output logic [`NB_CORES-1:0]             dbg_irq_valid_o,
 
     input  logic [31:0]                      gpio_in_i,
     output logic [31:0]                      gpio_out_o,
@@ -259,6 +263,7 @@ module soc_domain #(
    (
 
         .boot_l2_i                    ( 1'b0                         ),
+        .cluster_dbg_irq_valid_o      ( dbg_irq_valid_o              ),
         .*
     );
 

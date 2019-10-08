@@ -8,6 +8,8 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
+`include "pulp_soc_defines.sv"
+
 module pulpissimo
 #(
   parameter CORE_TYPE   = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
@@ -315,6 +317,8 @@ module pulpissimo
 
   logic [7:0]                  s_soc_jtag_regi;
   logic [7:0]                  s_soc_jtag_rego;
+
+  logic  [`NB_CORES-1:0]             s_dbg_irq_valid;
 
   logic                        s_rstn_por;
   
@@ -934,6 +938,8 @@ module pulpissimo
 
         .cluster_irq_o                ( s_cluster_irq                    ),
 
+        .dbg_irq_valid_o              ( s_dbg_irq_valid                  ),
+
         .dma_pe_evt_ack_o             ( s_dma_pe_evt_ack                 ),
         .dma_pe_evt_valid_i           ( s_dma_pe_evt_valid               ),
         .dma_pe_irq_ack_o             ( s_dma_pe_irq_ack                 ),
@@ -1066,6 +1072,10 @@ cluster_domain cluster_domain_i
         .dma_pe_evt_valid_o           ( s_dma_pe_evt_valid               ),
         .dma_pe_irq_ack_i             ( s_dma_pe_irq_ack                 ),
         .dma_pe_irq_valid_o           ( s_dma_pe_irq_valid               ),
+
+        .dbg_irq_valid_i              ( s_dbg_irq_valid                  ),
+
+
         .pf_evt_ack_i                 ( s_pf_evt_ack                     ),
         .pf_evt_valid_o               ( s_pf_evt_valid                   ),
         

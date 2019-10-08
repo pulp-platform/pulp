@@ -40,7 +40,8 @@
 // Uncomment if the SCM is not present (it will still be in the memory map)
 //`define NO_SCM
 
-`define APU_CLUSTER
+//`define APU_CLUSTER
+`define SHARED_FPU_CLUSTER
 
 // uncomment if you want to place the DEMUX peripherals (EU, MCHAN) rigth before the Test and set region.
 // This will steal 16KB from the 1MB TCDM reegion.
@@ -69,6 +70,17 @@
 `endif
 
 
+//PARAMETRES
+`define FC_FPU 1
+`define FC_FP_DIVSQRT 1
+`define CLUST_FPU 1
+`define CLUST_FP_DIVSQRT 1
+// set to 2 when APU is connected
+`define CLUST_SHARED_FP 2
+// set to 2 to have divsqrt in one unit
+`define CLUST_SHARED_FP_DIVSQRT 2
+
+
 
 // PE selection (only for non-FPGA - otherwise selected via PULP_CORE env variable)
 // -> define RISCV for RISC-V processor
@@ -79,7 +91,9 @@
 `define NB_CORES      8
 `define NB_DMAS       4
 `define NB_MPERIPHS   1
-`define NB_SPERIPHS   8
+`define NB_SPERIPHS   10
+
+`define GPIO_NUM     64 
 
 
 // DEFINES
@@ -87,13 +101,14 @@
 
 `define NB_SPERIPH_PLUGS_EU 2
 
-`define SPER_EOC_ID      0
-`define SPER_TIMER_ID    1
-`define SPER_EVENT_U_ID  2
-`define SPER_HWCE_ID     4
-`define SPER_ICACHE_CTRL 5
-`define SPER_DMA_ID      6
-`define SPER_EXT_ID      7
+`define SPER_EOC_ID        0
+`define SPER_TIMER_ID      1
+`define SPER_EVENT_U_ID    2
+`define SPER_HWCE_ID       4
+`define SPER_ICACHE_CTRL   5
+`define SPER_DMA_CL_ID     6
+`define SPER_DMA_FC_ID     7
+`define SPER_EXT_ID        9
 
 
 `define RVT 0
