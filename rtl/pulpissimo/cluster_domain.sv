@@ -310,7 +310,7 @@ module cluster_domain
         .dma_pe_evt_valid_o           ( dma_pe_evt_valid_o           ),
         .dma_pe_irq_ack_i             ( dma_pe_irq_ack_i             ),
         .dma_pe_irq_valid_o           ( dma_pe_irq_valid_o           ),
-        .dbg_irq_valid_i              ( dbg_irq_valid_i              ),
+        .dbg_irq_valid_i              (  dbg_irq_valid_i             ),
         .pf_evt_ack_i                 ( pf_evt_ack_i                 ),
         .pf_evt_valid_o               ( pf_evt_valid_o               ),
         .en_sa_boot_i                 ( 1'b0                         ),

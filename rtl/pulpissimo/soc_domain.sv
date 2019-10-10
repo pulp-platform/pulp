@@ -263,7 +263,7 @@ module soc_domain #(
    (
 
         .boot_l2_i                    ( 1'b0                         ),
-        //.cluster_dbg_irq_valid_o      ( dbg_irq_valid_o              ),
+        //.cluster_dbg_irq_valid_o      ( '0              ),    //dbg_irq_valid_o
         .*
     );
 

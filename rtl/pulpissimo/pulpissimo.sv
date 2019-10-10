@@ -1073,7 +1073,7 @@ cluster_domain cluster_domain_i
         .dma_pe_irq_ack_i             ( s_dma_pe_irq_ack                 ),
         .dma_pe_irq_valid_o           ( s_dma_pe_irq_valid               ),
 
-        .dbg_irq_valid_i              ( s_dbg_irq_valid                  ),
+        .dbg_irq_valid_i              ( '0                  ), //s_dbg_irq_valid
 
 
         .pf_evt_ack_i                 ( s_pf_evt_ack                     ),

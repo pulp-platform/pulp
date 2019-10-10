@@ -92,6 +92,7 @@
 `define NB_DMAS       4
 `define NB_MPERIPHS   1
 `define NB_SPERIPHS   10
+`define REMAP_ADDRESS
 
 `define GPIO_NUM     64 
 
@@ -108,6 +109,7 @@
 `define SPER_ICACHE_CTRL   5
 `define SPER_DMA_CL_ID     6
 `define SPER_DMA_FC_ID     7
+`define SPER_DECOMP_ID     8
 `define SPER_EXT_ID        9
 
 
