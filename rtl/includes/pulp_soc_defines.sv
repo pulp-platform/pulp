@@ -92,7 +92,7 @@
 `define NB_DMAS       4
 `define NB_MPERIPHS   1
 `define NB_SPERIPHS   10
-`define REMAP_ADDRESS
+//`define REMAP_ADDRESS
 
 `define GPIO_NUM     64 
 
