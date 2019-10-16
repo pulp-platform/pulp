@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: master
+  commit: integration
   server: https://github.com
   group:  pulp-platform
 
