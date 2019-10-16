@@ -19,12 +19,12 @@
 #
 
 pulp_soc:
-  commit: integration
+  commit: master
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: fpu_integration
+  commit: fpu_integration2
   server: https://github.com
   group:  pulp-platform
 
