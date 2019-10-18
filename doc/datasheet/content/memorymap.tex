@@ -1,0 +1,36 @@
+\chapter{Memory Map}
+
+Figure~\ref{fig:pulpissimo_memory_map} shows the default memory-map of \pulpissimo, whereas
+Please, consult the \udma documentation for the peripherals attached to the \udma memory-map of configuration.
+
+\begin{figure}[H]
+  \centering
+  %\includegraphics[width=0.8\textwidth]{./figures/memory_map}
+
+  \begin{bytefield}{24}
+  \begin{rightwordgroup}{Boot ROM}
+  \memsection{0x1A00 0000}{0x01A00 2000}{3}{8kB ROM}
+  \end{rightwordgroup}\\
+  \begin{rightwordgroup}{Peripherals}
+  \memsection{0x1A10 0000}{}{2}{FLL} \\
+  \memsection{0x1A10 1000}{}{2}{GPIO} \\
+  \memsection{0x1A10 2000}{}{2}{UDMA} \\
+  \memsection{0x1A10 4000}{}{2}{SoC Control} \\
+  \memsection{0x1A10 5000}{}{2}{Advanced Timer} \\
+  \memsection{0x1A10 6000}{}{2}{SoC Event Generator} \\
+  \memsection{0x1A10 9000}{}{2}{Event/Interrupt Unit} \\
+  \memsection{0x1A10 B000}{}{2}{Timer} \\
+  \memsection{0x1A10 C000}{}{2}{HWPE} \\
+  \memsection{0x1A10 F000}{}{2}{Stdout} \\
+  \memsection{0x1A11 0000}{}{2}{Debug Unit}
+  \end{rightwordgroup}  \\
+  \memsection{}{}{2}{}\\
+  \begin{rightwordgroup}{L2 Memory}
+  \memsection{0x1C00 0000}{0x1C08 0000}{7}{512kB RAM}
+  \end{rightwordgroup}\\
+  \end{bytefield}
+
+  \caption{\pulpissimo memory-map.}
+  \label{fig:pulpissimo_memory_map}
+
+\end{figure}

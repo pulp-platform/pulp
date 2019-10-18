@@ -1,20 +1,17 @@
-// Copyright 2018 ETH Zurich and University of Bologna.
-// Copyright and related rights are licensed under the Solderpad Hardware
-// License, Version 0.51 (the "License"); you may not use this file except in
-// compliance with the License.  You may obtain a copy of the License at
-// http://solderpad.org/licenses/SHL-0.51. Unless required by applicable law
-// or agreed to in writing, software, hardware and materials distributed under
-// this License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-// CONDITIONS OF ANY KIND, either express or implied. See the License for the
-// specific language governing permissions and limitations under the License.
-
 /*
  * periph_bus_defines.sv
- * Davide Rossi <davide.rossi@unibo.it>
- * Antonio Pullini <pullinia@iis.ee.ethz.ch>
- * Igor Loi <igor.loi@unibo.it>
- * Francesco Conti <fconti@iis.ee.ethz.ch>
- * Pasquale Davide Schiavone <pschiavo@iss.ee.ethz.ch>
+ *
+ * Copyright (C) 2013-2018 ETH Zurich, University of Bologna.
+ *
+ * Copyright and related rights are licensed under the Solderpad Hardware
+ * License, Version 0.51 (the "License"); you may not use this file except in
+ * compliance with the License.  You may obtain a copy of the License at
+ * http://solderpad.org/licenses/SHL-0.51. Unless required by applicable law
+ * or agreed to in writing, software, hardware and materials distributed under
+ * this License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ *
  */
 
 // SOC PERIPHERALS APB BUS PARAMETRES
@@ -44,10 +41,6 @@
 `define SOC_EVENT_GEN_START_ADDR 32'h1A10_6000
 `define SOC_EVENT_GEN_END_ADDR   32'h1A10_6FFF
 
-// MASTER PORT TO SOC EVENT GEN
-`define DLC_BRIDGE_START_ADDR    32'h1A10_7000
-`define DLC_BRIDGE_END_ADDR      32'h1A10_7FFF
-
 `define EU_START_ADDR            32'h1A10_9000
 `define EU_END_ADDR              32'h1A10_AFFF
 
@@ -63,9 +56,9 @@
 `define DEBUG_START_ADDR         32'h1A11_0000
 `define DEBUG_END_ADDR           32'h1A11_FFFF
 
-// // MASTER PORT TO FABRIC CONTROLLER APB BUS
-// `define FC_START_ADDR            32'h1B00_0000
-// `define FC_END_ADDR              32'h1B3F_FFFF
+`define DUMMY_START_ADDR         32'h1A12_0000
+`define DUMMY_END_ADDR           32'h1A12_0008
+
 
 `define APB_ASSIGN_SLAVE(lhs, rhs)     \
     assign lhs.paddr    = rhs.paddr;   \
@@ -75,6 +68,6 @@
     assign lhs.penable  = rhs.penable; \
     assign rhs.prdata   = lhs.prdata;  \
     assign rhs.pready   = lhs.pready;  \
-    assign rhs.pslverr  = lhs.pslverr;
+    assign rhs.pslverr  = lhs.pslverr
 
 `define APB_ASSIGN_MASTER(lhs, rhs) `APB_ASSIGN_SLAVE(rhs, lhs)

@@ -1,0 +1,29 @@
+\chapter{Peripherals}
+
+Most of the peripherals in \pulpissimo are connected to the \udma subsystem which
+efficiently handles all the data-transfers autonoumsly.
+The \udma must be programmed by the core via memory-mapped read and write operations to receive commands.
+
+See the \udma documentation for more details under the \udma repository.
+
+The GPIO, timers, event unit and event generator, debug and the FLLs are not connected to the \udma instead but to the APB bus.
+Following a brief overview about these units is given.
+
+\clearpage
+\input{./content/peripherals_fll.tex}
+\clearpage
+\input{./content/peripherals_gpio.tex}
+\clearpage
+\input{./content/peripherals_pulpissimo_ctrl.tex}
+%\clearpage
+%\input{./content/peripherals_adv_timer.tex}
+%\clearpage
+%\input{./content/peripherals_soc_evnt_gen.tex}
+\clearpage
+\input{./content/apb_interrupt_ctrl.tex}
+%\clearpage
+%\input{./content/peripherals_timer.tex}
+%\clearpage
+%\input{./content/peripherals_hwpe.tex}
+\clearpage
+\input{./content/peripherals_debug_unit.tex}

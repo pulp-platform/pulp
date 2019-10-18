@@ -10,6 +10,6 @@ tb:
   path: tb
 vip:
   path: vip
-pulp:
-  path: pulp
+pulpissimo:
+  path: pulpissimo
 

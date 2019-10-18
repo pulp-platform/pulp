@@ -1,9 +1,19 @@
 tb:
+  targets: [
+    rtl
+  ]
   files: [
+    riscv_pkg.sv,
     jtag_pkg.sv,
-    dbg_pkg.sv,
+    pulp_tap_pkg.sv,
     tb_clk_gen.sv,
     tb_fs_handler.sv,
-    dev_dpi/dev_dpi.sv,
+    dpi_models/dpi_models.sv,
+    tb_driver/tb_driver.sv,
     tb_pulp.sv,
+    SimJTAG.sv,
+    SimDTM.sv,
+  ]
+  vlog_opts : [
+    -L riscv_dbg_lib,
   ]
