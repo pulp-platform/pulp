@@ -35,8 +35,6 @@ execute("mkdir -p sim/vcompile/rtl")
 execute("rm -rf sim/vcompile/rtl/*")
 execute("mkdir -p sim/vcompile/tb")
 execute("rm -rf sim/vcompile/tb/*")
-execute("mkdir -p fpga/pulpissimo/tcl")
-execute("rm -rf fpga/pulpissimo/tcl/*")
 
 execute("mkdir -p sim/ncompile/ips")
 execute("rm -rf sim/ncompile/ips/*")
@@ -94,16 +92,16 @@ for line in fileinput.input("sim/ncompile/src_ips_files.f", inplace=True):
         print(line)
 
 
-# Generate FPGA scripts
-# generate Vivado src_files.tcl
-ipdb.export_vivado(script_path="fpga/pulpissimo/tcl/ips_src_files.tcl", domain='soc')
-ipdb.export_vivado(script_path="fpga/pulpissimo/tcl/rtl_src_files.tcl", domain='soc', source='rtl')
+# # Generate FPGA scripts
+# # generate Vivado src_files.tcl
+# ipdb.export_vivado(script_path="fpga/pulpissimo/tcl/ips_src_files.tcl", domain='soc')
+# ipdb.export_vivado(script_path="fpga/pulpissimo/tcl/rtl_src_files.tcl", domain='soc', source='rtl')
 
-# generate Vivado add_files.tcl
-ipdb.generate_vivado_add_files("fpga/pulpissimo/tcl/ips_add_files.tcl", domain='soc')
-ipdb.generate_vivado_add_files("fpga/pulpissimo/tcl/rtl_add_files.tcl", domain='soc', source='rtl')
+# # generate Vivado add_files.tcl
+# ipdb.generate_vivado_add_files("fpga/pulpissimo/tcl/ips_add_files.tcl", domain='soc')
+# ipdb.generate_vivado_add_files("fpga/pulpissimo/tcl/rtl_add_files.tcl", domain='soc', source='rtl')
 
-# generate Vivado inc_dirs.tcl
-ipdb.generate_vivado_inc_dirs("fpga/pulpissimo/tcl/ips_inc_dirs.tcl", domain='soc')
+# # generate Vivado inc_dirs.tcl
+# ipdb.generate_vivado_inc_dirs("fpga/pulpissimo/tcl/ips_inc_dirs.tcl", domain='soc')
 
 print(tcolors.OK + "Generated new scripts for IPs!" + tcolors.ENDC)

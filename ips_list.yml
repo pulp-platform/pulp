@@ -20,11 +20,13 @@
 
 pulp_soc:
   commit: v1.1.0
+  domain: [soc]
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
   commit: 741bbc945213b6367c89ee668960dcdfeaf1c8d0
+  domain: [cluster]
   server: https://github.com
   group:  pulp-platform
 
