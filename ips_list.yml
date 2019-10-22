@@ -32,5 +32,7 @@ pulp_cluster:
 
 tbtools:
   commit: v0.1
+  commit: master
+  domain: [soc]
   server: https://github.com
   group:  pulp-platform

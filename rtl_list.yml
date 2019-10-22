@@ -8,8 +8,11 @@
 
 tb:
   path: tb
+  domain: [soc]
 vip:
   path: vip
+  domain: [soc]
 pulp:
   path: pulp
+  domain: [soc]
 
