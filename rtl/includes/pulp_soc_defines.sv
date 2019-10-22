@@ -105,7 +105,7 @@
 `define SPER_EOC_ID        0
 `define SPER_TIMER_ID      1
 `define SPER_EVENT_U_ID    2
-`define SPER_HWCE_ID       4
+`define SPER_HWPE_ID       4
 `define SPER_ICACHE_CTRL   5
 `define SPER_DMA_CL_ID     6
 `define SPER_DMA_FC_ID     7
