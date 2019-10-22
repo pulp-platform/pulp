@@ -81,7 +81,7 @@ module tb_pulp;
    parameter  I2S_FILENAME_2 = "i2s_buffer_2.hex";
    parameter  I2S_FILENAME_3 = "i2s_buffer_3.hex";
 
-   // for PULPissimo, 1 core
+   // for PULP, 1 core
    parameter NB_CORES = 8;
 
    // SPI standards, do not change
@@ -530,8 +530,8 @@ module tb_pulp;
     );
 
 
-   // PULPissimo chip (design under test)
-   pulpissimo #(
+   // PULP chip (design under test)
+   pulp #(
       .CORE_TYPE ( CORE_TYPE ),
       .USE_FPU   ( RISCY_FPU )
    )

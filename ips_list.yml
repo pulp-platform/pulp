@@ -20,11 +20,13 @@
 
 pulp_soc:
   commit: integration
+  domain: [soc]
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
   commit: fpu_integration
+  domain: [cluster]
   server: https://github.com
   group:  pulp-platform
 
