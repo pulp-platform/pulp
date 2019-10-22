@@ -11,5 +11,5 @@ pulpissimo:
     soc_domain.sv,
     rtc_date.sv,
     rtc_clock.sv,
-    pulpissimo.sv,
+    pulp.sv,
   ]
