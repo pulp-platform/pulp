@@ -20,6 +20,7 @@
 
 pulp_soc:
   commit: v1.1.0
+  domain: [soc]
   server: https://github.com
   group:  pulp-platform
 
