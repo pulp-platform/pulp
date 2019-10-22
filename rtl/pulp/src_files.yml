@@ -1,4 +1,4 @@
-pulpissimo:
+pulp:
   incdirs: [
     ../includes,
   ]
