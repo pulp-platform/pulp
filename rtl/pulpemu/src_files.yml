@@ -7,7 +7,6 @@ pulpemu:
     xilinx,
   ]
   files: [
-    fpga_clk_gen.sv
     fpga_interleaved_ram.sv,
     fpga_private_ram.sv,
     pulpemu.sv,
