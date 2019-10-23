@@ -29,7 +29,6 @@ module soc_domain #(
 )(
 
     input logic                              ref_clk_i,
-    input logic                              slow_clk_i,
     input logic                              test_clk_i,
 
     input  logic                             rstn_glob_i,
