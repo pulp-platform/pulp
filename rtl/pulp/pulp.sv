@@ -213,7 +213,6 @@ module pulp
   //***********************************************************
 
   logic                        s_test_clk;
-  logic                        s_slow_clk;
   logic                        s_sel_fll_clk;
 
   logic [11:0]                 s_pm_cfg_data;
@@ -639,7 +638,6 @@ module pulp
    safe_domain safe_domain_i (
 
         .ref_clk_i                  ( s_ref_clk                   ),
-        .slow_clk_o                 ( s_slow_clk                  ),
         .rst_ni                     ( s_rstn                     ),
 
         .rst_no                     ( s_rstn_por                  ),
@@ -856,7 +854,6 @@ module pulp
    ) soc_domain_i (
 
         .ref_clk_i                    ( s_ref_clk                        ),
-        .slow_clk_i                   ( s_slow_clk                       ),
         .test_clk_i                   ( s_test_clk                       ),
 
         .rstn_glob_i                  ( s_rstn_por                       ),

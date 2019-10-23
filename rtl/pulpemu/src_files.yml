@@ -7,6 +7,7 @@ pulpemu:
     xilinx,
   ]
   files: [
+    pad_functional_xilinx.sv,
     fpga_bootrom.sv,
     fpga_interleaved_ram.sv,
     fpga_private_ram.sv,
