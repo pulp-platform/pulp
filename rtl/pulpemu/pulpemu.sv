@@ -14,11 +14,7 @@
  * University of Bologna.
  */
 
-`include "ulpsoc_defines.sv"
-
-`ifndef PULP_FPGA_SIM
- `define PULP_FPGA_NETLIST
-`endif
+`include "pulp_ssoc_defines.sv"
 
 module pulpemu
   (
@@ -36,7 +32,7 @@ module pulpemu
    inout        FMC_sdio_sdio1,
    inout        FMC_sdio_sdio2,
    inout        FMC_sdio_sdio3,
-   inout        FMC_sdio_cs0,
+   inout        FMC_sdio_cmd,
    inout        FMC_sdio_sck,
    inout        FMC_i2c0_sda,
    inout        FMC_i2c0_scl,
@@ -148,14 +144,14 @@ module pulpemu
         .pad_cam_pclk(FMC_cam_pclk),
         .pad_cam_hsync(FMC_cam_hsync),
         .pad_cam_data0(FMC_cam_data0),
-        .pad_cam_data1(FMC_cam_data0),
-        .pad_cam_data2(FMC_cam_data0),
-        .pad_cam_data3(FMC_cam_data0),
-        .pad_cam_data4(FMC_cam_data0),
-        .pad_cam_data5(FMC_cam_data0),
-        .pad_cam_data6(FMC_cam_data0),
-        .pad_cam_data7(FMC_cam_data0),
-        .pad_cam_vsync(FMC_cam_data0),
+        .pad_cam_data1(FMC_cam_data1),
+        .pad_cam_data2(FMC_cam_data2),
+        .pad_cam_data3(FMC_cam_data3),
+        .pad_cam_data4(FMC_cam_data4),
+        .pad_cam_data5(FMC_cam_data5),
+        .pad_cam_data6(FMC_cam_data6),
+        .pad_cam_data7(FMC_cam_data7),
+        .pad_cam_vsync(FMC_cam_vsync),
 
         .pad_sdio_clk(FMC_sdio_clk),
         .pad_sdio_cmd(FMC_sdio_cmd),
