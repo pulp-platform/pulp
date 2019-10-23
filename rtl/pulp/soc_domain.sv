@@ -32,6 +32,11 @@ module soc_domain #(
     input logic                              test_clk_i,
 
     input  logic                             rstn_glob_i,
+    `ifdef PULP_FPGA_EMUL
+    input  logic       zynq_soc_clk_i,
+    input  logic       zynq_cluster_clk_i,
+    input  logic       zynq_per_clk_i,
+    `endif
 
     input  logic                             dft_test_mode_i,
     input  logic                             dft_cg_enable_i,
