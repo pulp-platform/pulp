@@ -16,7 +16,6 @@ module safe_domain
     )
     (
         input  logic             ref_clk_i            ,
-        output logic             slow_clk_o           ,
         input  logic             rst_ni               ,
         output logic             rst_no               ,
 
@@ -417,8 +416,6 @@ module safe_domain
         .*
     );
 
-
-`ifndef PULP_FPGA_EMUL
     rstgen i_rstgen
     (
         .clk_i       ( ref_clk_i   ),
@@ -427,27 +424,6 @@ module safe_domain
         .rst_no      ( s_rstn_sync ),  //to be used by logic clocked with ref clock in AO domain
         .init_no     (             )  //not used
     );
-
-  assign slow_clk_o = ref_clk_i;
-
-`else
-  assign s_rstn_sync = s_rstn;
-  //Don't use the supplied clock directly for the FPGA target. On some boards
-  //the reference clock is a very fast (e.g. 200MHz) clock that cannot be used
-  //directly as the "slow_clk". Therefore we slow it down if a FPGA/board
-  //dependent module fpga_slow_clk_gen. Dividing the fast reference clock
-  //internally instead of doing so in the toplevel prevents unecessary clock
-  //division just to generate a faster clock once again in the SoC and
-  //Peripheral clock PLLs in soc_domain.sv. Instead all PLL use directly the
-  //board reference clock as input.
-
-  fpga_slow_clk_gen i_slow_clk_gen
-    (
-     .rst_ni(s_rstn_sync),
-     .ref_clk_i(ref_clk_i),
-     .slow_clk_o(slow_clk_o)
-     );
-`endif
 
 
     assign s_rstn          = rst_ni;
