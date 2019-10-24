@@ -11,6 +11,7 @@ pulpemu:
     fpga_bootrom.sv,
     fpga_interleaved_ram.sv,
     fpga_private_ram.sv,
+    fpga_clk_gen.sv
     pulpemu.sv,
     pulpemu_ref_clk_div.sv,
   ]
