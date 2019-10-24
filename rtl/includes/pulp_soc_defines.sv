@@ -100,17 +100,6 @@
 // DEFINES
 `define MPER_EXT_ID   0
 
-`define NB_SPERIPH_PLUGS_EU 2
-
-`define SPER_EOC_ID        0
-`define SPER_TIMER_ID      1
-`define SPER_EVENT_U_ID    2
-`define SPER_HWPE_ID       4
-`define SPER_ICACHE_CTRL   5
-`define SPER_DMA_CL_ID     6
-`define SPER_DMA_FC_ID     7
-`define SPER_DECOMP_ID     8
-`define SPER_EXT_ID        9
 
 
 `define RVT 0
