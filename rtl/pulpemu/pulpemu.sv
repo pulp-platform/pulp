@@ -128,7 +128,7 @@ module pulpemu
      #(.CORE_TYPE(CORE_TYPE),
        .USE_FPU(USE_FPU),
        .USE_HWPE(USE_HWPE)
-       ) i_pulp
+       ) pulp_chip_i
        (
         .zynq_clk_i            ( ref_clk                       ), // FPGA inner clock, 32768 Hz
         .zynq_soc_clk_i        ( pulp_soc_clk                  ), // FPGA inner clock, 50 MHz
@@ -181,7 +181,7 @@ module pulpemu
 
         .pad_xtal_in(), // USE zynq_clk_i as ref_clk
         .pad_reset_n(FMC_reset_n),
-        .pad_bootmode(FMC_bootmode)  // Boot mode = 0; boot from flash; Boot mode = 1; boot from jtag
+        .pad_bootsel(FMC_bootmode)  // Boot mode = 0; boot from flash; Boot mode = 1; boot from jtag
         );
 
 endmodule // pulpemu
