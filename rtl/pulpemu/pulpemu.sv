@@ -23,54 +23,57 @@ module pulpemu
   parameter USE_HWPE    = 0
 )
   (
+   input  clk_125_n,
+   input  clk_125_p,
    // LED for VERIFY
-   output       LED,
+   output LED,
    // FMC pins
-   inout        FMC_qspi_sdio0,
-   inout        FMC_qspi_sdio1,
-   inout        FMC_qspi_sdio2,
-   inout        FMC_qspi_sdio3,
-   inout        FMC_qspi_csn0,
-   inout        FMC_qspi_csn1,
-   inout        FMC_qspi_sck,
-   inout        FMC_sdio_data0,
-   inout        FMC_sdio_data1,
-   inout        FMC_sdio_data2,
-   inout        FMC_sdio_data3,
-   inout        FMC_sdio_cmd,
-   inout        FMC_sdio_sck,
-   inout        FMC_i2c0_sda,
-   inout        FMC_i2c0_scl,
-   inout        FMC_uart_rx,
-   inout        FMC_uart_tx,
-   inout        FMC_i2s0_sck,
-   inout        FMC_i2s0_ws,
-   inout        FMC_i2s0_sdi,
-   inout        FMC_i2s1_sdi,
-   inout        FMC_cam_pclk,
-   inout        FMC_cam_hsync,
-   inout        FMC_cam_data0,
-   inout        FMC_cam_data1,
-   inout        FMC_cam_data2,
-   inout        FMC_cam_data3,
-   inout        FMC_cam_data4,
-   inout        FMC_cam_data5,
-   inout        FMC_cam_data6,
-   inout        FMC_cam_data7,
-   inout        FMC_cam_vsync,
-   inout        FMC_jtag_tck,
-   inout        FMC_jtag_tdi,
-   inout        FMC_jtag_tdo,
-   inout        FMC_jtag_tms,
-   inout        FMC_jtag_trst,
-   inout        FMC_bootmode,
-   inout        FMC_reset_n
+   inout  FMC_qspi_sdio0,
+   inout  FMC_qspi_sdio1,
+   inout  FMC_qspi_sdio2,
+   inout  FMC_qspi_sdio3,
+   inout  FMC_qspi_csn0,
+   inout  FMC_qspi_csn1,
+   inout  FMC_qspi_sck,
+   inout  FMC_sdio_data0,
+   inout  FMC_sdio_data1,
+   inout  FMC_sdio_data2,
+   inout  FMC_sdio_data3,
+   inout  FMC_sdio_cmd,
+   inout  FMC_sdio_sck,
+   inout  FMC_i2c0_sda,
+   inout  FMC_i2c0_scl,
+   inout  FMC_uart_rx,
+   inout  FMC_uart_tx,
+   inout  FMC_i2s0_sck,
+   inout  FMC_i2s0_ws,
+   inout  FMC_i2s0_sdi,
+   inout  FMC_i2s1_sdi,
+   inout  FMC_cam_pclk,
+   inout  FMC_cam_hsync,
+   inout  FMC_cam_data0,
+   inout  FMC_cam_data1,
+   inout  FMC_cam_data2,
+   inout  FMC_cam_data3,
+   inout  FMC_cam_data4,
+   inout  FMC_cam_data5,
+   inout  FMC_cam_data6,
+   inout  FMC_cam_data7,
+   inout  FMC_cam_vsync,
+   inout  FMC_jtag_tck,
+   inout  FMC_jtag_tdi,
+   inout  FMC_jtag_tdo,
+   inout  FMC_jtag_tms,
+   inout  FMC_jtag_trst,
+   inout  FMC_bootmode,
+   inout  FMC_reset_n
    );
 
    // pulpemu top signals
    logic        zynq_clk;
    logic        zynq_rst_n;
    logic        pulp_soc_clk;
+   logic        pulp_per_clk;
    logic        pulp_cluster_clk;
 
    // reference 32768 Hz clock
@@ -82,6 +85,7 @@ module pulpemu
    //   ███╔╝    ╚██╔╝  ██║╚██╗██║██║▄▄ ██║        ██║███╗██║██╔══██╗██╔══██║██╔═══╝ ██╔═══╝ ██╔══╝  ██╔══██╗
    //  ███████╗   ██║   ██║ ╚████║╚██████╔╝███████╗╚███╔███╔╝██║  ██║██║  ██║██║     ██║     ███████╗██║  ██║
    //  ╚══════╝   ╚═╝   ╚═╝  ╚═══╝ ╚══▀▀═╝ ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚══════╝╚═╝  ╚═╝
+/* -----\/----- EXCLUDED -----\/-----
 
    zynq_wrapper zynq_wrapper_i (
                                 // pulp clocks (clk_wiz_clk_out1->cluster, clk_wiz_clk_out2->soc, clk_wiz_clk_out3->per)
@@ -92,8 +96,32 @@ module pulpemu
                                 .zynq_clk           (zynq_clk         ),
                                 .zynq_rst_n         (zynq_rst_n       )
                                 );
+ -----/\----- EXCLUDED -----/\----- */
 
+  //Differential to single ended clock conversion
+  IBUFGDS
+    #(
+      .IOSTANDARD("LVDS"),
+      .DIFF_TERM("FALSE"),
+      .IBUF_LOW_PWR("FALSE"))
+  i_sysclk_iobuf
+    (
+     .I(clk_125_p),
+     .IB(clk_125_n),
+     .O(clk_125)    // 125 MHz clock
+     );
 
+  // add clock generation for pulp chip, replaces zynq_wrapper
+  xilinx_clk_mngr_clk_wiz inst
+  (
+  .clk_in1(clk_125), // 125 MHz
+  .clk_out1(ref_clk), // 8.something  MHz
+  .clk_out2(pulp_soc_clk),  // 50 Mhz            
+  .clk_out3(pulp_per_clk), // 50MHz
+  .clk_out4(pulp_cluster_clk), //50MHz
+  .resetn(zynq_rst_n), 
+  .locked( ),
+  );
 
    pulpemu_ref_clk_div
      #(
