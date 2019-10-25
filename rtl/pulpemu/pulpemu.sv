@@ -71,7 +71,7 @@ module pulpemu
    );
 
    // pulpemu top signals
-   logic        zynq_clk;
+   logic        pulp_ref_clk;
    logic        pulp_soc_clk;
    logic        pulp_per_clk;
    logic        pulp_cluster_clk;
@@ -93,15 +93,15 @@ module pulpemu
      );
 
   // add clock generation for pulp chip, replaces zynq_wrapper
-  xilinx_clk_mngr_clk_wiz inst
+  xilinx_clk_mngr clk_wiz_0
   (
-  .clk_in1(clk_125),           // 125 MHz
-  .clk_out1(zynq_clk),          // 256*32768 = 8.3886 Hz
+  .clk_out1(pulp_ref_clk),     // 256*32768 = 8.3886 MHz
   .clk_out2(pulp_soc_clk),     // 50 Mhz            
   .clk_out3(pulp_per_clk),     // 50MHz
   .clk_out4(pulp_cluster_clk), //50MHz
   .resetn(~cpu_reset), 
   .locked( ),
+  .clk_in1(clk_125)            // 125 MHz
   );
 
    pulpemu_ref_clk_div
@@ -109,7 +109,7 @@ module pulpemu
        .DIVISOR           ( 256  )
        )
    ref_clk_div (
-                .clk_i            ( zynq_clk                      ), // FPGA inner clock,  8.388608 MHz
+                .clk_i            ( pulp_ref_clk                      ), // FPGA inner clock,  8.388608 MHz
                 .rstn_i           ( ~cpu_reset                    ), // FPGA inner reset
                 .ref_clk_o        ( ref_clk                       )  // REF clock out
                 );
@@ -188,7 +188,7 @@ module pulpemu
         .pad_jtag_tms(FMC_jtag_tms),
         .pad_jtag_trst(FMC_jtag_trst),
 
-        .pad_xtal_in(), // USE zynq_clk_i as ref_clk
+        .pad_xtal_in(), // USE generated ref_clk
         .pad_reset_n(FMC_reset_n),
         .pad_bootsel(FMC_bootmode)  // Boot mode = 0; boot from flash; Boot mode = 1; boot from jtag
         );
