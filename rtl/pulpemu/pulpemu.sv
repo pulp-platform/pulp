@@ -92,16 +92,19 @@ module pulpemu
      .O(clk_125)    // 125 MHz clock
      );
 
+   logic        clk_125_buf;
+   BUFGCE i_clk_buf (.I(clk_125), .CE(1'b1), .O(clk_125_buf));
+
   // add clock generation for pulp chip, replaces zynq_wrapper
   xilinx_clk_mngr clk_wiz_0
   (
   .clk_out1(pulp_ref_clk),     // 256*32768 = 8.3886 MHz
-  .clk_out2(pulp_soc_clk),     // 50 Mhz            
+  .clk_out2(pulp_soc_clk),     // 50 Mhz
   .clk_out3(pulp_per_clk),     // 50MHz
   .clk_out4(pulp_cluster_clk), //50MHz
-  .resetn(~cpu_reset), 
+  .resetn(~cpu_reset),
   .locked( ),
-  .clk_in1(clk_125)            // 125 MHz
+  .clk_in1(clk_125_buf)            // 125 MHz
   );
 
    pulpemu_ref_clk_div
