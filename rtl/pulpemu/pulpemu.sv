@@ -25,6 +25,7 @@ module pulpemu
   (
    input  clk_125_n,
    input  clk_125_p,
+   input  cpu_reset,
    // LED for VERIFY
    output LED,
    // FMC pins
@@ -71,32 +72,12 @@ module pulpemu
 
    // pulpemu top signals
    logic        zynq_clk;
-   logic        zynq_rst_n;
    logic        pulp_soc_clk;
    logic        pulp_per_clk;
    logic        pulp_cluster_clk;
 
    // reference 32768 Hz clock
    wire         ref_clk;
-
-   //  ███████╗██╗   ██╗███╗   ██╗ ██████╗         ██╗    ██╗██████╗  █████╗ ██████╗ ██████╗ ███████╗██████╗
-   //  ╚══███╔╝╚██╗ ██╔╝████╗  ██║██╔═══██╗        ██║    ██║██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
-   //    ███╔╝  ╚████╔╝ ██╔██╗ ██║██║   ██║        ██║ █╗ ██║██████╔╝███████║██████╔╝██████╔╝█████╗  ██████╔╝
-   //   ███╔╝    ╚██╔╝  ██║╚██╗██║██║▄▄ ██║        ██║███╗██║██╔══██╗██╔══██║██╔═══╝ ██╔═══╝ ██╔══╝  ██╔══██╗
-   //  ███████╗   ██║   ██║ ╚████║╚██████╔╝███████╗╚███╔███╔╝██║  ██║██║  ██║██║     ██║     ███████╗██║  ██║
-   //  ╚══════╝   ╚═╝   ╚═╝  ╚═══╝ ╚══▀▀═╝ ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚══════╝╚═╝  ╚═╝
-/* -----\/----- EXCLUDED -----\/-----
-
-   zynq_wrapper zynq_wrapper_i (
-                                // pulp clocks (clk_wiz_clk_out1->cluster, clk_wiz_clk_out2->soc, clk_wiz_clk_out3->per)
-                                .pulp_cluster_clk   (pulp_cluster_clk ),
-                                .pulp_soc_clk       (pulp_soc_clk     ),
-                                .pulp_per_clk       (pulp_per_clk     ),
-                                // zynq clock (FCLK0)
-                                .zynq_clk           (zynq_clk         ),
-                                .zynq_rst_n         (zynq_rst_n       )
-                                );
- -----/\----- EXCLUDED -----/\----- */
 
   //Differential to single ended clock conversion
   IBUFGDS
@@ -114,12 +95,12 @@ module pulpemu
   // add clock generation for pulp chip, replaces zynq_wrapper
   xilinx_clk_mngr_clk_wiz inst
   (
-  .clk_in1(clk_125), // 125 MHz
-  .clk_out1(ref_clk), // 8.something  MHz
-  .clk_out2(pulp_soc_clk),  // 50 Mhz            
-  .clk_out3(pulp_per_clk), // 50MHz
+  .clk_in1(clk_125),           // 125 MHz
+  .clk_out1(zynq_clk),          // 256*32768 = 8.3886 Hz
+  .clk_out2(pulp_soc_clk),     // 50 Mhz            
+  .clk_out3(pulp_per_clk),     // 50MHz
   .clk_out4(pulp_cluster_clk), //50MHz
-  .resetn(zynq_rst_n), 
+  .resetn(~cpu_reset), 
   .locked( ),
   );
 
@@ -129,7 +110,7 @@ module pulpemu
        )
    ref_clk_div (
                 .clk_i            ( zynq_clk                      ), // FPGA inner clock,  8.388608 MHz
-                .rstn_i           ( zynq_rst_n                    ), // FPGA inner reset
+                .rstn_i           ( ~cpu_reset                    ), // FPGA inner reset
                 .ref_clk_o        ( ref_clk                       )  // REF clock out
                 );
 
@@ -140,7 +121,7 @@ module pulpemu
       )
    led_clk_div (
                 .clk_i            ( ref_clk                       ),
-                .rstn_i           ( zynq_rst_n                    ),
+                .rstn_i           ( ~cpu_reset                    ),
                 .ref_clk_o        ( LED                           )
                 );
 
