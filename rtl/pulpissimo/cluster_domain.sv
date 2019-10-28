@@ -47,7 +47,7 @@ module cluster_domain
     parameter NB_CACHE_BANKS        = 8,
 `endif
 
-`ifdef PRI_ICACHE
+`ifdef PRIVATE_ICACHE
     parameter NB_CACHE_BANKS        = 8,
 `endif
 
