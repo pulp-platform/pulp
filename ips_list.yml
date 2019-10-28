@@ -24,7 +24,7 @@ pulp_soc:
   group:  pulp-platform
 
 pulp_cluster:
-  commit: hier-integration
+  commit: master
   server: https://github.com
   group:  pulp-platform
 
