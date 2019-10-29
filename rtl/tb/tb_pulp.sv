@@ -45,6 +45,11 @@ module tb_pulp;
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
 
+   
+   `ifdef PULP_FPGA_EMUL
+   parameter  SYSTEM_CLK_PERIOD = 8ns;
+   `endif
+   
    // how L2 is loaded. valid values are "JTAG" or "STANDALONE", the latter works only when USE_S25FS256S_MODEL is 1
    parameter  LOAD_L2 = "JTAG";
 
@@ -531,6 +536,9 @@ module tb_pulp;
 
 
    // PULP chip (design under test)
+   `ifndef PULP_FPGA_EMUL
+   `define PULP_INST i_dut
+
    pulp #(
       .CORE_TYPE ( CORE_TYPE ),
       .USE_FPU   ( RISCY_FPU )
@@ -585,6 +593,72 @@ module tb_pulp;
 
       .pad_xtal_in        ( w_clk_ref          )
    );
+
+   `else // !`ifndef PULP_FPGA_EMU
+
+   `define PULP_INST i_dut.pulp_chip_i
+
+   logic s_clk_125;
+   tb_clk_gen #( .CLK_PERIOD(SYSTEM_CLK_PERIOD) ) i_system_clk_gen (.clk_o(s_clk_125) );
+
+   pulpemu #(
+	  .CORE_TYPE ( 0 ),
+	  .USE_FPU   ( 1 ),
+	  .USE_HWPE  ( 0 )
+	  )
+   i_dut (
+	  .clk_125_p          ( s_clk_125          ),
+	  .clk_125_n          ( ~s_clk_125         ),
+          .cpu_reset          ( s_rst_n            ),
+
+	  .FMC_qspi_sdio0     ( w_spi_master_sdio0 ),
+	  .FMC_qspi_sdio1     ( w_spi_master_sdio1 ),
+	  .FMC_qspi_sdio2     ( w_spi_master_sdio2 ),
+	  .FMC_qspi_sdio3     ( w_spi_master_sdio3 ),
+	  .FMC_qspi_csn0      ( w_spi_master_csn0  ),
+	  .FMC_qspi_csn1      ( w_spi_master_csn1  ),
+	  .FMC_qspi_sck       ( w_spi_master_sck   ),
+
+	  .FMC_uart_rx        ( w_uart_tx          ),
+	  .FMC_uart_tx        ( w_uart_rx          ),
+
+	  .FMC_cam_pclk       ( w_cam_pclk         ),
+	  .FMC_cam_hsync      ( w_cam_hsync        ),
+	  .FMC_cam_data0      ( w_cam_data[0]      ),
+	  .FMC_cam_data1      ( w_cam_data[1]      ),
+	  .FMC_cam_data2      ( w_cam_data[2]      ),
+	  .FMC_cam_data3      ( w_cam_data[3]      ),
+	  .FMC_cam_data4      ( w_cam_data[4]      ),
+	  .FMC_cam_data5      ( w_cam_data[5]      ),
+	  .FMC_cam_data6      ( w_cam_data[6]      ),
+	  .FMC_cam_data7      ( w_cam_data[7]      ),
+	  .FMC_cam_vsync      ( w_cam_vsync        ),
+
+	  .FMC_sdio_sck       (                    ),
+	  .FMC_sdio_cmd       (                    ),
+	  .FMC_sdio_data0     ( w_sdio_data0       ),
+	  .FMC_sdio_data1     (                    ),
+	  .FMC_sdio_data2     (                    ),
+	  .FMC_sdio_data3     (                    ),
+
+	  .FMC_i2c0_sda       ( w_i2c0_sda         ),
+	  .FMC_i2c0_scl       ( w_i2c0_scl         ),
+
+	  .FMC_i2s0_sck       ( w_i2s0_sck         ),
+	  .FMC_i2s0_ws        ( w_i2s0_ws          ),
+	  .FMC_i2s0_sdi       ( w_i2s0_sdi         ),
+	  .FMC_i2s1_sdi       ( w_i2s1_sdi         ),
+
+	  .FMC_reset_n        ( w_rst_n            ),
+	  .FMC_bootmode        ( w_bootsel          ),
+
+	  .FMC_jtag_tck       ( w_tck              ),
+	  .FMC_jtag_tdi       ( w_tdi              ),
+	  .FMC_jtag_tdo       ( w_tdo              ),
+	  .FMC_jtag_tms       ( w_tms              ),
+	  .FMC_jtag_trst      ( w_trstn            )
+	  );
+   `endif
 
    tb_clk_gen #( .CLK_PERIOD(REF_CLK_PERIOD) ) i_ref_clk_gen (.clk_o(s_clk_ref) );
 
@@ -792,8 +866,7 @@ module tb_pulp;
 
          end
       end
-
-
+   
    `ifndef USE_NETLIST
       /* File System access */
       logic r_stdout_pready;
@@ -807,26 +880,26 @@ module tb_pulp;
       logic [31:0] fs_wdata;
       logic [31:0] fs_rdata;
 
-      assign fs_clk = i_dut.soc_domain_i.pulp_soc_i.s_soc_clk;
-      assign fs_rst_n = i_dut.soc_domain_i.pulp_soc_i.s_soc_rstn;
+      assign fs_clk = `PULP_INST.soc_domain_i.pulp_soc_i.s_soc_clk;
+      assign fs_rst_n = `PULP_INST.soc_domain_i.pulp_soc_i.s_soc_rstn;
 
-      assign fs_csn   = ~(i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.psel &
-         i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.penable &
+      assign fs_csn   = ~(`PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.psel &
+         `PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.penable &
          r_stdout_pready);
-      assign fs_wen   = ~i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pwrite;
-      assign fs_add   = i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.paddr;
-      assign fs_wdata = i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pwdata;
+      assign fs_wen   = ~`PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pwrite;
+      assign fs_add   = `PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.paddr;
+      assign fs_wdata = `PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pwdata;
       assign fs_be    = 4'hF;
-      assign i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pready  = r_stdout_pready;
-      assign i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pslverr = 1'b0;
-      assign i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.prdata  = fs_rdata;
+      assign `PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pready  = r_stdout_pready;
+      assign `PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pslverr = 1'b0;
+      assign `PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.prdata  = fs_rdata;
 
       always_ff @(posedge fs_clk or negedge fs_rst_n) begin
          if(~fs_rst_n) begin
             r_stdout_pready <= 0;
          end
          else begin
-            r_stdout_pready <= (i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.psel & i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.penable);
+            r_stdout_pready <= (`PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.psel & `PULP_INST.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.penable);
          end
       end
 
