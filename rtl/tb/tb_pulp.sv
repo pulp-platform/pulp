@@ -601,11 +601,14 @@ module tb_pulp;
    logic s_clk_125;
    tb_clk_gen #( .CLK_PERIOD(SYSTEM_CLK_PERIOD) ) i_system_clk_gen (.clk_o(s_clk_125) );
 
-   pulpemu #(
+   pulpemu
+   `ifndef USE_NETLIST
+         #(
 	  .CORE_TYPE ( 0 ),
 	  .USE_FPU   ( 1 ),
 	  .USE_HWPE  ( 0 )
 	  )
+   `endif
    i_dut (
 	  .clk_125_p          ( s_clk_125          ),
 	  .clk_125_n          ( ~s_clk_125         ),
