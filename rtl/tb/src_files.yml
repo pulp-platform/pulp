@@ -3,6 +3,7 @@ tb:
     rtl
   ]
   files: [
+    ../../ips/riscv-dbg/src/dm_pkg.sv,
     riscv_pkg.sv,
     jtag_pkg.sv,
     pulp_tap_pkg.sv,
