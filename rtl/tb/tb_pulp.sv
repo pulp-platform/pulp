@@ -125,6 +125,7 @@ module tb_pulp;
    /* system wires */
    // the w_/s_ prefixes are used to mean wire/tri-type and logic-type (respectively)
 
+   logic                 s_cpu_rst = 1'b1;
    logic                 s_rst_n = 1'b0;
    logic                 s_rst_dpi_n;
    wire                  w_rst_n;
@@ -615,7 +616,7 @@ module tb_pulp;
    i_dut (
 	  .clk_125_p          ( s_clk_125          ),
 	  .clk_125_n          ( ~s_clk_125         ),
-          .cpu_reset          ( s_rst_n            ),
+          .cpu_reset          ( s_cpu_rst          ),
 
 	  .FMC_qspi_sdio0     ( w_spi_master_sdio0 ),
 	  .FMC_qspi_sdio1     ( w_spi_master_sdio1 ),
@@ -698,7 +699,13 @@ module tb_pulp;
 
          $display("[TB] %t - Asserting hard reset", $realtime);
          s_rst_n = 1'b0;
-
+   `ifdef PULP_FPGA_EMUL
+         $display("[TB] %t - Asserting CPU reset", $realtime);
+         s_cpu_rst = 1'b1;
+         #1us;
+         $display("[TB] %t - Releasing CPU reset", $realtime);
+         s_cpu_rst = 1'b0;
+   `endif
          #1ns
 
          uart_tb_rx_en  = 1'b1; // enable uart rx in testbench

@@ -83,8 +83,8 @@ module pulpemu
   IBUFGDS
     #(
       .IOSTANDARD("LVDS"),
-      .DIFF_TERM("FALSE"),
-      .IBUF_LOW_PWR("FALSE"))
+      .DIFF_TERM(0),
+      .IBUF_LOW_PWR(0))
   i_sysclk_iobuf
     (
      .I(clk_125_p),
