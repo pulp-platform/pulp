@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: integration
+  commit: 2fe7a6310b07788b
   domain: [soc]
   server: https://github.com
   group:  pulp-platform
