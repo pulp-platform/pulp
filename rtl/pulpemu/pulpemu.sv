@@ -89,44 +89,44 @@ module pulpemu
     (
      .I(clk_125_p),
      .IB(clk_125_n),
-     .O(clk_125)    // 125 MHz clock
+     .O(ref_clk)   // before clk_125
      );
 
-   logic        clk_125_buf;
-   BUFGCE i_clk_buf (.I(clk_125), .CE(1'b1), .O(clk_125_buf));
+  // logic        clk_125_buf;
+   //BUFGCE i_clk_buf (.I(clk_125), .CE(1'b1), .O(clk_125_buf));
 
   // add clock generation for pulp chip, replaces zynq_wrapper
-  xilinx_clk_mngr clk_wiz_0
-  (
-  .clk_out1(pulp_ref_clk),     // 256*32768 = 8.3886 MHz
-  .clk_out2(pulp_soc_clk),     // 50 Mhz
-  .clk_out3(pulp_per_clk),     // 50MHz
-  .clk_out4(pulp_cluster_clk), //50MHz
-  .resetn(~cpu_reset),
-  .locked( ),
-  .clk_in1(clk_125_buf)            // 125 MHz
-  );
+ // xilinx_clk_mngr clk_wiz_0
+  //(
+  //.clk_out1(pulp_ref_clk),     // 256*32768 = 8.3886 MHz
+  //.clk_out2(pulp_soc_clk),     // 50 Mhz
+  //.clk_out3(pulp_per_clk),     // 50MHz
+  //.clk_out4(pulp_cluster_clk), //50MHz
+  //.resetn(~cpu_reset),
+  //.locked( ),
+  //.clk_in1(clk_125_buf)            // 125 MHz
+  //);
 
-   pulpemu_ref_clk_div
-     #(
-       .DIVISOR           ( 256  )
-       )
-   ref_clk_div (
-                .clk_i            ( pulp_ref_clk                      ), // FPGA inner clock,  8.388608 MHz
-                .rstn_i           ( ~cpu_reset                    ), // FPGA inner reset
-                .ref_clk_o        ( ref_clk                       )  // REF clock out
-                );
+   //pulpemu_ref_clk_div
+    // #(
+      // .DIVISOR           ( 256  )
+       //)
+   //ref_clk_div (
+     //           .clk_i            ( pulp_ref_clk                      ), // FPGA inner clock,  8.388608 MHz
+       //         .rstn_i           ( ~cpu_reset                    ), // FPGA inner reset
+         //       .ref_clk_o        ( ref_clk                       )  // REF clock out
+           //     );
 
   // 1 socond blink LED
-  pulpemu_ref_clk_div
-    #(
-      .DIVISOR            ( 32768 )
-      )
-   led_clk_div (
-                .clk_i            ( ref_clk                       ),
-                .rstn_i           ( ~cpu_reset                    ),
-                .ref_clk_o        ( LED                           )
-                );
+//  pulpemu_ref_clk_div
+  //  #(
+    //  .DIVISOR            ( 32768 )
+    //  )
+   //led_clk_div (
+     //           .clk_i            ( ref_clk                       ),
+       //         .rstn_i           ( ~cpu_reset                    ),
+         //       .ref_clk_o        ( LED                           )
+           //     );
 
 
    //  ██████╗ ██╗   ██╗██╗     ██████╗     ██████╗██╗  ██╗██╗██████╗
@@ -142,10 +142,10 @@ module pulpemu
        .USE_HWPE(USE_HWPE)
        ) pulp_chip_i
        (
-        .zynq_clk_i            ( ref_clk                       ), // FPGA inner clock, 32768 Hz
-        .zynq_soc_clk_i        ( pulp_soc_clk                  ), // FPGA inner clock, 50 MHz
-        .zynq_cluster_clk_i    ( pulp_cluster_clk              ), // FPGA inner clock, 50 MHz
-        .zynq_per_clk_i        ( pulp_per_clk                  ), // FPGA inner clock, 50 MHz
+        //.zynq_clk_i            ( ref_clk                       ), // FPGA inner clock, 32768 Hz
+        //.zynq_soc_clk_i        ( pulp_soc_clk                  ), // FPGA inner clock, 50 MHz
+        //.zynq_cluster_clk_i    ( pulp_cluster_clk              ), // FPGA inner clock, 50 MHz
+        //.zynq_per_clk_i        ( pulp_per_clk                  ), // FPGA inner clock, 50 MHz
 
         .pad_spim_sdio0(FMC_qspi_sdio0),
         .pad_spim_sdio1(FMC_qspi_sdio1),
@@ -189,11 +189,11 @@ module pulpemu
         .pad_jtag_tdi(FMC_jtag_tdi),
         .pad_jtag_tdo(FMC_jtag_tdo),
         .pad_jtag_tms(FMC_jtag_tms),
-        .pad_jtag_trst(FMC_jtag_trst),
+        .pad_jtag_trst(1'b1), //FMC_jtag_trst
 
-        .pad_xtal_in(), // USE generated ref_clk
-        .pad_reset_n(FMC_reset_n),
-        .pad_bootsel(FMC_bootmode)  // Boot mode = 0; boot from flash; Boot mode = 1; boot from jtag
+        .pad_xtal_in(ref_clk), // USE generated ref_clk
+        .pad_reset_n(cpu_reset), //FMC_reset_n
+        .pad_bootsel(FMC_bootmode)  // Boot mode = 0; boot from flash; Boot mode = 1; boot from jtag before FMC_bootmode
         );
 
 endmodule // pulpemu
