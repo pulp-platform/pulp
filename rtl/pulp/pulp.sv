@@ -18,10 +18,10 @@ module pulp
 )
 (
 `ifdef PULP_FPGA_EMUL
-   input  logic       zynq_clk_i,
-   input  logic       zynq_soc_clk_i,
-   input  logic       zynq_cluster_clk_i,
-   input  logic       zynq_per_clk_i,
+  // input  logic       zynq_clk_i,
+  // input  logic       zynq_soc_clk_i,
+  // input  logic       zynq_cluster_clk_i,
+  // input  logic       zynq_per_clk_i,
 `endif
 
    inout  wire        pad_spim_sdio0,
@@ -213,6 +213,7 @@ module pulp
   //***********************************************************
 
   logic                        s_test_clk;
+  logic                        s_slow_clk;
   logic                        s_sel_fll_clk;
 
   logic [11:0]                 s_pm_cfg_data;
@@ -471,15 +472,15 @@ module pulp
   //********** PAD FRAME **************************************
   //***********************************************************
 `ifdef PULP_FPGA_EMUL
-   assign s_ref_clk = zynq_clk_i;
+   //assign s_ref_clk = zynq_clk_i;
 `endif
 
   pad_frame pad_frame_i
   (
         .pad_cfg_i             ( s_pad_cfg              ),
-`ifndef PULP_FPGA_EMUL
+//`ifndef PULP_FPGA_EMUL
         .ref_clk_o             ( s_ref_clk              ),
-`endif
+//`endif
         .rstn_o                ( s_rstn                 ),
         .jtag_tdo_i            ( s_jtag_tdo             ),
         .jtag_tck_o            ( s_jtag_tck             ),
@@ -638,6 +639,7 @@ module pulp
    safe_domain safe_domain_i (
 
         .ref_clk_i                  ( s_ref_clk                   ),
+        .slow_clk_o                 ( s_slow_clk                 ),
         .rst_ni                     ( s_rstn                     ),
 
         .rst_no                     ( s_rstn_por                  ),
@@ -854,13 +856,14 @@ module pulp
    ) soc_domain_i (
 
         .ref_clk_i                    ( s_ref_clk                        ),
+        .slow_clk_i                   ( s_slow_clk                       ),
         .test_clk_i                   ( s_test_clk                       ),
 
         .rstn_glob_i                  ( s_rstn_por                       ),
     `ifdef PULP_FPGA_EMUL
-        .zynq_soc_clk_i               ( zynq_soc_clk_i      ),
-        .zynq_cluster_clk_i           ( zynq_cluster_clk_i  ),
-        .zynq_per_clk_i               ( zynq_per_clk_i      ),
+        //.zynq_soc_clk_i               ( zynq_soc_clk_i      ),
+        //.zynq_cluster_clk_i           ( zynq_cluster_clk_i  ),
+        //.zynq_per_clk_i               ( zynq_per_clk_i      ),
     `endif
 
         .mode_select_i                ( s_mode_select                    ),
@@ -1086,7 +1089,7 @@ cluster_domain cluster_domain_i
         .dma_pe_irq_ack_i             ( s_dma_pe_irq_ack                 ),
         .dma_pe_irq_valid_o           ( s_dma_pe_irq_valid               ),
 
-        .dbg_irq_valid_i              ( '0                  ), //s_dbg_irq_valid
+        .dbg_irq_valid_i              ( s_dbg_irq_valid                 ), //s_dbg_irq_valid
 
 
         .pf_evt_ack_i                 ( s_pf_evt_ack                     ),
