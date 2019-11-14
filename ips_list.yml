@@ -19,13 +19,13 @@
 #
 
 pulp_soc:
-  commit: 2fe7a6310b07788b
+  commit: pulp-next
   domain: [soc]
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: d6bed445af60dbe3
+  commit: fpga
   domain: [cluster]
   server: https://github.com
   group:  pulp-platform
