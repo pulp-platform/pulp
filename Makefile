@@ -35,16 +35,16 @@ checkout:
 	git submodule update --init
 	./update-ips
 
+# generic clean and build targets for the platform
 clean:
-	$(MAKE) -C rtl/tb/remote_bitbang clean
 	rm -rf $(VSIM_PATH)
 	cd sim && $(MAKE) clean
 
 build:
-	$(MAKE) -C rtl/tb/remote_bitbang all
 	cd sim && $(MAKE) lib build opt
 	cp -r rtl/tb/* $(VSIM_PATH)
 
+# sdk specific targets
 install: $(INSTALL_HEADERS)
 
 vopt:
@@ -54,14 +54,18 @@ import_bootcode:
 	cd sim/boot && objcopy --srec-len 1 --output-target=srec ${PULP_SDK_HOME}/install/bin/boot-pulpissimo boot-pulpissimo.s19
 	cd sim/boot && s19toboot.py boot-pulpissimo.s19 pulpissimo
 
-# This target is for continuous integration tests
+# JENKIN CI
+# continuous integration on jenkins
+all: checkout build install vopt sdk
+
 sdk:
 	if [ ! -e pulp-builder ]; then \
-	  git clone https://github.com/pulp-platform/pulp-builder.git; \
+	  git clone --recurse https://github.com/pulp-platform/pulp-builder.git; \
 	fi; \
 	cd pulp-builder; \
-	git checkout 7f26b4877f000940026788b4debbf89d86e18ff7; \
-	. configs/pulpissimo.sh; \
+	git checkout 83953d5ca4c545f4186bf3683d509566c3067012; \
+	git checkout --recurse-submodules; \
+	. configs/pulp.sh; \
 	. configs/rtl.sh; \
 	./scripts/clean; \
 	./scripts/update-runtime; \
@@ -69,16 +73,40 @@ sdk:
 	./scripts/update-runner; \
 	./scripts/build-runner;
 
-
-all: checkout build install vopt sdk
-
 test-checkout:
 	./update-tests
 
 test:
 	cd pulp-builder; \
 	. sdk-setup.sh; \
-	. configs/pulpissimo.sh; \
+	. configs/pulp.sh; \
 	. configs/rtl.sh; \
 	cd ..; \
-	plptest --threads 16 --stdout
+	cd tests && plptest --threads 16 --stdout
+
+# GITLAB CI
+# continuous integration on gitlab
+sdk-gitlab:
+	sdk-releases/get-sdk-2019.11.02-CentOS_7.py; \
+	cd pkg && patch -p1 < ../sdk-releases/pulp-sdk-2019.11.02-junit.patch
+
+# the gitlab runner needs a special configuration to be able to access the
+# dependent git repositories
+test-checkout-gitlab:
+	./update-tests-gitlab
+
+# test with sdk release
+test-gitlab:
+	source env/env-sdk-2019.11.02.sh; \
+	source pkg/sdk/2019.11.02/configs/pulp.sh; \
+	source pkg/sdk/2019.11.02/configs/platform-rtl.sh; \
+	cd tests && plptest --threads 16 --stdout
+
+# test with built sdk
+test-gitlab2:
+	cd pulp-builder; \
+	source sdk-setup.sh; \
+	source configs/pulp.sh; \
+	source configs/rtl.sh; \
+	cd ../tests && plptest --threads 16 --stdout
+

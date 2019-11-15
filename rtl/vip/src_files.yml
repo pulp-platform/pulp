@@ -1,36 +1,37 @@
-# S25FS256_model:
-#   defines: [
-#     SPEEDSIM,
-#   ]
-#   files: [
-#     spi_flash/S25fs256s/model/s25fs256s.v,
-#   ]
-#   flags: [
-#     skip_synthesis,
-#   ]
+S25FS256_model:
+  defines: [
+    SPEEDSIM,
+  ]
+  files: [
+    spi_flash/S25fs256s/model/s25fs256s.v,
+  ]
+  flags: [
+    skip_synthesis,
+  ]
 
-# 24FC1025_model:
-#   defines: [
-#     SPEEDSIM,
-#   ]
-#   files: [
-#     i2c_eeprom/24FC1025.v,
-#   ]
-#   flags: [
-#     skip_synthesis,
+24FC1025_model:
+  defines: [
+    SPEEDSIM,
+  ]
+  files: [
+    i2c_eeprom/24FC1025.v,
+  ]
+  flags: [
+    skip_synthesis,
+  ]
 
-# i2s_model:
-#   defines: [
-#     SPEEDSIM,
-#   ]
-#   files: [
-#     i2s/i2s_if.v,
-#     i2s/i2s_vip_channel.v,
-#     i2s/i2s_vip.v,
-#   ]
-#   flags: [
-#     skip_synthesis,
-#   ]
+i2s_model:
+  defines: [
+    SPEEDSIM,
+  ]
+  files: [
+    i2s/i2c_if.v,
+    i2s/i2s_vip_channel.sv,
+    i2s/i2s_vip.sv,
+  ]
+  flags: [
+    skip_synthesis,
+  ]
 
 open_models:
   files: [

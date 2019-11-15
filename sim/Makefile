@@ -10,6 +10,13 @@ SVLIB	    =  ../rtl/tb/remote_bitbang/librbs
 
 all: clean lib build opt
 
+# build the bitbang library, needed for simulating a jtag bridge to OpenOCD
+build-deps:
+	$(MAKE) -C ../rtl/tb/remote_bitbang all
+
+clean-deps:
+	$(MAKE) -C ../rtl/tb/remote_bitbang clean
+
 sim:
 	$(VSIM) -64 -gui vopt_tb -L models_lib -L vip_lib \
 		-suppress vsim-3009 -suppress vsim-8683 \
@@ -29,7 +36,7 @@ simc:
 opt:
 	$(mkfile_path)/tcl_files/rtl_vopt.tcl
 
-build:
+build: build-deps
 	@make --no-print-directory -f $(mkfile_path)/vcompile/ips.mk build
 	@make --no-print-directory -f $(mkfile_path)/vcompile/rtl.mk build
 
@@ -37,6 +44,6 @@ lib:
 	@make --no-print-directory -f $(mkfile_path)/vcompile/ips.mk lib
 	@make --no-print-directory -f $(mkfile_path)/vcompile/rtl.mk lib
 
-clean:
+clean: clean-deps
 	@make --no-print-directory -f $(mkfile_path)/vcompile/ips.mk clean
 	@make --no-print-directory -f $(mkfile_path)/vcompile/rtl.mk clean
