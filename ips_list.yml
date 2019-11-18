@@ -19,12 +19,12 @@
 #
 
 pulp_soc:
-  commit: integration
+  commit: pulp-next
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: master
+  commit: pulp-next
   server: https://github.com
   group:  pulp-platform
 
