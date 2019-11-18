@@ -2618,22 +2618,24 @@ package jtag_pkg;
          int          fc_core_id,
          int          begin_l2_instr, // required to restart booting process
          output logic error,
+         output int   num_err,
          ref logic    s_tck,
          ref logic    s_tms,
          ref logic    s_trstn,
          ref logic    s_tdi,
          ref logic    s_tdo
       );
-          logic [31:0] dm_data;
-
+         logic [31:0] dm_data;
+         num_err = 0;
 
          dump_dm_info(s_tck, s_tms, s_trstn, s_tdi, s_tdo);
          // $display("[TB] %t - TEST discover harts", $realtime);
          // debug_mode_if.test_discover_harts(dm_data[0],
          //                                   s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         // if (error)
+         // if (error) begin
          //     $display("[TB] %t FAIL", $realtime);
-         // else
+         //     num_err++;
+         // end else
          //     $display("[TB] %t OK", $realtime);
 
          set_hartsel(fc_core_id, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
@@ -2663,9 +2665,10 @@ package jtag_pkg;
          // for the following tests we need the cpu to be fetching and running
          $display("[TB] %t - TEST halt resume functionality", $realtime);
          test_halt_resume(error, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         if (error)
+         if (error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST wfi wake up logic",$realtime);
@@ -2677,9 +2680,10 @@ package jtag_pkg;
                   $realtime);
          test_gpr_read_write_abstract_high_level(error, s_tck, s_tms,
              s_trstn, s_tdi, s_tdo);
-         if (error)
+         if (error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST dumping register values using abstract command", $realtime);
@@ -2701,25 +2705,28 @@ package jtag_pkg;
 
          $display("[TB] %t - TEST bad abstract command (aarsize > 2)", $realtime);
          test_bad_aarsize (error, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         if(error)
+         if(error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST abstract commands and program buffer", $realtime);
          test_abstract_cmds_prog_buf(error, begin_l2_instr,
              s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         if(error)
+         if(error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST read/write dpc" , $realtime);
          test_read_write_dpc(error, s_tck, s_tms,
              s_trstn, s_tdi, s_tdo);
-         if(error)
+         if(error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST read/write csr" , $realtime);
@@ -2732,34 +2739,38 @@ package jtag_pkg;
          $display("[TB] %t - TEST ebreak in program buffer", $realtime);
          test_ebreak_in_program_buffer(error,
              s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         if(error)
+         if(error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
 
          $display("[TB] %t - TEST debug cause values", $realtime);
          test_debug_cause_values(error, begin_l2_instr,
              s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         if(error)
+         if(error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST single stepping", $realtime);
          test_single_stepping_abstract_cmd(error, begin_l2_instr,
              s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         if(error)
+         if(error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST single stepping edge cases", $realtime);
          test_single_stepping_edge_cases(error, begin_l2_instr,
              s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-         if(error)
+         if(error) begin
              $display("[TB] %t FAIL", $realtime);
-         else
+             num_err++;
+         end else
              $display("[TB] %t OK", $realtime);
 
          $display("[TB] %t - TEST wfi in program buffer", $realtime);
@@ -2776,8 +2787,8 @@ package jtag_pkg;
          write_reg_abstract_cmd(riscv::CSR_DPC, begin_l2_instr,
              s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
-      endtask
-   endclass
+     endtask
+  endclass
 
 endpackage
 
