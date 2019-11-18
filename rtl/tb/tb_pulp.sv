@@ -296,6 +296,9 @@ module tb_pulp;
 
 
 
+   pullup sda0_pullup_i (w_i2c0_sda);
+   pullup scl0_pullup_i (w_i2c0_scl);
+
    pullup sda1_pullup_i (w_i2c1_sda);
    pullup scl1_pullup_i (w_i2c1_scl);
 
@@ -406,6 +409,28 @@ module tb_pulp;
       );
    end
 
+   /* I2C memory models */
+   if (USE_24FC1025_MODEL == 1) begin
+      M24FC1025 i_i2c_mem_0 (
+         .A0    ( 1'b0       ),
+         .A1    ( 1'b0       ),
+         .A2    ( 1'b1       ),
+         .WP    ( 1'b0       ),
+         .SDA   ( w_i2c0_sda ),
+         .SCL   ( w_i2c0_scl ),
+         .RESET ( 1'b0       )
+      );
+      M24FC1025 i_i2c_mem_1 (
+         .A0    ( 1'b1       ),
+         .A1    ( 1'b0       ),
+         .A2    ( 1'b1       ),
+         .WP    ( 1'b0       ),
+         .SDA   ( w_i2c0_sda ),
+         .SCL   ( w_i2c0_scl ),
+         .RESET ( 1'b0       )
+      );
+   end
+
    if (!ENABLE_DEV_DPI && CONFIG_FILE == "NONE") begin
 
       /* CPI verification IP */
@@ -418,28 +443,6 @@ module tb_pulp;
             .cam_vsync_o ( w_cam_vsync ),
             .cam_href_o  ( w_cam_hsync ),
             .cam_data_o  ( w_cam_data  )
-         );
-      end
-
-      /* I2C memory models */
-      if(USE_24FC1025_MODEL) begin
-         M24FC1025 i_i2c_mem_0 (
-            .A0    ( 1'b0       ),
-            .A1    ( 1'b0       ),
-            .A2    ( 1'b1       ),
-            .WP    ( 1'b0       ),
-            .SDA   ( w_i2c0_sda ),
-            .SCL   ( w_i2c0_scl ),
-            .RESET ( 1'b0       )
-         );
-         M24FC1025 i_i2c_mem_1 (
-            .A0    ( 1'b1       ),
-            .A1    ( 1'b0       ),
-            .A2    ( 1'b1       ),
-            .WP    ( 1'b0       ),
-            .SDA   ( w_i2c0_sda ),
-            .SCL   ( w_i2c0_scl ),
-            .RESET ( 1'b0       )
          );
       end
 
