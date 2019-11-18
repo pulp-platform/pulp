@@ -26,7 +26,7 @@ module cluster_domain
 #(
     //CLUSTER PARAMETERS
     parameter NB_CORES              = `NB_CORES,
-    parameter NB_HWACC_PORTS        = 4,
+    parameter NB_HWPE_PORTS         = 4,
     parameter NB_DMAS               = 4,
     parameter NB_MPERIPHS           = 1,
     parameter NB_SPERIPHS           = `NB_SPERIPHS,
@@ -47,7 +47,7 @@ module cluster_domain
     parameter NB_CACHE_BANKS        = 8,
 `endif
 
-`ifdef PRI_ICACHE
+`ifdef PRIVATE_ICACHE
     parameter NB_CACHE_BANKS        = 8,
 `endif
 
@@ -63,6 +63,11 @@ module cluster_domain
     parameter ROM_BOOT_ADDR         = 32'h1A000000,
     parameter BOOT_ADDR             = 32'h1C000000,
     parameter INSTR_RDATA_WIDTH     = 128,
+
+    parameter CLUST_FPU               = `CLUST_FPU,
+    parameter CLUST_FP_DIVSQRT        = `CLUST_FP_DIVSQRT,
+    parameter CLUST_SHARED_FP         = `CLUST_SHARED_FP,
+    parameter CLUST_SHARED_FP_DIVSQRT = `CLUST_SHARED_FP_DIVSQRT,
 
     // AXI PARAMETERS
     parameter AXI_ADDR_WIDTH        = 32,
@@ -250,7 +255,7 @@ module cluster_domain
 `ifndef USE_CLUSTER_NETLIST
     #(
         .NB_CORES                     ( NB_CORES                     ),
-        .NB_HWACC_PORTS               ( NB_HWACC_PORTS               ),
+        .NB_HWPE_PORTS                ( NB_HWPE_PORTS                ),
         .NB_DMAS                      ( NB_DMAS                      ),
         .NB_MPERIPHS                  ( NB_MPERIPHS                  ),
         .NB_SPERIPHS                  ( NB_SPERIPHS                  ),
@@ -271,6 +276,10 @@ module cluster_domain
         .ROM_BOOT_ADDR                ( ROM_BOOT_ADDR                ),
         .BOOT_ADDR                    ( BOOT_ADDR                    ),
         .INSTR_RDATA_WIDTH            ( INSTR_RDATA_WIDTH            ),
+        .CLUST_FPU                    ( CLUST_FPU                    ),
+        .CLUST_FP_DIVSQRT             ( CLUST_FP_DIVSQRT             ),
+        .CLUST_SHARED_FP              ( CLUST_SHARED_FP              ),
+        .CLUST_SHARED_FP_DIVSQRT      ( CLUST_SHARED_FP_DIVSQRT      ),
         .AXI_ADDR_WIDTH               ( AXI_ADDR_WIDTH               ),
         .AXI_DATA_C2S_WIDTH           ( AXI_DATA_C2S_WIDTH           ),
         .AXI_DATA_S2C_WIDTH           ( AXI_DATA_S2C_WIDTH           ),
@@ -288,7 +297,6 @@ module cluster_domain
         .TCDM_ADD_WIDTH               ( TCDM_ADD_WIDTH               ),
         .LOG_CLUSTER                  ( LOG_CLUSTER                  ),
         .PE_ROUTING_LSB               ( PE_ROUTING_LSB               ),
-        //.PE_ROUTING_MSB               ( PE_ROUTING_MSB               ),
         .EVNT_WIDTH                   ( EVNT_WIDTH                   ),
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
     )

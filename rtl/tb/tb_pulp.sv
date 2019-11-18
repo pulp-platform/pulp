@@ -86,7 +86,7 @@ module tb_pulp;
    parameter  I2S_FILENAME_2 = "i2s_buffer_2.hex";
    parameter  I2S_FILENAME_3 = "i2s_buffer_3.hex";
 
-   // for PULP, 1 core
+   // for PULP, 8 cores
    parameter NB_CORES = 8;
 
    // SPI standards, do not change
