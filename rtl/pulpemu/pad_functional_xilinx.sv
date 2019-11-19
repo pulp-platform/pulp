@@ -17,7 +17,8 @@ module pad_functional_pd
    input  logic             PEN,
    inout  logic             PAD
 );
-
+  
+  (* PULLDOWN = "YES" *)
   IOBUF iobuf_i (
     .T ( OEN ),
     .I ( I    ),
@@ -36,6 +37,7 @@ module pad_functional_pu
    inout  logic             PAD
 );
 
+  (* PULLUP = "YES" *)
   IOBUF iobuf_i (
     .T ( OEN ),
     .I ( I    ),
