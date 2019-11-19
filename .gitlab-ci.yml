@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# variables:
-#  PULP_RISCV_GCC_TOOLCHAIN: your-compiler-path
+
 
 before_script:
   - pwd
@@ -86,6 +85,7 @@ build_rtl:
       - rtl/tb/remote_bitbang/* # we want to reuse bitbang lib
 #      - pkg/* # sdk is too large
 
+# Use sdk-releases to run all tests
 test_sw:
   stage: test
   before_script:
@@ -109,7 +109,10 @@ test_sw:
     reports:
       junit: tests/junit-reports/TEST-*.xml
 
+# Built SDK with the `make sdk` target and run all tests
 # test_sw_build_sdk:
+#   variables:
+#     PULP_RISCV_GCC_TOOLCHAIN: your-compiler-path
 #   stage: test
 #   before_script:
 #     - echo "Compiling RTL model and DPI libraries"
