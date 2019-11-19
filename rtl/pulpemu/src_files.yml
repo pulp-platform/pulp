@@ -15,4 +15,5 @@ pulpemu:
     fpga_private_ram.sv,
     pulpemu.sv,
     pulpemu_ref_clk_div.sv,
+    pulp_clock_gating_xilinx.sv
   ]
