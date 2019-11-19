@@ -87,8 +87,7 @@ test:
 # GITLAB CI
 # continuous integration on gitlab
 sdk-gitlab:
-	sdk-releases/get-sdk-2019.11.02-CentOS_7.py; \
-	cd pkg && patch -p1 < ../sdk-releases/pulp-sdk-2019.11.02-junit.patch
+	sdk-releases/get-sdk-2019.11.03-CentOS_7.py; \
 
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
@@ -97,9 +96,9 @@ test-checkout-gitlab:
 
 # test with sdk release
 test-gitlab:
-	source env/env-sdk-2019.11.02.sh; \
-	source pkg/sdk/2019.11.02/configs/pulp.sh; \
-	source pkg/sdk/2019.11.02/configs/platform-rtl.sh; \
+	source env/env-sdk-2019.11.03.sh; \
+	source pkg/sdk/2019.11.03/configs/pulp.sh; \
+	source pkg/sdk/2019.11.03/configs/platform-rtl.sh; \
 	cd tests && plptest --threads 16 --stdout
 
 # test with built sdk
