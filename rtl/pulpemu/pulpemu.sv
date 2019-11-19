@@ -1,199 +1,152 @@
-/*
- * Copyright (C) 2013-2017 ETH Zurich, University of Bologna
- * All rights reserved.
- *
- * This code is under development and not yet released to the public.
- * Until it is released, the code is under the copyright of ETH Zurich and
- * the University of Bologna, and may contain confidential and/or unpublished
- * work. Any reuse/redistribution is strictly forbidden without written
- * permission from ETH Zurich.
- *
- * Bug fixes and contributions will eventually be released under the
- * SolderPad open hardware license in the context of the PULP platform
- * (http://www.pulp-platform.org), under the copyright of ETH Zurich and the
- * University of Bologna.
- */
-
-`include "pulp_soc_defines.sv"
+//-----------------------------------------------------------------------------
+// Title         : PULPissimo Verilog Wrapper
+//-----------------------------------------------------------------------------
+// File          : xilinx_pulpissimo.v
+// Author        : Manuel Eggimann  <meggimann@iis.ee.ethz.ch>
+// Created       : 21.05.2019
+//-----------------------------------------------------------------------------
+// Description :
+// Verilog Wrapper of PULPissimo to use the module within Xilinx IP integrator.
+//-----------------------------------------------------------------------------
+// Copyright (C) 2013-2019 ETH Zurich, University of Bologna
+// Copyright and related rights are licensed under the Solderpad Hardware
+// License, Version 0.51 (the "License"); you may not use this file except in
+// compliance with the License. You may obtain a copy of the License at
+// http://solderpad.org/licenses/SHL-0.51. Unless required by applicable law
+// or agreed to in writing, software, hardware and materials distributed under
+// this License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations under the License.
+//-----------------------------------------------------------------------------
 
 module pulpemu
-  #(
-  parameter CORE_TYPE   = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
-  parameter USE_FPU     = 1,
-  parameter USE_HWPE    = 0
-)
   (
-   input  clk_125_n,
-   input  clk_125_p,
-   input  cpu_reset,
-   // LED for VERIFY
-   output LED,
-   // FMC pins
-   inout  FMC_qspi_sdio0,
-   inout  FMC_qspi_sdio1,
-   inout  FMC_qspi_sdio2,
-   inout  FMC_qspi_sdio3,
-   inout  FMC_qspi_csn0,
-   inout  FMC_qspi_csn1,
-   inout  FMC_qspi_sck,
-   inout  FMC_sdio_data0,
-   inout  FMC_sdio_data1,
-   inout  FMC_sdio_data2,
-   inout  FMC_sdio_data3,
-   inout  FMC_sdio_cmd,
-   inout  FMC_sdio_sck,
-   inout  FMC_i2c0_sda,
-   inout  FMC_i2c0_scl,
-   inout  FMC_uart_rx,
-   inout  FMC_uart_tx,
-   inout  FMC_i2s0_sck,
-   inout  FMC_i2s0_ws,
-   inout  FMC_i2s0_sdi,
-   inout  FMC_i2s1_sdi,
-   inout  FMC_cam_pclk,
-   inout  FMC_cam_hsync,
-   inout  FMC_cam_data0,
-   inout  FMC_cam_data1,
-   inout  FMC_cam_data2,
-   inout  FMC_cam_data3,
-   inout  FMC_cam_data4,
-   inout  FMC_cam_data5,
-   inout  FMC_cam_data6,
-   inout  FMC_cam_data7,
-   inout  FMC_cam_vsync,
-   inout  FMC_jtag_tck,
-   inout  FMC_jtag_tdi,
-   inout  FMC_jtag_tdo,
-   inout  FMC_jtag_tms,
-   inout  FMC_jtag_trst,
-   inout  FMC_bootmode,
-   inout  FMC_reset_n
-   );
+   input wire  ref_clk_p,
+   input wire  ref_clk_n,
 
-   // pulpemu top signals
-   logic        pulp_ref_clk;
-   logic        pulp_soc_clk;
-   logic        pulp_per_clk;
-   logic        pulp_cluster_clk;
+   inout wire  pad_uart_rx,
+   inout wire  pad_uart_tx,
+   inout wire  pad_uart_rts, //Mapped to spim_csn0
+   inout wire  pad_uart_cts, //Mapped to spim_sck
 
-   // reference 32768 Hz clock
-   wire         ref_clk;
+   inout wire  led0_o, //Mapped to spim_csn1
+   inout wire  led1_o, //Mapped to cam_pclk
+   inout wire  led2_o, //Mapped to cam_hsync
+   inout wire  led3_o, //Mapped to cam_data0
+
+   inout wire  switch0_i, //Mapped to cam_data1
+   inout wire  switch1_i, //Mapped to cam_data2
+   inout wire  switch2_i, //Mapped to cam_data7
+   inout wire  switch3_i, //Mapped to cam_vsync
+
+   inout wire  btn0_i, //Mapped to cam_data3
+   inout wire  btn1_i, //Mapped to cam_data4
+   inout wire  btn2_i, //Mapped to cam_data5
+   inout wire  btn3_i, //Mapped to cam_data6
+
+   inout wire  pad_i2c0_sda,
+   inout wire  pad_i2c0_scl,
+
+   inout wire  pad_pmod0_4, //Mapped to spim_sdio0
+   inout wire  pad_pmod0_5, //Mapped to spim_sdio1
+   inout wire  pad_pmod0_6, //Mapped to spim_sdio2
+   inout wire  pad_pmod0_7, //Mapped to spim_sdio3
+
+   inout wire  pad_pmod1_0, //Mapped to sdio_data0
+   inout wire  pad_pmod1_1, //Mapped to sdio_data1
+   inout wire  pad_pmod1_2, //Mapped to sdio_data2
+   inout wire  pad_pmod1_3, //Mapped to sdio_data3
+   inout wire  pad_pmod1_4, //Mapped to i2s0_sck
+   inout wire  pad_pmod1_5, //Mapped to i2s0_ws
+   inout wire  pad_pmod1_6, //Mapped to i2s0_sdi
+   inout wire  pad_pmod1_7, //Mapped to i2s1_sdi
+
+   inout wire  pad_hdmi_scl, //Mapped to sdio_clk
+   inout wire  pad_hdmi_sda, //Mapped to sdio_cmd
+   
+
+   input wire  pad_reset,
+
+   input wire  pad_jtag_tck,
+   input wire  pad_jtag_tdi,
+   output wire pad_jtag_tdo,
+   input wire  pad_jtag_tms
+ );
+
+  localparam CORE_TYPE = 0; // 0 for RISCY, 1 for ZERORISCY, 2 for MICRORISCY
+  localparam USE_FPU   = 0;
+  localparam USE_HWPE = 0;
+
+  wire        ref_clk;
+
 
   //Differential to single ended clock conversion
   IBUFGDS
     #(
       .IOSTANDARD("LVDS"),
-      .DIFF_TERM(0),
-      .IBUF_LOW_PWR(0))
+      .DIFF_TERM("FALSE"),
+      .IBUF_LOW_PWR("FALSE"))
   i_sysclk_iobuf
     (
-     .I(clk_125_p),
-     .IB(clk_125_n),
-     .O(ref_clk)   // before clk_125
+     .I(ref_clk_p),
+     .IB(ref_clk_n),
+     .O(ref_clk)
      );
 
-  // logic        clk_125_buf;
-   //BUFGCE i_clk_buf (.I(clk_125), .CE(1'b1), .O(clk_125_buf));
+  pulp
+    #(.CORE_TYPE(CORE_TYPE),
+      .USE_FPU(USE_FPU),
+      .USE_HWPE(USE_HWPE)
+      ) i_pulp
+      (
+       .pad_spim_sdio0(pad_pmod0_4),
+       .pad_spim_sdio1(pad_pmod0_5),
+       .pad_spim_sdio2(pad_pmod0_6),
+       .pad_spim_sdio3(pad_pmod0_7),
+       .pad_spim_csn0(pad_uart_rts),
+       .pad_spim_csn1(led0_o),
+       .pad_spim_sck(pad_uart_cts),
+       
+       .pad_uart_rx(pad_uart_rx),
+       .pad_uart_tx(pad_uart_tx),
+       
+       .pad_cam_pclk(led1_o),
+       .pad_cam_hsync(led2_o),
+       .pad_cam_data0(led3_o),
+       .pad_cam_data1(switch0_i),
+       .pad_cam_data2(switch1_i),
+       .pad_cam_data3(btn0_i),
+       .pad_cam_data4(btn1_i),
+       .pad_cam_data5(btn2_i),
+       .pad_cam_data6(btn3_i),
+       .pad_cam_data7(switch2_i),
+       .pad_cam_vsync(switch3_i),
+       
+       .pad_sdio_clk(pad_hdmi_scl),
+       .pad_sdio_cmd(pad_hdmi_sda),
+       .pad_sdio_data0(pad_pmod1_0),
+       .pad_sdio_data1(pad_pmod1_1),
+       .pad_sdio_data2(pad_pmod1_2),
+       .pad_sdio_data3(pad_pmod1_3),
+       
+       .pad_i2c0_sda(pad_i2c0_sda),
+       .pad_i2c0_scl(pad_i2c0_scl),
+       
+       .pad_i2s0_sck(pad_pmod1_4),
+       .pad_i2s0_ws(pad_pmod1_5),
+       .pad_i2s0_sdi(pad_pmod1_6),
+       .pad_i2s1_sdi(pad_pmod1_7),
+       
+       .pad_reset_n(~pad_reset),
+       
+       .pad_jtag_tck(pad_jtag_tck),
+       .pad_jtag_tdi(pad_jtag_tdi),
+       .pad_jtag_tdo(pad_jtag_tdo),
+       .pad_jtag_tms(pad_jtag_tms),
+       .pad_jtag_trst(1'b1),
+       
+       .pad_xtal_in(ref_clk),
+       .pad_bootsel()
+       );
 
-  // add clock generation for pulp chip, replaces zynq_wrapper
- // xilinx_clk_mngr clk_wiz_0
-  //(
-  //.clk_out1(pulp_ref_clk),     // 256*32768 = 8.3886 MHz
-  //.clk_out2(pulp_soc_clk),     // 50 Mhz
-  //.clk_out3(pulp_per_clk),     // 50MHz
-  //.clk_out4(pulp_cluster_clk), //50MHz
-  //.resetn(~cpu_reset),
-  //.locked( ),
-  //.clk_in1(clk_125_buf)            // 125 MHz
-  //);
-
-   //pulpemu_ref_clk_div
-    // #(
-      // .DIVISOR           ( 256  )
-       //)
-   //ref_clk_div (
-     //           .clk_i            ( pulp_ref_clk                      ), // FPGA inner clock,  8.388608 MHz
-       //         .rstn_i           ( ~cpu_reset                    ), // FPGA inner reset
-         //       .ref_clk_o        ( ref_clk                       )  // REF clock out
-           //     );
-
-  // 1 socond blink LED
-//  pulpemu_ref_clk_div
-  //  #(
-    //  .DIVISOR            ( 32768 )
-    //  )
-   //led_clk_div (
-     //           .clk_i            ( ref_clk                       ),
-       //         .rstn_i           ( ~cpu_reset                    ),
-         //       .ref_clk_o        ( LED                           )
-           //     );
-
-
-   //  ██████╗ ██╗   ██╗██╗     ██████╗     ██████╗██╗  ██╗██╗██████╗
-   //  ██╔══██╗██║   ██║██║     ██╔══██╗   ██╔════╝██║  ██║██║██╔══██╗
-   //  ██████╔╝██║   ██║██║     ██████╔╝   ██║     ███████║██║██████╔╝
-   //  ██╔═══╝ ██║   ██║██║     ██╔═══╝    ██║     ██╔══██║██║██╔═══╝
-   //  ██║     ╚██████╔╝███████╗██║███████╗╚██████╗██║  ██║██║██║
-   //  ╚═╝      ╚═════╝ ╚══════╝╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝
-
-   pulp
-     #(.CORE_TYPE(CORE_TYPE),
-       .USE_FPU(USE_FPU),
-       .USE_HWPE(USE_HWPE)
-       ) pulp_chip_i
-       (
-        //.zynq_clk_i            ( ref_clk                       ), // FPGA inner clock, 32768 Hz
-        //.zynq_soc_clk_i        ( pulp_soc_clk                  ), // FPGA inner clock, 50 MHz
-        //.zynq_cluster_clk_i    ( pulp_cluster_clk              ), // FPGA inner clock, 50 MHz
-        //.zynq_per_clk_i        ( pulp_per_clk                  ), // FPGA inner clock, 50 MHz
-
-        .pad_spim_sdio0(FMC_qspi_sdio0),
-        .pad_spim_sdio1(FMC_qspi_sdio1),
-        .pad_spim_sdio2(FMC_qspi_sdio2),
-        .pad_spim_sdio3(FMC_qspi_sdio3),
-        .pad_spim_csn0(FMC_qspi_csn0),
-        .pad_spim_csn1(FMC_qspi_csn1),
-        .pad_spim_sck(FMC_qspi_sck),
-
-        .pad_uart_rx(FMC_uart_rx),
-        .pad_uart_tx(FMC_uart_tx),
-
-        .pad_cam_pclk(FMC_cam_pclk),
-        .pad_cam_hsync(FMC_cam_hsync),
-        .pad_cam_data0(FMC_cam_data0),
-        .pad_cam_data1(FMC_cam_data1),
-        .pad_cam_data2(FMC_cam_data2),
-        .pad_cam_data3(FMC_cam_data3),
-        .pad_cam_data4(FMC_cam_data4),
-        .pad_cam_data5(FMC_cam_data5),
-        .pad_cam_data6(FMC_cam_data6),
-        .pad_cam_data7(FMC_cam_data7),
-        .pad_cam_vsync(FMC_cam_vsync),
-
-        .pad_sdio_clk(FMC_sdio_sck),
-        .pad_sdio_cmd(FMC_sdio_cmd),
-        .pad_sdio_data0(FMC_sdio_data0),
-        .pad_sdio_data1(FMC_sdio_data1),
-        .pad_sdio_data2(FMC_sdio_data2),
-        .pad_sdio_data3(FMC_sdio_data3),
-
-        .pad_i2c0_sda(FMC_i2c0_sda),
-        .pad_i2c0_scl(FMC_i2c0_scl),
-
-        .pad_i2s0_sck(FMC_i2s0_sck),
-        .pad_i2s0_ws(FMC_i2s0_ws),
-        .pad_i2s0_sdi(FMC_i2s0_sdi),
-        .pad_i2s1_sdi(FMC_i2s1_sdi),
-
-        .pad_jtag_tck(FMC_jtag_tck),
-        .pad_jtag_tdi(FMC_jtag_tdi),
-        .pad_jtag_tdo(FMC_jtag_tdo),
-        .pad_jtag_tms(FMC_jtag_tms),
-        .pad_jtag_trst(1'b1), //FMC_jtag_trst
-
-        .pad_xtal_in(ref_clk), // USE generated ref_clk
-        .pad_reset_n(cpu_reset), //FMC_reset_n
-        .pad_bootsel(FMC_bootmode)  // Boot mode = 0; boot from flash; Boot mode = 1; boot from jtag before FMC_bootmode
-        );
-
-endmodule // pulpemu
+endmodule
