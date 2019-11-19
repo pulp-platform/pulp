@@ -12,7 +12,7 @@ if [ ! -e fpga ]; then
     echo -e "${BOLD}${BLUE}Cloning fpga${NC}${STD}"
 else
     pushd fpga > /dev/null
-    git checkout master
+    git checkout zcu102_align_pulpissimo
     git pull
     echo -e "${BOLD}${BLUE}Updating fpga${NC}${STD}"
 fi
