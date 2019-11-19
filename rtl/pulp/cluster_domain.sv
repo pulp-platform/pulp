@@ -26,6 +26,7 @@ module cluster_domain
 #(
     //CLUSTER PARAMETERS
     parameter NB_CORES              = `NB_CORES,
+    parameter HWPE_PRESENT          = 0,
     parameter NB_HWPE_PORTS         = 4,
     parameter NB_DMAS               = 4,
 
@@ -253,6 +254,7 @@ module cluster_domain
 `ifndef USE_CLUSTER_NETLIST
     #(
         .NB_CORES                     ( NB_CORES                     ),
+        .HWPE_PRESENT                 ( HWPE_PRESENT                 ),
         .NB_HWPE_PORTS                ( NB_HWPE_PORTS                ),
         .NB_DMAS                      ( NB_DMAS                      ),
         .TCDM_SIZE                    ( TCDM_SIZE                    ),
