@@ -296,6 +296,9 @@ module tb_pulp;
 
 
 
+   pullup sda0_pullup_i (w_i2c0_sda);
+   pullup scl0_pullup_i (w_i2c0_scl);
+
    pullup sda1_pullup_i (w_i2c1_sda);
    pullup scl1_pullup_i (w_i2c1_scl);
 
@@ -406,6 +409,28 @@ module tb_pulp;
       );
    end
 
+   /* I2C memory models */
+   if (USE_24FC1025_MODEL == 1) begin
+      M24FC1025 i_i2c_mem_0 (
+         .A0    ( 1'b0       ),
+         .A1    ( 1'b0       ),
+         .A2    ( 1'b1       ),
+         .WP    ( 1'b0       ),
+         .SDA   ( w_i2c0_sda ),
+         .SCL   ( w_i2c0_scl ),
+         .RESET ( 1'b0       )
+      );
+      M24FC1025 i_i2c_mem_1 (
+         .A0    ( 1'b1       ),
+         .A1    ( 1'b0       ),
+         .A2    ( 1'b1       ),
+         .WP    ( 1'b0       ),
+         .SDA   ( w_i2c0_sda ),
+         .SCL   ( w_i2c0_scl ),
+         .RESET ( 1'b0       )
+      );
+   end
+
    if (!ENABLE_DEV_DPI && CONFIG_FILE == "NONE") begin
 
       /* CPI verification IP */
@@ -418,28 +443,6 @@ module tb_pulp;
             .cam_vsync_o ( w_cam_vsync ),
             .cam_href_o  ( w_cam_hsync ),
             .cam_data_o  ( w_cam_data  )
-         );
-      end
-
-      /* I2C memory models */
-      if(USE_24FC1025_MODEL) begin
-         M24FC1025 i_i2c_mem_0 (
-            .A0    ( 1'b0       ),
-            .A1    ( 1'b0       ),
-            .A2    ( 1'b1       ),
-            .WP    ( 1'b0       ),
-            .SDA   ( w_i2c0_sda ),
-            .SCL   ( w_i2c0_scl ),
-            .RESET ( 1'b0       )
-         );
-         M24FC1025 i_i2c_mem_1 (
-            .A0    ( 1'b1       ),
-            .A1    ( 1'b0       ),
-            .A2    ( 1'b1       ),
-            .WP    ( 1'b0       ),
-            .SDA   ( w_i2c0_sda ),
-            .SCL   ( w_i2c0_scl ),
-            .RESET ( 1'b0       )
          );
       end
 
@@ -600,10 +603,14 @@ module tb_pulp;
          logic [31:0] dm_data;
          logic [6:0]  dm_addr;
          logic        error;
-         automatic logic [9:0]  FC_CORE_ID = {5'd31,5'd0};
+         int         num_err;
+         automatic logic [9:0]  FC_CORE_ID = {5'd31, 5'd0};
 
          int entry_point;
          logic [31:0] begin_l2_instr;
+
+         error   = 1'b0;
+         num_err = 0;
 
          // read entry point from commandline
          if ($value$plusargs("ENTRY_POINT=%h", entry_point))
@@ -730,7 +737,15 @@ module tb_pulp;
                // long debug module + jtag tests
                if(ENABLE_DM_TESTS == 1) begin
                   debug_mode_if.run_dm_tests(FC_CORE_ID, begin_l2_instr,
-                                           error, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+                                           error, num_err, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+                  // we don't have any program to load so we finish the testing
+                  if (num_err == 0) begin
+                     exit_status = `EXIT_SUCCESS;
+                  end else begin
+                     exit_status = `EXIT_FAIL;
+                     $error("Debug Module: %d tests failed", num_err);
+                  end
+                  $stop;
                end
 
                $display("[TB] %t - Loading L2", $realtime);
