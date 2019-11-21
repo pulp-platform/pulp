@@ -1,18 +1,20 @@
 #!/bin/bash -e
+# This script is solely used on gitlab
 
-# This is the script you use when you do a local test
+GITLAB=iis-git.ee.ethz.ch
+
 # getting tests
-git clone git@iis-git.ee.ethz.ch:pulp-tests/ml_tests.git \
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-tests/ml_tests.git \
     tests/ml_tests
-git clone git@iis-git.ee.ethz.ch:pulp-sw/pulp_tests.git \
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/pulp_tests.git \
     tests/pulp_tests
-git clone git@iis-git.ee.ethz.ch:pulp-tests/rt-tests.git \
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-tests/rt-tests.git \
     tests/rt-tests
-git clone git@iis-git.ee.ethz.ch:pulp-sw/parallel_bare_tests.git \
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/parallel_bare_tests.git \
     tests/parallel_bare_tests
-git clone git@iis-git.ee.ethz.ch:pulp-sw/riscv_tests.git \
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/riscv_tests.git \
     tests/riscv_tests
-git clone git@iis-git.ee.ethz.ch:pulp-sw/sequential_bare_tests.git \
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/sequential_bare_tests.git \
     tests/sequential_bare_tests
 
 # using "stable" versions
