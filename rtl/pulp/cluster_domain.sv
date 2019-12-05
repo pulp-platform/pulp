@@ -28,8 +28,6 @@ module cluster_domain
     parameter NB_CORES              = `NB_CORES,
     parameter NB_HWPE_PORTS         = 4,
     parameter NB_DMAS               = 4,
-    parameter NB_MPERIPHS           = 1,
-    parameter NB_SPERIPHS           = `NB_SPERIPHS,
 
     parameter TCDM_SIZE             = 64*1024,                 // in Byte, POWER of 2
     parameter NB_TCDM_BANKS         = 16,                      // POWER of 2
@@ -257,8 +255,6 @@ module cluster_domain
         .NB_CORES                     ( NB_CORES                     ),
         .NB_HWPE_PORTS                ( NB_HWPE_PORTS                ),
         .NB_DMAS                      ( NB_DMAS                      ),
-        .NB_MPERIPHS                  ( NB_MPERIPHS                  ),
-        .NB_SPERIPHS                  ( NB_SPERIPHS                  ),
         .TCDM_SIZE                    ( TCDM_SIZE                    ),
         .NB_TCDM_BANKS                ( NB_TCDM_BANKS                ),
         .TCDM_BANK_SIZE               ( TCDM_BANK_SIZE               ),
