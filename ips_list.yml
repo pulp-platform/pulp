@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: pulp-next
+  commit: xpulpnn
   server: https://github.com
   group:  pulp-platform
 
