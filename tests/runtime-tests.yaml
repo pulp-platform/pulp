@@ -1,0 +1,768 @@
+parallel_bare_tests:
+  parMatrixMul8:
+    path: ./parallel_bare_tests/parMatrixMul8
+    command: make clean all run
+  Sparse:
+    path: ./parallel_bare_tests/Sparse
+    command: make clean all run
+  Sparse/golden:
+    path: ./parallel_bare_tests/Sparse/golden
+    command: make clean all run
+  conv16:
+    path: ./parallel_bare_tests/conv16
+    command: make clean all run
+  pooling:
+    path: ./parallel_bare_tests/pooling
+    command: make clean all run
+  parMatrixMul32:
+    path: ./parallel_bare_tests/parMatrixMul32
+    command: make clean all run
+  cnn:
+    path: ./parallel_bare_tests/cnn
+    command: make clean all run
+  parWorkload:
+    path: ./parallel_bare_tests/parWorkload
+    command: make clean all run
+  FFT:
+    path: ./parallel_bare_tests/FFT
+    command: make clean all run
+  LU:
+    path: ./parallel_bare_tests/LU
+    command: make clean all run
+  LU/golden:
+    path: ./parallel_bare_tests/LU/golden
+    command: make clean all run
+  multicore:
+    path: ./parallel_bare_tests/multicore
+    command: make clean all run
+  multicore/sudokusolver:
+    path: ./parallel_bare_tests/multicore/sudokusolver
+    command: make clean all run
+  multicore/stencil:
+    path: ./parallel_bare_tests/multicore/stencil
+    command: make clean all run
+  fcOffload_parMatrixMul32:
+    path: ./parallel_bare_tests/fcOffload_parMatrixMul32
+    command: make clean all run
+  dummypar1:
+    path: ./parallel_bare_tests/dummypar1
+    command: make clean all run
+  logistic_regression_OvR:
+    path: ./parallel_bare_tests/logistic_regression_OvR
+    command: make clean all run
+  convolution2d:
+    path: ./parallel_bare_tests/convolution2d
+    command: make clean all run
+  Dijkstra/golden:
+    path: ./parallel_bare_tests/Dijkstra/golden
+    command: make clean all run
+  Dijkstra:
+    path: ./parallel_bare_tests/Dijkstra
+    command: make clean all run
+  convolution:
+    path: ./parallel_bare_tests/convolution
+    command: make clean all run
+  parMatrixMul:
+    path: ./parallel_bare_tests/parMatrixMul
+    command: make clean all run
+  testDMA_slave:
+    path: ./parallel_bare_tests/testDMA_slave
+    command: make clean all run
+  rms_float:
+    path: ./parallel_bare_tests/rms_float
+    command: make clean all run
+  parMatrixMul16:
+    path: ./parallel_bare_tests/parMatrixMul16
+    command: make clean all run
+  fft_radix2:
+    path: ./parallel_bare_tests/fft_radix2
+    command: make clean all run
+  fft_radix8:
+    path: ./parallel_bare_tests/fft_radix8
+    command: make clean all run
+
+sequential_bare_test:
+  dct:
+    path: ./sequential_bare_tests/dct
+    command: make clean all run
+  tracking_seq:
+    path: ./sequential_bare_tests/tracking_seq
+    command: make clean all run
+  fft2:
+    path: ./sequential_bare_tests/fft2
+    command: make clean all run
+  rijndael:
+    path: ./sequential_bare_tests/rijndael
+    command: make clean all run
+  matrixAdd:
+    path: ./sequential_bare_tests/matrixAdd
+    command: make clean all run
+  gradient:
+    path: ./sequential_bare_tests/gradient
+    command: make clean all run
+  jacobi-2d-imper:
+    path: ./sequential_bare_tests/jacobi-2d-imper
+    command: make clean all run
+  sha:
+    path: ./sequential_bare_tests/sha
+    command: make clean all run
+  sudokusolver:
+    path: ./sequential_bare_tests/sudokusolver
+    command: make clean all run
+  matrixMul8_dotp:
+    path: ./sequential_bare_tests/matrixMul8_dotp
+    command: make clean all run
+  bitDescriptor:
+    path: ./sequential_bare_tests/bitDescriptor
+    command: make clean all run
+  fdctfst:
+    path: ./sequential_bare_tests/fdctfst
+    command: make clean all run
+  stencil_vect:
+    path: ./sequential_bare_tests/stencil_vect
+    command: make clean all run
+  matrixMul32:
+    path: ./sequential_bare_tests/matrixMul32
+    command: make clean all run
+  keccak:
+    path: ./sequential_bare_tests/keccak
+    command: make clean all run
+  fir:
+    path: ./sequential_bare_tests/fir
+    command: make clean all run
+  stencil:
+    path: ./sequential_bare_tests/stencil
+    command: make clean all run
+  ipm:
+    path: ./sequential_bare_tests/ipm
+    command: make clean all run
+  huffman:
+    path: ./sequential_bare_tests/huffman
+    command: make clean all run
+  matmul:
+    path: ./sequential_bare_tests/matmul
+    command: make clean all run
+  non_separable_2d_filter:
+    path: ./sequential_bare_tests/non_separable_2d_filter
+    command: make clean all run
+  towerofhanoi:
+    path: ./sequential_bare_tests/towerofhanoi
+    command: make clean all run
+  crc32:
+    path: ./sequential_bare_tests/crc32
+    command: make clean all run
+  conv2d:
+    path: ./sequential_bare_tests/conv2d
+    command: make clean all run
+  fdct:
+    path: ./sequential_bare_tests/fdct
+    command: make clean all run
+  matrixMul16:
+    path: ./sequential_bare_tests/matrixMul16
+    command: make clean all run
+  matrixMul16_dotp:
+    path: ./sequential_bare_tests/matrixMul16_dotp
+    command: make clean all run
+  seidel:
+    path: ./sequential_bare_tests/seidel
+    command: make clean all run
+  fibonacci:
+    path: ./sequential_bare_tests/fibonacci
+    command: make clean all run
+  gauss-2d:
+    path: ./sequential_bare_tests/gauss-2d
+    command: make clean all run
+  aes_cbc:
+    path: ./sequential_bare_tests/aes_cbc
+    command: make clean all run
+  bubblesort:
+    path: ./sequential_bare_tests/bubblesort
+    command: make clean all run
+  fdtd-1d:
+    path: ./sequential_bare_tests/fdtd-1d
+    command: make clean all run
+  jacobi-1d-imper:
+    path: ./sequential_bare_tests/jacobi-1d-imper
+    command: make clean all run
+  matrixMul8:
+    path: ./sequential_bare_tests/matrixMul8
+    command: make clean all run
+  fft:
+    path: ./sequential_bare_tests/fft
+    command: make clean all run
+  motion_detection:
+    path: ./sequential_bare_tests/motion_detection
+    command: make clean all run
+
+pulp_tests:
+  mchan/v7:
+    path: ./pulp_tests/mchan/v7
+    command: make clean all run
+  mchan/v6:
+    path: ./pulp_tests/mchan/v6
+    command: make clean all run
+  efuse_test:
+    path: ./pulp_tests/efuse_test
+    command: make clean all run
+  hello:
+    path: ./pulp_tests/hello
+    command: make clean all run
+  bugs/pm/deep_sleep:
+    path: ./pulp_tests/bugs/pm/deep_sleep
+    command: make clean all run
+  bugs/cluster_clock_gating_bug0:
+    path: ./pulp_tests/bugs/cluster_clock_gating_bug0
+    command: make clean all run
+  bugs/test_lvds:
+    path: ./pulp_tests/bugs/test_lvds
+    command: make clean all run
+  bugs/bug_i2c_scl_alt2/test_I2C:
+    path: ./pulp_tests/bugs/bug_i2c_scl_alt2/test_I2C
+    command: make clean all run
+  bugs/pads_ds_pe_check:
+    path: ./pulp_tests/bugs/pads_ds_pe_check
+    command: make clean all run
+  bugs/camera_HIMAX_slice_RTL:
+    path: ./pulp_tests/bugs/camera_HIMAX_slice_RTL
+    command: make clean all run
+  bugs/cluster_clock_gating_bug1:
+    path: ./pulp_tests/bugs/cluster_clock_gating_bug1
+    command: make clean all run
+  bugs/fcTcdm_copy_to_L2:
+    path: ./pulp_tests/bugs/fcTcdm_copy_to_L2
+    command: make clean all run
+  bugs/perf_cycle_lost:
+    path: ./pulp_tests/bugs/perf_cycle_lost
+    command: make clean all run
+  accelerators/xne/v1:
+    path: ./pulp_tests/accelerators/xne/v1
+    command: make clean all run
+  test_power:
+    path: ./pulp_tests/test_power
+    command: make clean all run
+  memory/l2_shared_scm:
+    path: ./pulp_tests/memory/l2_shared_scm
+    command: make clean all run
+  memory/l2:
+    path: ./pulp_tests/memory/l2
+    command: make clean all run
+  memory/l2_scm/matmul:
+    path: ./pulp_tests/memory/l2_scm/matmul
+    command: make clean all run
+  memory/l2_scm/iter:
+    path: ./pulp_tests/memory/l2_scm/iter
+    command: make clean all run
+  verif_tests/cluster_dma_subsystem/mchan/mchan_transfer_test:
+    path: ./pulp_tests/verif_tests/cluster_dma_subsystem/mchan/mchan_transfer_test
+    command: make clean all run
+  verif_tests/cluster_dma_subsystem/mchan/mchan_registers_test:
+    path: ./pulp_tests/verif_tests/cluster_dma_subsystem/mchan/mchan_registers_test
+    command: make clean all run
+  verif_tests/udma_subsystem/spi_master:
+    path: ./pulp_tests/verif_tests/udma_subsystem/spi_master
+    command: make clean all run
+  verif_tests/udma_subsystem/uart:
+    path: ./pulp_tests/verif_tests/udma_subsystem/uart
+    command: make clean all run
+  verif_tests/udma_subsystem/hyper/hyperram:
+    path: ./pulp_tests/verif_tests/udma_subsystem/hyper/hyperram
+    command: make clean all run
+  verif_tests/udma_subsystem/hyper/hyperflash:
+    path: ./pulp_tests/verif_tests/udma_subsystem/hyper/hyperflash
+    command: make clean all run
+  verif_tests/udma_subsystem/sdio:
+    path: ./pulp_tests/verif_tests/udma_subsystem/sdio
+    command: make clean all run
+  verif_tests/udma_subsystem/csi2:
+    path: ./pulp_tests/verif_tests/udma_subsystem/csi2
+    command: make clean all run
+  verif_tests/udma_subsystem/i2c:
+    path: ./pulp_tests/verif_tests/udma_subsystem/i2c
+    command: make clean all run
+  verif_tests/ao_soc_io_subsystem/udma/udma_filter:
+    path: ./pulp_tests/verif_tests/ao_soc_io_subsystem/udma/udma_filter
+    command: make clean all run
+  verif_tests/ao_soc_io_subsystem/udma/udma_mram:
+    path: ./pulp_tests/verif_tests/ao_soc_io_subsystem/udma/udma_mram
+    command: make clean all run
+  verif_tests/ao_soc_io_subsystem/udma/udma_control/udma_ctrl_evt_test:
+    path: ./pulp_tests/verif_tests/ao_soc_io_subsystem/udma/udma_control/udma_ctrl_evt_test
+    command: make clean all run
+  verif_tests/ao_soc_io_subsystem/udma/udma_control/udma_ctrl_registers_test:
+    path: ./pulp_tests/verif_tests/ao_soc_io_subsystem/udma/udma_control/udma_ctrl_registers_test
+    command: make clean all run
+  verif_tests/ao_soc_io_subsystem/udma/udma_control/udma_ctrl_cg_test:
+    path: ./pulp_tests/verif_tests/ao_soc_io_subsystem/udma/udma_control/udma_ctrl_cg_test
+    command: make clean all run
+  verif_tests/quiddikey:
+    path: ./pulp_tests/verif_tests/quiddikey
+    command: make clean all run
+  verif_tests/ao_soc_mem_subsystem/soc_mem/rom/rom_access:
+    path: ./pulp_tests/verif_tests/ao_soc_mem_subsystem/soc_mem/rom/rom_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_cluster_test_and_set_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_cluster_test_and_set_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_l2_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_l2_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_cluster_tcdm_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_cluster_tcdm_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_apb_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_apb_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_rom_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_rom_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_instr_filter:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_fc_test/test_instr_filter
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_udma_test:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_udma_test
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_registers_test:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_registers_test
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_l2_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_l2_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_dma_l2_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_dma_l2_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_apb_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_apb_access
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test
+    command: make clean all run
+  verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_ROM_access:
+    path: ./pulp_tests/verif_tests/ao_soc_security_subsystem/mpu/mpu_cluster_test/test_ROM_access
+    command: make clean all run
+  verif_tests/timer_unit:
+    path: ./pulp_tests/verif_tests/timer_unit
+    command: make clean all run
+  testFPU:
+    path: ./pulp_tests/testFPU
+    command: make clean all run
+  event_unit/v3/hw_mutex:
+    path: ./pulp_tests/event_unit/v3/hw_mutex
+    command: make clean all run
+  event_unit/v3/test_barrier_with_irq:
+    path: ./pulp_tests/event_unit/v3/test_barrier_with_irq
+    command: make clean all run
+  event_unit/v3/dispatch:
+    path: ./pulp_tests/event_unit/v3/dispatch
+    command: make clean all run
+  old_tests/testSPI_slave:
+    path: ./pulp_tests/old_tests/testSPI_slave
+    command: make clean all run
+  old_tests/periphs/v2/I2S_pdm:
+    path: ./pulp_tests/old_tests/periphs/v2/I2S_pdm
+    command: make clean all run
+  old_tests/periphs/v2/SPI_SDVT/normal_device_read:
+    path: ./pulp_tests/old_tests/periphs/v2/SPI_SDVT/normal_device_read
+    command: make clean all run
+  old_tests/periphs/v2/SPI_SDVT/normal_device_burst_read:
+    path: ./pulp_tests/old_tests/periphs/v2/SPI_SDVT/normal_device_burst_read
+    command: make clean all run
+  old_tests/periphs/v2/SPI_SDVT/normal_device_write:
+    path: ./pulp_tests/old_tests/periphs/v2/SPI_SDVT/normal_device_write
+    command: make clean all run
+  old_tests/periphs/v2/SPI:
+    path: ./pulp_tests/old_tests/periphs/v2/SPI
+    command: make clean all run
+  old_tests/periphs/v2/CPI_SDVT:
+    path: ./pulp_tests/old_tests/periphs/v2/CPI_SDVT
+    command: make clean all run
+  old_tests/periphs/v1/testUDMA:
+    path: ./pulp_tests/old_tests/periphs/v1/testUDMA
+    command: make clean all run
+  old_tests/periphs/v1/testSPI:
+    path: ./pulp_tests/old_tests/periphs/v1/testSPI
+    command: make clean all run
+  old_tests/periphs/v1/I2C:
+    path: ./pulp_tests/old_tests/periphs/v1/I2C
+    command: make clean all run
+  old_tests/periphs/v1/SPIM:
+    path: ./pulp_tests/old_tests/periphs/v1/SPIM
+    command: make clean all run
+  old_tests/test_hwcrypt/v1:
+    path: ./pulp_tests/old_tests/test_hwcrypt/v1
+    command: make clean all run
+  old_tests/test_icache_ctrl:
+    path: ./pulp_tests/old_tests/test_icache_ctrl
+    command: make clean all run
+  old_tests/testPipeStage:
+    path: ./pulp_tests/old_tests/testPipeStage
+    command: make clean all run
+  old_tests/testL2:
+    path: ./pulp_tests/old_tests/testL2
+    command: make clean all run
+  old_tests/testCVP:
+    path: ./pulp_tests/old_tests/testCVP
+    command: make clean all run
+  old_tests/testClusterControl:
+    path: ./pulp_tests/old_tests/testClusterControl
+    command: make clean all run
+  old_tests/preloading:
+    path: ./pulp_tests/old_tests/preloading
+    command: make clean all run
+  old_tests/efuse:
+    path: ./pulp_tests/old_tests/efuse
+    command: make clean all run
+  old_tests/flash_programmer:
+    path: ./pulp_tests/old_tests/flash_programmer
+    command: make clean all run
+  old_tests/testLoader:
+    path: ./pulp_tests/old_tests/testLoader
+    command: make clean all run
+  old_tests/patronus/periphs/KECCAK:
+    path: ./pulp_tests/old_tests/patronus/periphs/KECCAK
+    command: make clean all run
+  old_tests/patronus/testCSR:
+    path: ./pulp_tests/old_tests/patronus/testCSR
+    command: make clean all run
+  old_tests/patronus/testPrivDelegate:
+    path: ./pulp_tests/old_tests/patronus/testPrivDelegate
+    command: make clean all run
+  old_tests/patronus/testPrivCSR:
+    path: ./pulp_tests/old_tests/patronus/testPrivCSR
+    command: make clean all run
+  old_tests/patronus/testMMU:
+    path: ./pulp_tests/old_tests/patronus/testMMU
+    command: make clean all run
+  old_tests/Matrix_mul_test/src:
+    path: ./pulp_tests/old_tests/Matrix_mul_test/src
+    command: make clean all run
+  old_tests/hostHello:
+    path: ./pulp_tests/old_tests/hostHello
+    command: make clean all run
+  old_tests/vivosoc2/testGate:
+    path: ./pulp_tests/old_tests/vivosoc2/testGate
+    command: make clean all run
+  old_tests/vivosoc2/testClkDiv:
+    path: ./pulp_tests/old_tests/vivosoc2/testClkDiv
+    command: make clean all run
+  old_tests/testClusterTimer:
+    path: ./pulp_tests/old_tests/testClusterTimer
+    command: make clean all run
+  old_tests/testFcTimer:
+    path: ./pulp_tests/old_tests/testFcTimer
+    command: make clean all run
+  old_tests/testTCDM:
+    path: ./pulp_tests/old_tests/testTCDM
+    command: make clean all run
+  old_tests/testI2S:
+    path: ./pulp_tests/old_tests/testI2S
+    command: make clean all run
+  old_tests/testAnalog:
+    path: ./pulp_tests/old_tests/testAnalog
+    command: make clean all run
+  old_tests/efuse_programming:
+    path: ./pulp_tests/old_tests/efuse_programming
+    command: make clean all run
+  old_tests/test_fctdcm:
+    path: ./pulp_tests/old_tests/test_fctdcm
+    command: make clean all run
+  old_tests/testFCicache:
+    path: ./pulp_tests/old_tests/testFCicache
+    command: make clean all run
+  old_tests/businesscardBlink:
+    path: ./pulp_tests/old_tests/businesscardBlink
+    command: make clean all run
+  old_tests/test_lvds_divider:
+    path: ./pulp_tests/old_tests/test_lvds_divider
+    command: make clean all run
+  old_tests/test_udma_igloocam:
+    path: ./pulp_tests/old_tests/test_udma_igloocam
+    command: make clean all run
+  old_tests/testHWCE/v2:
+    path: ./pulp_tests/old_tests/testHWCE/v2
+    command: make clean all run
+  old_tests/testHWCE/v4:
+    path: ./pulp_tests/old_tests/testHWCE/v4
+    command: make clean all run
+  old_tests/testHWCE/v3:
+    path: ./pulp_tests/old_tests/testHWCE/v3
+    command: make clean all run
+  old_tests/eventUnit/v1/event_interrupt:
+    path: ./pulp_tests/old_tests/eventUnit/v1/event_interrupt
+    command: make clean all run
+  old_tests/test_vip_rdwr:
+    path: ./pulp_tests/old_tests/test_vip_rdwr
+    command: make clean all run
+  old_tests/testAdc_doubleBuff:
+    path: ./pulp_tests/old_tests/testAdc_doubleBuff
+    command: make clean all run
+  old_tests/test_fc_to_cluster_eu:
+    path: ./pulp_tests/old_tests/test_fc_to_cluster_eu
+    command: make clean all run
+  old_tests/testIcache/powerof2:
+    path: ./pulp_tests/old_tests/testIcache/powerof2
+    command: make clean all run
+  old_tests/testIcache/large:
+    path: ./pulp_tests/old_tests/testIcache/large
+    command: make clean all run
+  old_tests/testIcache/prime:
+    path: ./pulp_tests/old_tests/testIcache/prime
+    command: make clean all run
+  old_tests/testBarrier:
+    path: ./pulp_tests/old_tests/testBarrier
+    command: make clean all run
+  old_tests/testAndSet:
+    path: ./pulp_tests/old_tests/testAndSet
+    command: make clean all run
+  old_tests/testMCHAN/v4:
+    path: ./pulp_tests/old_tests/testMCHAN/v4
+    command: make clean all run
+  old_tests/testMCHAN/v5:
+    path: ./pulp_tests/old_tests/testMCHAN/v5
+    command: make clean all run
+  old_tests/gap/riscy_dbg_via_spis:
+    path: ./pulp_tests/old_tests/gap/riscy_dbg_via_spis
+    command: make clean all run
+  old_tests/gap/periphs/tcdm_l2Tol2:
+    path: ./pulp_tests/old_tests/gap/periphs/tcdm_l2Tol2
+    command: make clean all run
+  old_tests/gap/periphs/tcdm:
+    path: ./pulp_tests/old_tests/gap/periphs/tcdm
+    command: make clean all run
+  old_tests/helloworld:
+    path: ./pulp_tests/old_tests/helloworld
+    command: make clean all run
+  old_tests/testHWCE_onlyconv:
+    path: ./pulp_tests/old_tests/testHWCE_onlyconv
+    command: make clean all run
+  old_tests/testFLL:
+    path: ./pulp_tests/old_tests/testFLL
+    command: make clean all run
+  old_tests/initTCDM:
+    path: ./pulp_tests/old_tests/initTCDM
+    command: make clean all run
+  old_tests/testGPIO:
+    path: ./pulp_tests/old_tests/testGPIO
+    command: make clean all run
+  old_tests/bugs/irqDuringWhile:
+    path: ./pulp_tests/old_tests/bugs/irqDuringWhile
+    command: make clean all run
+  old_tests/bench_tiny:
+    path: ./pulp_tests/old_tests/bench_tiny
+    command: make clean all run
+  old_tests/test_fceu:
+    path: ./pulp_tests/old_tests/test_fceu
+    command: make clean all run
+  old_tests/test_debug_unit:
+    path: ./pulp_tests/old_tests/test_debug_unit
+    command: make clean all run
+  old_tests/test_cluster_to_fctcdm:
+    path: ./pulp_tests/old_tests/test_cluster_to_fctcdm
+    command: make clean all run
+  old_tests/fcHello_bug:
+    path: ./pulp_tests/old_tests/fcHello_bug
+    command: make clean all run
+  old_tests/testMMU:
+    path: ./pulp_tests/old_tests/testMMU
+    command: make clean all run
+  old_tests/test_cluster_to_fc_eu:
+    path: ./pulp_tests/old_tests/test_cluster_to_fc_eu
+    command: make clean all run
+  old_tests/test_udma_zynq:
+    path: ./pulp_tests/old_tests/test_udma_zynq
+    command: make clean all run
+  periphs/spi/v2/flash:
+    path: ./pulp_tests/periphs/spi/v2/flash
+    command: make clean all run
+  periphs/i2c/v1/m24fc1025_i2c_bare:
+    path: ./pulp_tests/periphs/i2c/v1/m24fc1025_i2c_bare
+    command: make clean all run
+  periphs/cpi/basic:
+    path: ./pulp_tests/periphs/cpi/basic
+    command: make clean all run
+
+ml_tests:
+  mlDotp:
+    path: ./ml_tests/mlDotp
+    command: make clean all run
+  mlSchur:
+    path: ./ml_tests/mlSchur
+    command: make clean all run
+  mlGemm:
+    path: ./ml_tests/mlGemm
+    command: make clean all run
+  mlSin:
+    path: ./ml_tests/mlSin
+    command: make clean all run
+  mlSvd:
+    path: ./ml_tests/mlSvd
+    command: make clean all run
+  mlButter:
+    path: ./ml_tests/mlButter
+    command: make clean all run
+  mlGradDir:
+    path: ./ml_tests/mlGradDir
+    command: make clean all run
+  mlRbf:
+    path: ./ml_tests/mlRbf
+    command: make clean all run
+  mlLog:
+    path: ./ml_tests/mlLog
+    command: make clean all run
+  testFPU:
+    path: ./ml_tests/testFPU
+    command: make clean all run
+  mlAxpy:
+    path: ./ml_tests/mlAxpy
+    command: make clean all run
+  mlHomErr:
+    path: ./ml_tests/mlHomErr
+    command: make clean all run
+  mlHom:
+    path: ./ml_tests/mlHom
+    command: make clean all run
+  mlFir:
+    path: ./ml_tests/mlFir
+    command: make clean all run
+  mlBilat:
+    path: ./ml_tests/mlBilat
+    command: make clean all run
+  mlGivens:
+    path: ./ml_tests/mlGivens
+    command: make clean all run
+  mlWdotp:
+    path: ./ml_tests/mlWdotp
+    command: make clean all run
+  seizure-detection_dma:
+    path: ./ml_tests/seizure/seizure-detection_dma
+    command: make clean all run
+  mlDist:
+    path: ./ml_tests/mlDist
+    command: make clean all run
+  testAPU:
+    path: ./ml_tests/testAPU
+    command: make clean all run
+  mlGemv:
+    path: ./ml_tests/mlGemv
+    command: make clean all run
+  mlChol:
+    path: ./ml_tests/mlChol
+    command: make clean all run
+  mlGrad:
+    path: ./ml_tests/mlGrad
+    command: make clean all run
+  mlDct:
+    path: ./ml_tests/mlDct
+    command: make clean all run
+  mlQr:
+    path: ./ml_tests/mlQr
+    command: make clean all run
+
+riscv_tests:
+  testBitManipulation:
+    path: ./riscv_tests/testBitManipulation
+    command: make clean all run
+  test_fc_itc:
+    path: ./riscv_tests/test_fc_itc
+    command: make clean all run
+  testVecCmp:
+    path: ./riscv_tests/testVecCmp
+    command: make clean all run
+  testAddSubNorm:
+    path: ./riscv_tests/testAddSubNorm
+    command: make clean all run
+  testIRQ:
+    path: ./riscv_tests/testIRQ
+    command: make clean all run
+  testCSR:
+    path: ./riscv_tests/testCSR
+    command: make clean all run
+  testExceptions:
+    path: ./riscv_tests/testExceptions
+    command: make clean all run
+  debug:
+    path: ./riscv_tests/debug
+    command: make clean all run
+  testSimpleFPU:
+    path: ./riscv_tests/testSimpleFPU
+    command: make clean all run
+  testMisaligned:
+    path: ./riscv_tests/testMisaligned
+    command: make clean all run
+  testALU:
+    path: ./riscv_tests/testALU
+    command: make clean all run
+  testMAC3:
+    path: ./riscv_tests/testMAC3
+    command: make clean all run
+  testEventsFlex:
+    path: ./riscv_tests/testEventsFlex
+    command: make clean all run
+  testVecArith:
+    path: ./riscv_tests/testVecArith
+    command: make clean all run
+  testDotMul:
+    path: ./riscv_tests/testDotMul
+    command: make clean all run
+  testIRQ_dis_en:
+    path: ./riscv_tests/testIRQ_dis_en
+    command: make clean all run
+  testVecLogic:
+    path: ./riscv_tests/testVecLogic
+    command: make clean all run
+  testComplex:
+    path: ./riscv_tests/testComplex
+    command: make clean all run
+  testCnt:
+    path: ./riscv_tests/testCnt
+    command: make clean all run
+  testVecRelat:
+    path: ./riscv_tests/testVecRelat
+    command: make clean all run
+  testCSR_1.7:
+    path: ./riscv_tests/testCSR_1.7
+    command: make clean all run
+  testShufflePack:
+    path: ./riscv_tests/testShufflePack
+    command: make clean all run
+  testMUL:
+    path: ./riscv_tests/testMUL
+    command: make clean all run
+  testHWLP:
+    path: ./riscv_tests/testHWLP
+    command: make clean all run
+  testMacNorm:
+    path: ./riscv_tests/testMacNorm
+    command: make clean all run
+  testDivRem:
+    path: ./riscv_tests/testDivRem
+    command: make clean all run
+  testDivRem/stimuli:
+    path: ./riscv_tests/testDivRem/stimuli
+    command: make clean all run
+  testVariadic:
+    path: ./riscv_tests/testVariadic
+    command: make clean all run
+  testMAC:
+    path: ./riscv_tests/testMAC
+    command: make clean all run
+  testSecure:
+    path: ./riscv_tests/testSecure
+    command: make clean all run
+  testClip:
+    path: ./riscv_tests/testClip
+    command: make clean all run
+  official:
+    path: ./riscv_tests/official
+    command: make clean all run
+  testLoadStore:
+    path: ./riscv_tests/testLoadStore
+    command: make clean all run
+  testALUExt:
+    path: ./riscv_tests/testALUExt
+    command: make clean all run
+  testBuiltins:
+    path: ./riscv_tests/testBuiltins
+    command: make clean all run
+  testDebug_FC:
+    path: ./riscv_tests/testDebug_FC
+    command: make clean all run
