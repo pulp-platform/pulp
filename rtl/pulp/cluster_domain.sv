@@ -72,7 +72,7 @@ module cluster_domain
     parameter AXI_DATA_S2C_WIDTH    = 32,
     parameter AXI_DATA_C2S_WIDTH    = 64,
     parameter AXI_USER_WIDTH        = 6,
-    parameter AXI_ID_IN_WIDTH       = 4,
+    parameter AXI_ID_IN_WIDTH       = 6,
     parameter AXI_ID_OUT_WIDTH      = 6,
     parameter AXI_STRB_S2C_WIDTH    = AXI_DATA_S2C_WIDTH/8,
     parameter AXI_STRB_C2S_WIDTH    = AXI_DATA_C2S_WIDTH/8,
