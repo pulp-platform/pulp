@@ -1,0 +1,6 @@
+//arch = zynq; split = false; format = BIN
+the_ROM_image:
+{
+	[bootloader]board/zc706/fsbl.elf
+	board/zc706/pulpemu.bit
+}

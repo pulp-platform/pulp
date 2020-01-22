@@ -1,0 +1,40 @@
+# ignore modelsim libraries
+modelsim_libs
+work
+xilinx_libs
+
+# ignore automatically generated stuff by modelsim
+transcript
+vsim.wlf
+wlft*
+vish_stacktrace.vstf
+stdout/uart
+CLUSTER_FLL.log  
+CORE*.txt  
+SOC_FLL.log 
+trace_core*
+stim.txt
+vsim_stacktrace.vstf
+
+CORE*_TCDM_DUMP.txt
+stdout/stdout*
+CORE*
+FETCH_CORE_*
+CLUSTER_FLL.log
+SOC_FLL.log
+core_state
+i2s_buffer.hex
+i2s_buffer_0.hex
+i2s_buffer_1.hex
+i2s_buffer_2.hex
+i2s_buffer_3.hex
+
+
+
+# ignore modelsim.ini
+modelsim.ini
+
+# ignore c build files
+slm_files
+simvectors
+vectors
