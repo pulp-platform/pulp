@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: 86e3a58e2aae9a27802fd500542e74f6d81e1029
+  commit: v1.1.0
   server: https://github.com
   group:  pulp-platform
 
@@ -29,6 +29,6 @@ pulp_cluster:
   group:  pulp-platform
 
 tbtools:
-  commit: master
+  commit: v0.1
   server: https://github.com
   group:  pulp-platform
