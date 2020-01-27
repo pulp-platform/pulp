@@ -109,6 +109,27 @@ test_sw:
     reports:
       junit: tests/junit-reports/TEST-*.xml
 
+# Use simplified pulp-runtime to run a subset of tests
+test_simplified_sw:
+  stage: test
+  before_script:
+    - echo "Fetching Runtime"
+    - make pulp-runtime
+    - echo "Compiling RTL model and DPI libraries"
+    - make build
+    - echo "Installing scripts"
+    - make install
+  script:
+    - echo "Running software test"
+    - make test-runtime-gitlab
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - tests/*.html
+      - tests/*.xml
+    reports:
+      junit: tests/*.xml
+
 # Built SDK with the `make sdk` target and run all tests
 # test_sw_build_sdk:
 #   variables:

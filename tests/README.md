@@ -43,6 +43,7 @@ A brief explanation on how to set up GitLab CI for this project.
    - `ARTIFACTORY_USER`
    - `ARTIFACTORY_PASSWORD`
    - `PULP_ARTIFACTORY_USER`
+   - `PULP_RUNTIME_GCC_TOOLCHAIN`
 
    with their respective values. Make sure you check the mask tick box on all of
    these.
