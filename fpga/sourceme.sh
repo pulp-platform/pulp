@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export VIVADO_HOME=/opt/xilinx/Vivado/2018.2
+export VIVADO_HOME=/opt/xilinx/Vivado/2019.1
 source $VIVADO_HOME/settings64.sh
 
 # either "zedboard" or "zc706" or "vcu118" or "zcu102"
