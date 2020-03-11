@@ -44,7 +44,7 @@ create_ip -name clk_wiz -vendor xilinx.com -library ip -module_name $ipName
 #CONFIG.CLKOUT3_REQUESTED_OUT_FREQ {$CL_CLK_FREQ_MHZ} \                                           
 
 set_property -dict [eval list CONFIG.PRIM_IN_FREQ {125.000} \
-                        CONFIG.NUM_OUT_CLKS {3} \
+                        CONFIG.NUM_OUT_CLKS {2} \
                         CONFIG.CLKOUT2_USED {true} \
                         CONFIG.RESET_TYPE {ACTIVE_LOW} \
                         CONFIG.RESET_PORT {resetn} \

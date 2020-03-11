@@ -31,7 +31,7 @@ set_input_delay -clock tck -clock_fall 5.000 [get_ports pad_jtag_tdi]
 set_input_delay -clock tck -clock_fall 5.000 [get_ports pad_jtag_tms]
 set_output_delay -clock tck 5.000 [get_ports pad_jtag_tdo]
 
-set_max_delay -to [get_ports pad_jtag_tdo] 20.000
+set_max_delay -to   [get_ports pad_jtag_tdo] 20.000
 set_max_delay -from [get_ports pad_jtag_tms] 20.000
 set_max_delay -from [get_ports pad_jtag_tdi] 20.000
 
@@ -55,4 +55,4 @@ set_property ASYNC_REG true [get_cells i_pulpissimo/soc_domain_i/pulp_soc_i/soc_
 
 # Create asynchronous clock group between slow-clk and SoC clock. Those clocks
 # are considered asynchronously and proper synchronization regs are in place
-set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins i_pulpissimo/safe_domain_i/i_slow_clk_gen/slow_clk_o]] -group [get_clocks -of_objects [get_pins i_pulpissimo/soc_domain_i/pulp_soc_i/i_clk_rst_gen/i_fpga_clk_gen/soc_clk_o]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins i_pulpissimo/safe_domain_i/i_slow_clk_gen/slow_clk_o]] -group [get_clocks -of_objects [get_pins i_pulpissimo/soc_domain_i/pulp_soc_i/i_clk_rst_gen/i_fpga_clk_gen/soc_clk_o]] -group [get_clocks -of_objects [get_pins i_pulpissimo/soc_domain_i/pulp_soc_i/i_clk_rst_gen/i_fpga_clk_gen/cluster_clk_o]]
