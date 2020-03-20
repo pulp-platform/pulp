@@ -62,6 +62,25 @@ module pulp
    inout  wire        pad_i2s0_sdi,
    inout  wire        pad_i2s1_sdi,
 
+   inout wire         pad_hyper_cs_no0  ,
+   inout wire         pad_hyper_cs_no1  ,
+   inout wire         pad_hyper_cko    ,
+   inout wire         pad_hyper_ckno   ,
+   inout wire         pad_hyper_rwds   ,
+   inout wire         pad_hyper_dqio0  ,
+   inout wire         pad_hyper_dqio1  ,
+   inout wire         pad_hyper_dqio2  ,
+   inout wire         pad_hyper_dqio3  ,
+   inout wire         pad_hyper_dqio4  ,
+   inout wire         pad_hyper_dqio5  ,
+   inout wire         pad_hyper_dqio6  ,
+   inout wire         pad_hyper_dqio7  ,
+   inout wire         pad_hyper_resetn ,
+   output wire        test_hyper_cko,
+   output wire        test_hyper_cs_no,
+   output wire        test_hyper_dqio0,
+   output wire        test_hyper_rwdso,
+
    inout  wire        pad_reset_n,
    inout  wire        pad_bootsel,
 
@@ -335,6 +354,18 @@ module pulp
   logic [127:0]                s_pad_mux_soc;
   logic [383:0]                s_pad_cfg_soc;
 
+  logic [1:0]                  s_out_hyper_csn;
+  logic                        s_out_hyper_ck;
+  logic                        s_out_hyper_ckn;
+  logic                        s_out_hyper_rwds;
+  logic                        s_in_hyper_rwds;
+  logic                        s_oe_hyper_rwds;
+  logic [7:0]                  s_out_hyper_dq;
+  logic [7:0]                  s_in_hyper_dq;
+  logic                        s_oe_hyper_dq;
+  logic                        s_out_hyper_resetn;
+
+
   //***********************************************************
   //********** SOC TO CLUSTER DOMAINS SIGNALS *****************
   //***********************************************************
@@ -520,6 +551,9 @@ module pulp
         .oe_i2c0_scl_i         ( s_oe_i2c0_scl          ),
         .oe_uart_rx_i          ( s_oe_uart_rx           ),
         .oe_uart_tx_i          ( s_oe_uart_tx           ),
+        .oe_hyper_rwds_i       ( s_oe_hyper_rwds        ),
+        .oe_hyper_dq_i         ( s_oe_hyper_dq          ),
+
 
         .out_spim_sdio0_i      ( s_out_spim_sdio0       ),
         .out_spim_sdio1_i      ( s_out_spim_sdio1       ),
@@ -553,6 +587,13 @@ module pulp
         .out_i2c0_scl_i        ( s_out_i2c0_scl         ),
         .out_uart_rx_i         ( s_out_uart_rx          ),
         .out_uart_tx_i         ( s_out_uart_tx          ),
+        .out_hyper_csn_i       ( s_out_hyper_csn        ),
+        .out_hyper_ck_i        ( s_out_hyper_ck         ),
+        .out_hyper_ckn_i       ( s_out_hyper_ckn        ),
+        .out_hyper_rwds_i      ( s_out_hyper_rwds       ),
+        .out_hyper_dq_i        ( s_out_hyper_dq         ),
+        .out_hyper_resetn_i    ( s_out_hyper_resetn     ),
+
 
         .in_spim_sdio0_o       ( s_in_spim_sdio0        ),
         .in_spim_sdio1_o       ( s_in_spim_sdio1        ),
@@ -587,6 +628,8 @@ module pulp
         .in_uart_rx_o          ( s_in_uart_rx           ),
         .in_uart_tx_o          ( s_in_uart_tx           ),
         .bootsel_o             ( s_bootsel              ),
+        .in_hyper_rwds_o       ( s_in_hyper_rwds        ),
+        .in_hyper_dq_o         ( s_in_hyper_dq          ),
 
         //EXT CHIP to PAD
         .pad_spim_sdio0        ( pad_spim_sdio0         ),
@@ -621,6 +664,20 @@ module pulp
         .pad_i2c0_scl          ( pad_i2c0_scl           ),
         .pad_uart_rx           ( pad_uart_rx            ),
         .pad_uart_tx           ( pad_uart_tx            ),
+        .pad_hyper_cs_no0      ( pad_hyper_cs_no0        ),
+        .pad_hyper_cs_no1      ( pad_hyper_cs_no1        ),
+        .pad_hyper_cko         ( pad_hyper_cko          ),
+        .pad_hyper_ckno        ( pad_hyper_ckno         ),
+        .pad_hyper_rwds        ( pad_hyper_rwds         ),
+        .pad_hyper_dqio0       ( pad_hyper_dqio0        ),
+        .pad_hyper_dqio1       ( pad_hyper_dqio1        ),
+        .pad_hyper_dqio2       ( pad_hyper_dqio2        ),
+        .pad_hyper_dqio3       ( pad_hyper_dqio3        ),
+        .pad_hyper_dqio4       ( pad_hyper_dqio4        ),
+        .pad_hyper_dqio5       ( pad_hyper_dqio5        ),
+        .pad_hyper_dqio6       ( pad_hyper_dqio6        ),
+        .pad_hyper_dqio7       ( pad_hyper_dqio7        ),
+        .pad_hyper_resetn      ( pad_hyper_resetn       ),
 
         .pad_bootsel           ( pad_bootsel            ),
         .pad_reset_n           ( pad_reset_n            ),
@@ -946,6 +1003,18 @@ module pulp
         .sdio_data_i                  ( s_sdio_datai                     ),
         .sdio_data_oen_o              ( s_sdio_data_oen                  ),
 
+        .hyper_cs_no                  ( s_out_hyper_csn                  ),
+        .hyper_ck_o                   ( s_out_hyper_ck                   ),
+        .hyper_ck_no                  ( s_out_hyper_ckn                  ),
+        .hyper_rwds_o                 ( s_out_hyper_rwds                 ),
+        .hyper_rwds_i                 ( s_in_hyper_rwds                  ),
+        .hyper_rwds_oe_o              ( s_oe_hyper_rwds                  ),
+        .hyper_dq_i                   ( s_in_hyper_dq                    ),
+        .hyper_dq_o                   ( s_out_hyper_dq                   ),
+        .hyper_dq_oe_o                ( s_oe_hyper_dq                    ),
+        .hyper_reset_no               ( s_out_hyper_resetn               ),
+
+
         .cluster_busy_i               ( s_cluster_busy                   ),
 
         .cluster_events_wt_o          ( s_event_writetoken               ),
@@ -1195,5 +1264,11 @@ cluster_domain cluster_domain_i
         .data_slave_b_writetoken_o    ( s_soc_cluster_bus_b_writetoken   ),
         .data_slave_b_readpointer_i   ( s_soc_cluster_bus_b_readpointer  )
     );
+
+assign test_hyper_cko = s_out_hyper_ck;
+assign test_hyper_cs_no = s_out_hyper_csn;
+assign test_hyper_dqio0 = s_out_hyper_dq[0];
+assign test_hyper_rwdso = s_out_hyper_rwds;
+
 endmodule
 

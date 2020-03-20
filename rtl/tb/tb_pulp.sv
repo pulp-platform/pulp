@@ -212,6 +212,13 @@ module tb_pulp;
    logic                tmp_tdo;
    logic                tmp_bridge_tdo;
 
+   // wire for HYPER BUS
+    wire                wire_rwds;
+    wire [7:0 ]         wire_dq_io;
+    wire [1:0]          wire_cs_no;
+    wire                wire_ck_o;
+    wire                wire_ck_no;
+    wire                wire_reset_no;
 
 
    wire w_master_i2s_sck;
@@ -586,6 +593,21 @@ module tb_pulp;
       .pad_i2s0_sdi       ( w_i2s0_sdi         ),
       .pad_i2s1_sdi       ( w_i2s1_sdi         ),
 
+      .pad_hyper_cs_no0   ( wire_cs_no[0]      ),
+      .pad_hyper_cs_no1   ( wire_cs_no[1]      ),
+      .pad_hyper_cko      ( wire_ck_o          ),
+      .pad_hyper_ckno     ( wire_ck_no         ),
+      .pad_hyper_rwds     ( wire_rwds          ),
+      .pad_hyper_dqio0    ( wire_dq_io[0]      ),
+      .pad_hyper_dqio1    ( wire_dq_io[1]      ),
+      .pad_hyper_dqio2    ( wire_dq_io[2]      ),
+      .pad_hyper_dqio3    ( wire_dq_io[3]      ),
+      .pad_hyper_dqio4    ( wire_dq_io[4]      ),
+      .pad_hyper_dqio5    ( wire_dq_io[5]      ),
+      .pad_hyper_dqio6    ( wire_dq_io[6]      ),
+      .pad_hyper_dqio7    ( wire_dq_io[7]      ),
+      .pad_hyper_resetn   ( wire_reset_no      ),
+
       .pad_reset_n        ( w_rst_n            ),
       .pad_bootsel        ( w_bootsel          ),
 
@@ -666,6 +688,43 @@ module tb_pulp;
 	  .FMC_jtag_trst      ( w_trstn            )
 	  );
    `endif
+
+  s27ks0641 #(.mem_file_name("../ips/udma_hyper/udma-hyperbus/src/s27ks0641.mem"), .TimingModel("S27KS0641DPBHI020")) hyperram_model
+  // s27ks0641 #(.mem_file_name("../ips/udma_hyper/udma-hyperbus/src/s27ks0641.mem")) hyperram_model
+  (
+    .DQ7      (wire_dq_io[7]),
+    .DQ6      (wire_dq_io[6]),
+    .DQ5      (wire_dq_io[5]),
+    .DQ4      (wire_dq_io[4]),
+    .DQ3      (wire_dq_io[3]),
+    .DQ2      (wire_dq_io[2]),
+    .DQ1      (wire_dq_io[1]),
+    .DQ0      (wire_dq_io[0]),
+    .RWDS     (wire_rwds),
+    .CSNeg    (wire_cs_no[1]),
+    .CK       (wire_ck_o),
+    .CKNeg    (wire_ck_no),
+    .RESETNeg (wire_reset_no)
+  );
+  s26ks512s #( .TimingModel("S26KS512SDPBHI000")) hyperflash_model
+  (
+    .DQ7      (wire_dq_io[7]),
+    .DQ6      (wire_dq_io[6]),
+    .DQ5      (wire_dq_io[5]),
+    .DQ4      (wire_dq_io[4]),
+    .DQ3      (wire_dq_io[3]),
+    .DQ2      (wire_dq_io[2]),
+    .DQ1      (wire_dq_io[1]),
+    .DQ0      (wire_dq_io[0]),
+    .RWDS     (wire_rwds),
+    .CSNeg    (wire_cs_no[0]),
+    .CK       (wire_ck_o),
+    .CKNeg    (wire_ck_no),
+    .RESETNeg (wire_reset_no)
+  );
+
+
+
 
    tb_clk_gen #( .CLK_PERIOD(REF_CLK_PERIOD) ) i_ref_clk_gen (.clk_o(s_clk_ref) );
 

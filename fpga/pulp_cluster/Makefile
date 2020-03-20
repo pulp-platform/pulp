@@ -4,7 +4,7 @@ all:
 	vivado-2018.2 vivado -mode batch -source tcl/run.tcl
 
 gui:
-	vivado -mode gui -source tcl/run.tcl &
+	vivado-2018.2 -mode gui -source tcl/run.tcl &
 
 clean:
 	rm -rf ${PROJECT}.xpr

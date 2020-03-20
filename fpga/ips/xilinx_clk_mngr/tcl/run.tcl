@@ -20,7 +20,7 @@ if [info exists ::env(FC_CLK_PERIOD_NS)] {
 if [info exists ::env(CL_CLK_PERIOD_NS)] {
     set CL_CLK_PERIOD_NS $::env(CL_CLK_PERIOD_NS)
 } else {
-    set CL_CLK_PERIOD_NS 50.000
+    set CL_CLK_PERIOD_NS 100.000
 }
 if [info exists ::env(PER_CLK_PERIOD_NS)] {
     set PER_CLK_PERIOD_NS $::env(PER_CLK_PERIOD_NS)

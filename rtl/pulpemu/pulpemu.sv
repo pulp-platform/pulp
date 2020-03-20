@@ -26,11 +26,12 @@ module pulpemu
 
    inout wire  pad_uart_rx,
    inout wire  pad_uart_tx,
-  
-   inout       FMC_sdio_data0,
+   inout wire  pad_uart_rts,
+   inout wire  pad_uart_cts,
+ /*  inout       FMC_sdio_data0,
    inout       FMC_sdio_data1,
    inout       FMC_sdio_data2,
-   inout       FMC_sdio_data3,
+   inout       FMC_sdio_data3,*/
    inout       FMC_sdio_cmd,
    inout       FMC_sdio_sck,
   
@@ -39,16 +40,16 @@ module pulpemu
    inout       FMC_qspi_sdio1,
    inout       FMC_qspi_sdio2,
    inout       FMC_qspi_sdio3,
-   inout       FMC_qspi_csn0,
+//   inout       FMC_qspi_csn0,
    inout       FMC_qspi_csn1,
-   inout       FMC_qspi_sck,
+//   inout       FMC_qspi_sck,
 
    inout       FMC_i2c0_sda,
    inout       FMC_i2c0_scl,
 
    inout       FMC_i2s0_sck,
    inout       FMC_i2s0_ws,
-   inout       FMC_i2s0_sdi,
+   //inout       FMC_i2s0_sdi,
    inout       FMC_i2s1_sdi,
   
   
@@ -64,6 +65,26 @@ module pulpemu
    inout       FMC_cam_data7,
    inout       FMC_cam_vsync,
 
+   inout wire  pad_hyper_cs_no0,
+   inout wire  pad_hyper_cs_no1,
+   inout wire  pad_hyper_cko,
+   inout wire  pad_hyper_ckno,
+   inout wire  pad_hyper_rwds,
+   inout wire  pad_hyper_dqio0,
+   inout wire  pad_hyper_dqio1,
+   inout wire  pad_hyper_dqio2,
+   inout wire  pad_hyper_dqio3,
+   inout wire  pad_hyper_dqio4,
+   inout wire  pad_hyper_dqio5,
+   inout wire  pad_hyper_dqio6,
+   inout wire  pad_hyper_dqio7,
+   inout wire  pad_hyper_resetn,
+   output wire test_hyper_dqio0,
+   output wire test_hyper_rwdso,
+   output wire test_hyper_cko,
+   output wire test_hyper_cs_no,
+
+
    input wire  pad_reset,
 
    input wire  pad_jtag_tck,
@@ -75,6 +96,7 @@ module pulpemu
    localparam CORE_TYPE = 0; // 0 for RISCY, 1 for ZERORISCY, 2 for MICRORISCY
    localparam USE_FPU   = 1;
    localparam USE_HWPE = 1;
+   //assign     fmc_hyperflash_csn = 1'b1;
 
    wire        ref_clk;
 
@@ -103,9 +125,11 @@ module pulpemu
         .pad_spim_sdio1(FMC_qspi_sdio1),
         .pad_spim_sdio2(FMC_qspi_sdio2),
         .pad_spim_sdio3(FMC_qspi_sdio3),
-        .pad_spim_csn0(FMC_qspi_csn0),
+       // .pad_spim_csn0(FMC_qspi_csn0),
+        .pad_spim_csn0(pad_uart_rts),
         .pad_spim_csn1(FMC_qspi_csn1),
-        .pad_spim_sck(FMC_qspi_sck),
+        //.pad_spim_sck(FMC_qspi_sck),
+        .pad_spim_sck(pad_uart_cts),
         
         .pad_uart_rx(pad_uart_rx),   //keep
         .pad_uart_tx(pad_uart_tx),   //keep
@@ -139,6 +163,25 @@ module pulpemu
         
         .pad_reset_n(~pad_reset),
         
+        .pad_hyper_cs_no0(pad_hyper_cs_no0),
+        .pad_hyper_cs_no1(pad_hyper_cs_no1),
+        .pad_hyper_cko(pad_hyper_cko),
+        .pad_hyper_ckno(pad_hyper_ckno),
+        .pad_hyper_rwds(pad_hyper_rwds),
+        .pad_hyper_dqio0(pad_hyper_dqio0),
+        .pad_hyper_dqio1(pad_hyper_dqio1),
+        .pad_hyper_dqio2(pad_hyper_dqio2),
+        .pad_hyper_dqio3(pad_hyper_dqio3),
+        .pad_hyper_dqio4(pad_hyper_dqio4),
+        .pad_hyper_dqio5(pad_hyper_dqio5),
+        .pad_hyper_dqio6(pad_hyper_dqio6),
+        .pad_hyper_dqio7(pad_hyper_dqio7),
+        .pad_hyper_resetn(pad_hyper_resetn),
+        .test_hyper_cko(test_hyper_cko),
+        .test_hyper_cs_no(test_hyper_cs_no),
+        .test_hyper_dqio0(test_hyper_dqio0),
+        .test_hyper_rwdso(test_hyper_rwdso),
+
         .pad_jtag_tck(pad_jtag_tck), //keep
         .pad_jtag_tdi(pad_jtag_tdi), //keep
         .pad_jtag_tdo(pad_jtag_tdo), //keep

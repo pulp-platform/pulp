@@ -55,10 +55,8 @@ set_property -dict {PACKAGE_PIN A21 IOSTANDARD LVCMOS33} [get_ports pad_jtag_tck
 ######################################################################
 set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS33} [get_ports pad_uart_rx]
 set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS33} [get_ports pad_uart_tx]
-
-
-#set_property -dict {PACKAGE_PIN D12 IOSTANDARD LVCMOS33} [get_ports pad_uart_rts]
-#set_property -dict {PACKAGE_PIN E12 IOSTANDARD LVCMOS33} [get_ports pad_uart_cts]
+set_property -dict {PACKAGE_PIN D12 IOSTANDARD LVCMOS33} [get_ports pad_uart_rts]
+set_property -dict {PACKAGE_PIN E12 IOSTANDARD LVCMOS33} [get_ports pad_uart_cts]
 
 ## LEDs
 #set_property -dict {PACKAGE_PIN AG14 IOSTANDARD LVCMOS33} [get_ports led0_o]
@@ -105,7 +103,7 @@ set_property -dict {PACKAGE_PIN K12 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sck
 # PULP pad_i2s_mst_ws - FPGA AC7 - FMC C18
 set_property -dict {PACKAGE_PIN AC7 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_ws]
 # PULP pad_i2s_slv_sdi0 - FPGA AB4 - FMC D8
-set_property -dict {PACKAGE_PIN AB4 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sdi]
+#set_property -dict {PACKAGE_PIN AB4 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sdi]
 # PULP pad_i2s_slv_sdi1 - FPGA AC2 - FMC C10
 set_property -dict {PACKAGE_PIN AC2 IOSTANDARD LVCMOS18} [get_ports FMC_i2s1_sdi]
 
@@ -114,13 +112,13 @@ set_property -dict {PACKAGE_PIN AC2 IOSTANDARD LVCMOS18} [get_ports FMC_i2s1_sdi
 # SDIO mapping
 ######################################################################
 # PULP pad_sdio_sdio0 - FPGA D20 - ZCU102 GPIO PMOD HEADER J87.1
-set_property -dict {PACKAGE_PIN D20 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data0]
+#set_property -dict {PACKAGE_PIN D20 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data0]
 # PULP pad_sdio_sdio1 - FPGA E20 - ZCU102 GPIO PMOD HEADER J87.3
-set_property -dict {PACKAGE_PIN E20 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data1]
+#set_property -dict {PACKAGE_PIN E20 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data1]
 # PULP pad_sdio_sdio2 - FPGA D22 - ZCU102 GPIO PMOD HEADER J87.5
-set_property -dict {PACKAGE_PIN D22 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data2]
+#set_property -dict {PACKAGE_PIN D22 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data2]
 # PULP pad_sdio_sdio3 - FPGA E22 - ZCU102 GPIO PMOD HEADER J87.7
-set_property -dict {PACKAGE_PIN E22 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data3]
+#set_property -dict {PACKAGE_PIN E22 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_data3]
 # PULP pad_sdio_cmd - FPGA F20 - ZCU102 GPIO PMOD HEADER J87.2
 set_property -dict {PACKAGE_PIN F20 IOSTANDARD LVCMOS33} [get_ports FMC_sdio_cmd]
 # PULP pad_sdio_sck - FPGA G20 - ZCU102 GPIO PMOD HEADER J87.4
@@ -139,9 +137,9 @@ set_property -dict {PACKAGE_PIN AA2 IOSTANDARD LVCMOS18} [get_ports FMC_qspi_sdi
 # PULP pad_qspi_sdio3 - FPGA Y4 - FMC G6
 set_property -dict {PACKAGE_PIN Y4 IOSTANDARD LVCMOS18} [get_ports FMC_qspi_sdio3]
 # PULP pad_qspi_csn0 - FPGA Y10 - FMC H19
-set_property -dict {PACKAGE_PIN Y10 IOSTANDARD LVCMOS18} [get_ports FMC_qspi_csn0]
+#set_property -dict {PACKAGE_PIN Y10 IOSTANDARD LVCMOS18} [get_ports FMC_qspi_csn0]
 # PULP pad_qspi_sck - FPGA W7 - FMC G15
-set_property -dict {PACKAGE_PIN W7 IOSTANDARD LVCMOS18} [get_ports FMC_qspi_sck]
+#set_property -dict {PACKAGE_PIN W7 IOSTANDARD LVCMOS18} [get_ports FMC_qspi_sck]
 # GAP pad_spim0_sck - FPGA V2 - FMC H7
 set_property -dict {PACKAGE_PIN V2 IOSTANDARD LVCMOS18} [get_ports FMC_qspi_csn1]
 
@@ -172,10 +170,30 @@ set_property -dict {PACKAGE_PIN L10 IOSTANDARD LVCMOS18} [get_ports FMC_cam_data
 # PULP pad_cam_vsync - FPGA AC6 - FMC C19
 set_property -dict {PACKAGE_PIN AC6 IOSTANDARD LVCMOS18} [get_ports FMC_cam_vsync]
 
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tdi]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tdo]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tck]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tms]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_reset_n]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/s_ref_clk]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/s_bootsel]
+####################################################################
+# Hyper Bus
+####################################################################
+
+set_property -dict {PACKAGE_PIN D20 IOSTANDARD LVCMOS33} [get_ports test_hyper_cko]
+set_property -dict {PACKAGE_PIN E20 IOSTANDARD LVCMOS33} [get_ports test_hyper_cs_no]
+set_property -dict {PACKAGE_PIN D22 IOSTANDARD LVCMOS33} [get_ports test_hyper_dqio0]
+set_property -dict {PACKAGE_PIN E22 IOSTANDARD LVCMOS33} [get_ports test_hyper_rwdso]
+
+set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS18} [get_ports pad_hyper_cs_no1]
+set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS18} [get_ports pad_hyper_cs_no0]
+set_property -dict {PACKAGE_PIN AB4 IOSTANDARD LVCMOS18} [get_ports pad_hyper_cko]
+set_property -dict {PACKAGE_PIN AC4 IOSTANDARD LVCMOS18} [get_ports pad_hyper_ckno]
+set_property -dict {PACKAGE_PIN AB8 IOSTANDARD LVCMOS18} [get_ports pad_hyper_rwds]
+set_property -dict {PACKAGE_PIN AB3 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio0]
+set_property -dict {PACKAGE_PIN AC3 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio1]
+set_property -dict {PACKAGE_PIN W2 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio2]
+set_property -dict {PACKAGE_PIN W1 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio3]
+set_property -dict {PACKAGE_PIN Y12 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio4]
+set_property -dict {PACKAGE_PIN AA12 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio5]
+set_property -dict {PACKAGE_PIN N13 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio6]
+set_property -dict {PACKAGE_PIN M13 IOSTANDARD LVCMOS18} [get_ports pad_hyper_dqio7]
+set_property -dict {PACKAGE_PIN M11 IOSTANDARD LVCMOS18} [get_ports pad_hyper_resetn]
+
+#set_property PACKAGE_PIN M15 [get_ports fmc_hyperflash_csn]
+#set_property IOSTANDARD LVCMOS18 [get_ports fmc_hyperflash_csn]
+

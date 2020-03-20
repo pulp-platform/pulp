@@ -24,11 +24,18 @@ pulp_soc:
   server: https://github.com
   group:  pulp-platform
 
+#pulp_cluster:
+#  commit: 741bbc945213b6367c89ee668960dcdfeaf1c8d0
+#  domain: [cluster]
+#  server: https://github.com
+#  group:  pulp-platform
+
 pulp_cluster:
-  commit: 741bbc945213b6367c89ee668960dcdfeaf1c8d0
+  commit: 646598d71952d4f92babe9b47510c143a9b1d7eb
   domain: [cluster]
   server: https://github.com
   group:  pulp-platform
+
 
 tbtools:
   commit: v0.1
@@ -36,3 +43,9 @@ tbtools:
   domain: [soc]
   server: https://github.com
   group:  pulp-platform
+
+udma_hyper:
+  commit: master
+  server: git@iis-git.ee.ethz.ch
+  group: hayate
+
