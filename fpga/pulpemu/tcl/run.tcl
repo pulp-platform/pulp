@@ -49,8 +49,8 @@ read_ip $FPGA_IPS/xilinx_private_ram/ip/xilinx_private_ram.xci
 read_ip $FPGA_IPS/xilinx_rom_bank_2048x32/ip/xilinx_rom_bank_2048x32.xci
 read_ip $FPGA_IPS/xilinx_clk_mngr/ip/xilinx_clk_mngr.xci
 read_ip $FPGA_IPS/xilinx_slow_clk_mngr/ip/xilinx_slow_clk_mngr.xci
-read_ip $FPGA_IPS/ila_0/ip/ila_0.xci
-read_ip $FPGA_IPS/ila_1/ip/ila_1.xci
+#read_ip $FPGA_IPS/ila_0/ip/ila_0.xci
+#read_ip $FPGA_IPS/ila_1/ip/ila_1.xci
 
 
 

@@ -33,6 +33,7 @@ set_property -dict {PACKAGE_PIN A20 IOSTANDARD LVCMOS33} [get_ports pad_jtag_tms
 set_property -dict {PACKAGE_PIN B20 IOSTANDARD LVCMOS33} [get_ports pad_jtag_tdi]
 set_property -dict {PACKAGE_PIN A22 IOSTANDARD LVCMOS33} [get_ports pad_jtag_tdo]
 set_property -dict {PACKAGE_PIN A21 IOSTANDARD LVCMOS33} [get_ports pad_jtag_tck]
+set_property -dict {PACKAGE_PIN B21 IOSTANDARD LVCMOS33} [get_ports pad_jtag_trst]
 
 #set_property -dict {PACKAGE_PIN B21 IOSTANDARD LVCMOS33} [get_ports pad_pmod0_4]
 #set_property -dict {PACKAGE_PIN C21 IOSTANDARD LVCMOS33} [get_ports pad_pmod0_5]
@@ -196,4 +197,3 @@ set_property -dict {PACKAGE_PIN M11 IOSTANDARD LVCMOS18} [get_ports pad_hyper_re
 
 #set_property PACKAGE_PIN M15 [get_ports fmc_hyperflash_csn]
 #set_property IOSTANDARD LVCMOS18 [get_ports fmc_hyperflash_csn]
-

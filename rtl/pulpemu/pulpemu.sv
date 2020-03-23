@@ -85,6 +85,7 @@ module pulpemu
    output wire test_hyper_cs_no,
 
 
+   input wire  pad_jtag_trst,
    input wire  pad_reset,
 
    input wire  pad_jtag_tck,
@@ -99,6 +100,20 @@ module pulpemu
    //assign     fmc_hyperflash_csn = 1'b1;
 
    wire        ref_clk;
+
+   logic res0n_q, res1n_q;
+   logic reset_n;
+
+   always_ff @(posedge ref_clk) begin : synchronizer
+     
+     res0n_q <= pad_jtag_trst;
+     res1n_q <= res0n_q;
+
+    end
+
+   
+
+  assign reset_n = ~pad_reset & res1n_q;
 
 
    //Differential to single ended clock conversion
@@ -161,7 +176,7 @@ module pulpemu
         .pad_i2s0_sdi(FMC_i2s0_sdi),
         .pad_i2s1_sdi(FMC_i2s1_sdi),
         
-        .pad_reset_n(~pad_reset),
+        .pad_reset_n(reset_n),
         
         .pad_hyper_cs_no0(pad_hyper_cs_no0),
         .pad_hyper_cs_no1(pad_hyper_cs_no1),
