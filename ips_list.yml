@@ -25,7 +25,7 @@ pulp_soc:
   group:  pulp-platform
 
 pulp_cluster:
-  commit: fpga
+  commit: xpulpnn
   domain: [cluster]
   server: https://github.com
   group:  pulp-platform

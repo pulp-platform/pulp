@@ -78,6 +78,10 @@ module pulpemu
 
    wire        ref_clk;
 
+   logic       reset_n;
+
+   assign reset_n = ~pad_reset & pad_jtag_trst;
+
 
    //Differential to single ended clock conversion
    IBUFGDS
@@ -137,7 +141,7 @@ module pulpemu
         .pad_i2s0_sdi(FMC_i2s0_sdi),
         .pad_i2s1_sdi(FMC_i2s1_sdi),
         
-        .pad_reset_n(~pad_reset),
+        .pad_reset_n(reset_n),
         
         .pad_jtag_tck(pad_jtag_tck), //keep
         .pad_jtag_tdi(pad_jtag_tdi), //keep
