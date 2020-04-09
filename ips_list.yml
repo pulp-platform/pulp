@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: v1.1.0
+  commit: xpulpnn
   domain: [soc]
   server: https://github.com
   group:  pulp-platform
