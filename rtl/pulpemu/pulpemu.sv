@@ -66,6 +66,7 @@ module pulpemu
 
    input wire  pad_reset,
 
+   input wire  pad_jtag_trst,
    input wire  pad_jtag_tck,
    input wire  pad_jtag_tdi,
    output wire pad_jtag_tdo,
