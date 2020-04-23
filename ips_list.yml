@@ -24,7 +24,7 @@ pulp_soc:
   group:  pulp-platform
 
 pulp_cluster:
-  commit: 741bbc945213b6367c89ee668960dcdfeaf1c8d0
+  commit: 1a3bdcfbb7158ab66400874d26a0f4eeddfa8408
   server: https://github.com
   group:  pulp-platform
 
