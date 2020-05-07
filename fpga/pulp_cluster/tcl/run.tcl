@@ -20,6 +20,7 @@ source tcl/rtl_add_files.tcl
 
 # add memory cuts + FPU IPs
 read_ip $FPGA_IPS/xilinx_tcdm_bank_1024x32/ip/xilinx_tcdm_bank_1024x32.xci
+read_ip $FPGA_IPS/xilinx_tcdm_bank_2048x32/ip/xilinx_tcdm_bank_2048x32.xci
 
 # set pulp_cluster as top
 set_property top pulp_cluster [current_fileset]
