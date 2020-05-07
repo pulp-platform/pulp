@@ -19,13 +19,13 @@
 #
 
 pulp_soc:
-  commit: xpulpnn
+  commit: xpulpnn_v1.0
   domain: [soc]
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: xpulpnn
+  commit: ml_v1.0
   domain: [cluster]
   server: https://github.com
   group:  pulp-platform
