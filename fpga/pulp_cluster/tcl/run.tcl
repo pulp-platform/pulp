@@ -18,8 +18,11 @@ source tcl/rtl_src_files.tcl
 source tcl/ips_add_files.tcl
 source tcl/rtl_add_files.tcl
 
+add_files -norecurse -scan_for_includes  $IPS/pulp_soc/rtl/components/pulp_interfaces.sv
+
 # add memory cuts + FPU IPs
 read_ip $FPGA_IPS/xilinx_tcdm_bank_1024x32/ip/xilinx_tcdm_bank_1024x32.xci
+read_ip $FPGA_IPS/xilinx_tcdm_bank_2048x32/ip/xilinx_tcdm_bank_2048x32.xci
 
 # set pulp_cluster as top
 set_property top pulp_cluster [current_fileset]

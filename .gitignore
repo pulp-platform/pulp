@@ -4,3 +4,7 @@ ips
 ipstools
 pulp-builder
 pulp-rt-examples
+*mk
+*pyc
+*.f
+*.json

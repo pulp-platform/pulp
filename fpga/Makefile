@@ -16,6 +16,7 @@ mem:
 	cd ips/xilinx_private_ram; make clean all
 	cd ips/xilinx_rom_bank_2048x32; make clean all
 	cd ips/xilinx_tcdm_bank_1024x32; make clean all
+	cd ips/xilinx_tcdm_bank_2048x32; make clean all
 
 clk: ## Synthesizes the Xilinx Clocking Manager IPs
 	cd ips/xilinx_clk_mngr; make clean all
@@ -42,4 +43,5 @@ clean-ips:
 	cd ips/xilinx_private_ram; make clean
 	cd ips/xilinx_rom_bank_2048x32; make clean
 	cd ips/xilinx_tcdm_bank_1024x32; make clean
+	cd ips/xilinx_tcdm_bank_2048x32; make clean
 	cd ips/xilinx_clk_mngr; make clean
