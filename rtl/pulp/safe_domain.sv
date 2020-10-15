@@ -12,7 +12,10 @@
 module safe_domain
     #(
         parameter FLL_DATA_WIDTH = 32,
-        parameter FLL_ADDR_WIDTH = 32
+        parameter FLL_ADDR_WIDTH = 32,
+        parameter int unsigned N_UART = 1,
+        parameter int unsigned N_SPI = 1,
+        parameter int unsigned N_I2C = 2
     )
     (
         input  logic             ref_clk_i            ,
@@ -45,21 +48,13 @@ module safe_domain
         input  logic             uart_tx_i            ,
         output logic             uart_rx_o            ,
 
-        // I2C0
-        input  logic             i2c0_scl_out_i       ,
-        output logic             i2c0_scl_in_o        ,
-        input  logic             i2c0_scl_oe_i        ,
-        input  logic             i2c0_sda_out_i       ,
-        output logic             i2c0_sda_in_o        ,
-        input  logic             i2c0_sda_oe_i        ,
-
-        // I2C1
-        input  logic             i2c1_scl_out_i       ,
-        output logic             i2c1_scl_in_o        ,
-        input  logic             i2c1_scl_oe_i        ,
-        input  logic             i2c1_sda_out_i       ,
-        output logic             i2c1_sda_in_o        ,
-        input  logic             i2c1_sda_oe_i        ,
+        // I2C
+        input  logic [N_I2C-1:0] i2c_scl_out_i,
+        output logic [N_I2C-1:0] i2c_scl_in_o,
+        input  logic [N_I2C-1:0] i2c_scl_oe_i,
+        input  logic [N_I2C-1:0] i2c_sda_out_i,
+        output logic [N_I2C-1:0] i2c_sda_in_o,
+        input  logic [N_I2C-1:0] i2c_sda_oe_i,
 
         // I2S
         output logic             i2s_slave_sd0_o      ,
@@ -72,30 +67,13 @@ module safe_domain
         input  logic             i2s_slave_sck_oe     ,
 
         // SPI MASTER
-        input  logic             spi_master0_csn0_i   ,
-        input  logic             spi_master0_csn1_i   ,
-        input  logic             spi_master0_sck_i    ,
-        output logic             spi_master0_sdi0_o   ,
-        output logic             spi_master0_sdi1_o   ,
-        output logic             spi_master0_sdi2_o   ,
-        output logic             spi_master0_sdi3_o   ,
-        input  logic             spi_master0_sdo0_i   ,
-        input  logic             spi_master0_sdo1_i   ,
-        input  logic             spi_master0_sdo2_i   ,
-        input  logic             spi_master0_sdo3_i   ,
-        input  logic             spi_master0_oen0_i   ,
-        input  logic             spi_master0_oen1_i   ,
-        input  logic             spi_master0_oen2_i   ,
-        input  logic             spi_master0_oen3_i   ,
+        input  logic [N_SPI-1:0]      spi_clk_i,
+        input  logic [N_SPI-1:0][3:0] spi_csn_i,
+        input  logic [N_SPI-1:0][3:0] spi_oen_i,
+        input  logic [N_SPI-1:0][3:0] spi_sdo_i,
+        output logic [N_SPI-1:0][3:0] spi_sdi_o,
 
-        input  logic             spi_master1_csn0_i   ,
-        input  logic             spi_master1_csn1_i   ,
-        input  logic             spi_master1_sck_i    ,
-        output logic             spi_master1_sdi_o    ,
-        input  logic             spi_master1_sdo_i    ,
-        input  logic [1:0]       spi_master1_mode_i,
-
-
+        // SDIO
         input  logic             sdio_clk_i,
         input  logic             sdio_cmd_i,
         output logic             sdio_cmd_o,
@@ -258,19 +236,12 @@ module safe_domain
         .uart_tx_i             ( uart_tx_i             ),
         .uart_rx_o             ( uart_rx_o             ),
 
-        .i2c0_scl_out_i        ( i2c0_scl_out_i        ),
-        .i2c0_scl_in_o         ( i2c0_scl_in_o         ),
-        .i2c0_scl_oe_i         ( i2c0_scl_oe_i         ),
-        .i2c0_sda_out_i        ( i2c0_sda_out_i        ),
-        .i2c0_sda_in_o         ( i2c0_sda_in_o         ),
-        .i2c0_sda_oe_i         ( i2c0_sda_oe_i         ),
-
-        .i2c1_scl_out_i        ( i2c1_scl_out_i        ),
-        .i2c1_scl_in_o         ( i2c1_scl_in_o         ),
-        .i2c1_scl_oe_i         ( i2c1_scl_oe_i         ),
-        .i2c1_sda_out_i        ( i2c1_sda_out_i        ),
-        .i2c1_sda_in_o         ( i2c1_sda_in_o         ),
-        .i2c1_sda_oe_i         ( i2c1_sda_oe_i         ),
+        .i2c_scl_out_i         ( i2c_scl_out_i         ),
+        .i2c_scl_in_o          ( i2c_scl_in_o          ),
+        .i2c_scl_oe_i          ( i2c_scl_oe_i          ),
+        .i2c_sda_out_i         ( i2c_sda_out_i         ),
+        .i2c_sda_in_o          ( i2c_sda_in_o          ),
+        .i2c_sda_oe_i          ( i2c_sda_oe_i          ),
 
         .i2s_slave_sd0_o       ( i2s_slave_sd0_o       ),
         .i2s_slave_sd1_o       ( i2s_slave_sd1_o       ),
@@ -281,21 +252,11 @@ module safe_domain
         .i2s_slave_sck_i       ( i2s_slave_sck_i       ),
         .i2s_slave_sck_oe      ( i2s_slave_sck_oe      ),
 
-        .spi_master0_csn0_i    ( spi_master0_csn0_i    ),
-        .spi_master0_csn1_i    ( spi_master0_csn1_i    ),
-        .spi_master0_sck_i     ( spi_master0_sck_i     ),
-        .spi_master0_sdi0_o    ( spi_master0_sdi0_o    ),
-        .spi_master0_sdi1_o    ( spi_master0_sdi1_o    ),
-        .spi_master0_sdi2_o    ( spi_master0_sdi2_o    ),
-        .spi_master0_sdi3_o    ( spi_master0_sdi3_o    ),
-        .spi_master0_sdo0_i    ( spi_master0_sdo0_i    ),
-        .spi_master0_sdo1_i    ( spi_master0_sdo1_i    ),
-        .spi_master0_sdo2_i    ( spi_master0_sdo2_i    ),
-        .spi_master0_sdo3_i    ( spi_master0_sdo3_i    ),
-        .spi_master0_oen0_i    ( spi_master0_oen0_i    ),
-        .spi_master0_oen1_i    ( spi_master0_oen1_i    ),
-        .spi_master0_oen2_i    ( spi_master0_oen2_i    ),
-        .spi_master0_oen3_i    ( spi_master0_oen3_i    ),
+        .spi_clk_i             ( spi_clk_i             ),
+        .spi_csn_i             ( spi_csn_i             ),
+        .spi_oen_i             ( spi_oen_i             ),
+        .spi_sdo_i             ( spi_sdo_i             ),
+        .spi_sdi_o             ( spi_sdi_o             ),
 
         .sdio_clk_i            ( sdio_clk_i            ),
         .sdio_cmd_i            ( sdio_cmd_i            ),
