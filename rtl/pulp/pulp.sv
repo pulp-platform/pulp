@@ -837,7 +837,7 @@ module pulp
       .AXI_STRB_OUT_WIDTH ( AXI_SOC_CLUSTER_STRB_WIDTH ),
       .BUFFER_WIDTH       ( BUFFER_WIDTH               ),
       .EVNT_WIDTH         ( EVENT_WIDTH                ),
-      .NB_CL_CORES        ( 0                          ),
+      .NB_CL_CORES        ( `NB_CORES                  ),
       .N_UART             ( N_UART                     ),
       .N_SPI              ( N_SPI                      ),
       .N_I2C              ( N_I2C                      )

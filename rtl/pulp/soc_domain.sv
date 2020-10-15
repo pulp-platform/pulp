@@ -237,8 +237,7 @@ module soc_domain #(
     output logic [7:0]                       data_master_b_readpointer_o
     );
 
-    pulp_soc
-    #(
+    pulp_soc #(
         .CORE_TYPE               ( CORE_TYPE          ),
         .USE_FPU                 ( USE_FPU            ),
         .USE_HWPE                ( USE_HWPE           ),
@@ -258,9 +257,7 @@ module soc_domain #(
         .N_UART                  ( N_UART             ),
         .N_SPI                   ( N_SPI              ),
         .N_I2C                   ( N_I2C              )
-   )
-   pulp_soc_i
-   (
+   ) pulp_soc_i (
 
         .boot_l2_i                    ( 1'b0                         ),
         .cluster_dbg_irq_valid_o      ( dbg_irq_valid_o     ),    //dbg_irq_valid_o
