@@ -41,6 +41,9 @@ module soc_domain #(
 
     input logic                              bootsel_i,
 
+    input  logic                             fc_fetch_en_valid_i,
+    input  logic                             fc_fetch_en_i,
+
     input  logic                             jtag_tck_i,
     input  logic                             jtag_trst_ni,
     input  logic                             jtag_tms_i,

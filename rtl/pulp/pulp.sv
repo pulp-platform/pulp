@@ -856,6 +856,10 @@ module pulp
 
         .bootsel_i                    ( s_bootsel                        ),
 
+        // we immediately start booting in the default setup
+        .fc_fetch_en_valid_i          ( 1'b1                             ),
+        .fc_fetch_en_i                ( 1'b1                             ),
+
         .jtag_tck_i                   ( s_jtag_tck                       ),
         .jtag_trst_ni                 ( s_jtag_trst                      ),
         .jtag_tms_i                   ( s_jtag_tms                       ),
