@@ -7,7 +7,7 @@ VIVADOFLAGS ?= -nojournal -mode batch -source scripts/prologue.tcl
 .PHONY: help
 
 all: ## Create and synthesize the IP in batch mode.
-	vivado-2018.2 vivado -mode batch -source tcl/run.tcl
+	vivado -mode batch -source tcl/run.tcl
 	mkdir -p ip
 	cp -r ${PROJECT}.srcs/sources_1/ip/${PROJECT}/* ip/.
 	cp ${PROJECT}.runs/${PROJECT}_synth_1/${PROJECT}.dcp ip/.
