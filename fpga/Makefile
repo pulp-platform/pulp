@@ -1,4 +1,3 @@
-
 include fpga-settings.mk
 
 all: synth impl
@@ -11,6 +10,8 @@ impl:
 
 ips: mem clk
 
+generate_bitstream: ips synth-pulpcluster synth-pulpemu
+
 mem:
 	cd ips/xilinx_interleaved_ram; make clean all
 	cd ips/xilinx_private_ram; make clean all
@@ -22,9 +23,9 @@ clk: ## Synthesizes the Xilinx Clocking Manager IPs
 	cd ips/xilinx_clk_mngr; make clean all
 	cd ips/xilinx_slow_clk_mngr; make clean all
 
-synth: synth-ulpcluster synth-pulpemu
+synth: synth-pulpcluster synth-pulpemu
 
-synth-ulpcluster:
+synth-pulpcluster:
 	cd pulp_cluster; make clean all
 
 synth-pulpemu:

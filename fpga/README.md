@@ -11,10 +11,11 @@ PULP has been implemented on FPGA for various Xilinx FPGA boards
 ### Bitstream Generation
 In order to generate the PULP bitstream for a supported target FPGA board
 first generate the necessary synthesis include scripts by starting the
-`update-ips` script in the pulpissimo root directory:
+`update-ips` script in the PULP-open root directory:
 
 ```Shell
 ./update-ips
+./generate-scripts-fpga 
 ```
 This will parse the ips_list.yml using the PULP IPApproX IP management tool to
 generate tcl scripts for all the IPs used in the PULP project. These files
@@ -27,6 +28,44 @@ cd fpga
 source sourceme.sh
 ```
 Choose the platfom.
+
+
+### VIVADO IPs
+
+Before synthesizing the Design you should implement the Vivado-related ips. 
+To do this run the following Makefile command:
+
+```Shell
+make ips
+```
+
+This will implement all the mem bram macros and the IPs needed by the design
+
+
+### PULP CLUSTER SYNTHESIS
+
+First we need to synthesize the cluster
+To do this run the following Makefile command:
+
+```Shell
+make synth-pulpcluster
+```
+
+
+### TOP LEVEL (PULP) SYNTHESIS AND IMPLEMENTATION
+
+If you already synthesized the cluster you can run the following command:
+
+```Shell
+make synth-pulpemu
+```
+
+Otherwise you can run the following, which synthesizes the cluster, the top and then generates the bitstream
+
+```Shell
+make synth
+```
+
 
 ### Bitstream Flashing
 Start Vivado then:
