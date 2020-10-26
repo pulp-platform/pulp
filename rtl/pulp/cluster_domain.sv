@@ -25,6 +25,7 @@
 module cluster_domain
 #(
     //CLUSTER PARAMETERS
+    parameter CORE_TYPE_CL          = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
     parameter NB_CORES              = `NB_CORES,
     parameter NB_HWPE_PORTS         = 4,
     parameter NB_DMAS               = 4,
@@ -252,6 +253,7 @@ module cluster_domain
     pulp_cluster
 `ifndef USE_CLUSTER_NETLIST
     #(
+        .CORE_TYPE_CL                 ( CORE_TYPE_CL                 ),
         .NB_CORES                     ( NB_CORES                     ),
         .NB_HWPE_PORTS                ( NB_HWPE_PORTS                ),
         .NB_DMAS                      ( NB_DMAS                      ),
