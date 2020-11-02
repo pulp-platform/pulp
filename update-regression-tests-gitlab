@@ -1,0 +1,25 @@
+#!/bin/bash -e
+# This script is solely used on gitlab
+
+GITLAB=iis-git.ee.ethz.ch
+
+# getting tests
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-tests/ml_tests.git \
+    tests/ml_tests
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/parallel_bare_tests.git \
+    tests/parallel_bare_tests
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/riscv_tests.git \
+    tests/riscv_tests
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/riscv_tests.git \
+    tests/riscv_tests_soc
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/sequential_bare_tests.git \
+    tests/sequential_bare_tests
+
+# using "stable" versions
+echo "Using stable versions of tests"
+# marsellus branch
+git -C tests/ml_tests checkout -q ea04915d3b1b1ac17a045586ca2c97b81e93649e
+git -C tests/parallel_bare_tests checkout -q 91b1bad09d088df9140f5391a87df3f6ebfab344
+git -C tests/riscv_tests checkout -q 8bbda74844c4baaa86efa89a2e19c985fe4095c3
+git -C tests/riscv_tests_soc checkout -q 8bbda74844c4baaa86efa89a2e19c985fe4095c3
+git -C tests/sequential_bare_tests checkout -q f2cf176414a779b7fae31836d137cfaf6e78b719

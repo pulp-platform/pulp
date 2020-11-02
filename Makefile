@@ -1,9 +1,9 @@
 
 SHELL=bash
 
-PKG_DIR ?= $(PWD)/install
+PKG_DIR ?= $(PWD)/pulp-runtime
 
-export VSIM_PATH=$(PKG_DIR)
+export VSIM_PATH=$(PWD)/sim
 export PULP_PATH=$(PWD)
 
 export MSIM_LIBS_PATH=$(VSIM_PATH)/modelsim_libs
@@ -32,7 +32,6 @@ $(foreach file, $(INSTALL_FILES), $(eval $(call declareInstallFile,$(file))))
 BRANCH ?= master
 
 checkout:
-	git submodule update --init
 	./update-ips
 
 # generic clean and build targets for the platform
@@ -41,11 +40,12 @@ clean:
 	cd sim && $(MAKE) clean
 
 build:
-	cd sim && $(MAKE) lib build opt
-	cp -r rtl/tb/* $(VSIM_PATH)
-
+#	cd sim && $(MAKE) lib build opt
+#	cp -r rtl/tb/* $(VSIM_PATH)
+	cd sim && $(MAKE) all
 # sdk specific targets
-install: $(INSTALL_HEADERS)
+install:
+	$(INSTALL_HEADERS)
 
 vopt:
 	export VOPT_FLOW=1 && cd $(VSIM_PATH) && vsim -64 -c -do "source tcl_files/config/vsim.tcl; quit"
@@ -91,12 +91,18 @@ sdk-gitlab:
 
 # simplified runtime for PULP that doesn't need the sdk
 pulp-runtime:
-	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.3
+	git clone https://github.com/pulp-platform/pulp-runtime.git \
+	source pulp-runtime/configs/pulp.sh \
+	export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/ \
+	export export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
 
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
 test-checkout-gitlab:
 	./update-tests-gitlab
+
+test-checkout-regression-gitlab:
+	./update-regression-tests-gitlab
 
 # test with sdk release
 test-gitlab: tests
@@ -111,6 +117,26 @@ test-runtime-gitlab: pulp-runtime
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v \
 		--report-junit -t 3600 --yaml \
 		-o simplified-runtime.xml runtime-tests.yaml
+
+test-local-regressions: 
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+        ## cd sim; \
+	## make all; \
+	## cd ..;
+	## cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
+	## allowed max 5 minutes per test
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
+
+test-local-runtime: 
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+        ## cd sim; \
+	## make all; \
+	## cd ..;
+	## cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
+	## allowed max 5 minutes per test
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
 
 # test with built sdk
 test-gitlab2:
