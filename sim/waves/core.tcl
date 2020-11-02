@@ -1,5 +1,5 @@
 # add fc
-set rvcores [find instances -recursive -bydu riscv_core -nodu]
+set rvcores tb_pulp/i_dut/soc_domain_i/pulp_soc_i/fc_subsystem_i/FC_CORE/lFC_CORE/
 set fpuprivate [find instances -recursive -bydu fpu_private]
 set rvpmp [find instances -recursive -bydu riscv_pmp]
 
@@ -8,13 +8,10 @@ if {$rvcores ne ""} {
 
   add wave -group "Core"                                     $rvcores/*
   add wave -group "Core"  -group "IF Stage" -group "Hwlp Ctrl"              $rvcores/if_stage_i/hwloop_controller_i/*
-  if {$rvprefetch ne ""} {
-    add wave -group "Core"  -group "IF Stage" -group "Prefetch" -group "L0"   $rvcores/if_stage_i/prefetch_128/prefetch_buffer_i/L0_buffer_i/*
-    add wave -group "Core"  -group "IF Stage" -group "Prefetch"               $rvcores/if_stage_i/prefetch_128/prefetch_buffer_i/*
-  } {
-    add wave -group "Core"  -group "IF Stage" -group "Prefetch" -group "FIFO" $rvcores/if_stage_i/prefetch_32/prefetch_buffer_i/fifo_i/*
-    add wave -group "Core"  -group "IF Stage" -group "Prefetch"               $rvcores/if_stage_i/prefetch_32/prefetch_buffer_i/*
-  }
+
+  add wave -group "Core"  -group "IF Stage" -group "Prefetch" -group "FIFO" $rvcores/if_stage_i/prefetch_32/prefetch_buffer_i/fifo_i/*
+  add wave -group "Core"  -group "IF Stage" -group "Prefetch"               $rvcores/if_stage_i/prefetch_32/prefetch_buffer_i/*
+  
   add wave -group "Core"  -group "IF Stage"                                 $rvcores/if_stage_i/*
   add wave -group "Core"  -group "ID Stage"                                 $rvcores/id_stage_i/*
   add wave -group "Core"  -group "RF"                                       $rvcores/id_stage_i/registers_i/riscv_register_file_i/mem
