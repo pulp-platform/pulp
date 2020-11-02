@@ -299,8 +299,7 @@ module cluster_domain
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
     )
 `endif    
-    cluster_i
-    (
+    cluster_i (
         .clk_i                        ( clk_i                        ),
         .rst_ni                       ( rst_ni                       ),
         .ref_clk_i                    ( ref_clk_i                    ),
