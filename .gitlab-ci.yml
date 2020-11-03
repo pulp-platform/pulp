@@ -74,6 +74,8 @@ build_rtl:
 test_simplified_sw:
   stage: test
   before_script:
+    - echo "Re-build"
+    - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
     - echo "Source and exports"
