@@ -13,9 +13,11 @@
 # limitations under the License.
 
 
-
+variables:
+  PATH: "/home/gitlabci/bin:/usr/lib64/qt-3.3/bin:/home/gitlabci/bin:/home/gitlabci/bin:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/local/condor/bin:/usr/sepp/bin:/usr/sepp/bin:/usr/local/anaconda3/bin:/var/lib/snapd/snap/bin:/usr/sepp/bin:/usr/local/anaconda3/bin:/var/lib/snapd/snap/bin:/usr/local/condor/bin:/usr/sepp/bin:/usr/sepp/bin:/var/lib/snapd/snap/bin"
 before_script:
   - pwd
+  - echo "$PATH"
 
 # after_script:
 #   - echo "stage finished"
@@ -80,6 +82,8 @@ test_bare_regressions:
     - make pulp-runtime
     - echo "Source and exports"
     - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
   script:
     - echo "Running software test"
     - make git-ci-bare-regs
@@ -102,6 +106,8 @@ test_ml_regressions:
     - make pulp-runtime
     - echo "Source and exports"
     - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
   script:
     - echo "Running software test"
     - make git-ci-ml-regs
@@ -124,6 +130,8 @@ test_riscv_regressions:
     - make pulp-runtime
     - echo "Source and exports"
     - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
   script:
     - echo "Running software test"
     - make git-ci-riscv-regs
