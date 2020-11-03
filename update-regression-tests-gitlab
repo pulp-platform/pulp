@@ -19,7 +19,7 @@ git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-sw/sequential_b
 echo "Using stable versions of tests"
 # marsellus branch
 git -C tests/ml_tests checkout -q ea04915d3b1b1ac17a045586ca2c97b81e93649e
-#git -C tests/parallel_bare_tests checkout -q 91b1bad09d088df9140f5391a87df3f6ebfab344
+git -C tests/parallel_bare_tests checkout -q 91b9c567c6c719d80cd6ce03550a2937875f5731
 #git -C tests/riscv_tests checkout -q 8bbda74844c4baaa86efa89a2e19c985fe4095c3
 #git -C tests/riscv_tests_soc checkout -q 8bbda74844c4baaa86efa89a2e19c985fe4095c3
 #git -C tests/sequential_bare_tests checkout -q f2cf176414a779b7fae31836d137cfaf6e78b719
