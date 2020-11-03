@@ -76,6 +76,10 @@ test_simplified_sw:
   before_script:
     - echo "Fetching Runtime"
     - make pulp-runtime
+    - echo "Source and exports"
+    - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/ 
+    - export PATH="/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH"
   script:
     - echo "Running software test"
     - make test-local-regressions
