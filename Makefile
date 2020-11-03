@@ -127,6 +127,21 @@ test-local-regressions:
 	## allowed max 5 minutes per test
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
 
+git-ci-ml-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml ml-tests.yaml
+
+git-ci-riscv-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1200 --yaml -o simplified-runtime.xml riscv-tests.yaml
+
+git-ci-bare-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1200 --yaml -o simplified-runtime.xml bare-tests.yaml
+
 test-local-runtime: 
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
@@ -135,7 +150,7 @@ test-local-runtime:
 	## cd ..;
 	## cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
 	## allowed max 5 minutes per test
-	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1200 --yaml -o simplified-runtime.xml runtime-tests.yaml
 
 # test with built sdk
 test-gitlab2:

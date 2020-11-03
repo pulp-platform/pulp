@@ -1,0 +1,53 @@
+
+ml_tests:
+  mlDotp:
+    path: ./ml_tests/mlDotp #ok
+    command: make clean all run
+  mlSchur:
+    path: ./ml_tests/mlSchur #ok
+    command: make clean all run
+  mlGemm:
+    path: ./ml_tests/mlGemm #ok 
+    command: make clean all run
+  mlSin:
+    path: ./ml_tests/mlSin #ok
+    command: make clean all run
+  mlSvd:
+    path: ./ml_tests/mlSvd #ok
+    command: make clean all run
+  mlButter:
+    path: ./ml_tests/mlButter #ok
+    command: make clean all run
+  mlGradDir:
+    path: ./ml_tests/mlGradDir #ok
+    command: make clean all run
+  mlRbf:
+    path: ./ml_tests/mlRbf #ok
+    command: make clean all run
+  mlLog:
+    path: ./ml_tests/mlLog #ok
+    command: make clean all run
+  mlAxpy:
+    path: ./ml_tests/mlAxpy #ok
+    command: make clean all run
+  mlGivens:
+    path: ./ml_tests/mlGivens #ok
+    command: make clean all run
+  mlWdotp:
+    path: ./ml_tests/mlWdotp #ok
+    command: make clean all run
+  mlDist:
+    path: ./ml_tests/mlDist #ok
+    command: make clean all run
+  mlGemv:
+    path: ./ml_tests/mlGemv #ok
+    command: make clean all run
+  mlChol:
+    path: ./ml_tests/mlChol #ok
+    command: make clean all run
+  mlGrad:
+    path: ./ml_tests/mlGrad #ok
+    command: make clean all run
+  mlDct:
+    path: ./ml_tests/mlDct #ok
+    command: make clean all run
