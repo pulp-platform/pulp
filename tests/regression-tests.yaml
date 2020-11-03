@@ -39,9 +39,6 @@ sequential_bare_test:
   conv2d:
     path: ./sequential_bare_tests/conv2d
     command: make clean all run
-  fdct:
-    path: ./sequential_bare_tests/fdct
-    command: make clean all runn
   seidel:
     path: ./sequential_bare_tests/seidel
     command: make clean all run
@@ -161,9 +158,6 @@ ml_tests:
   mlDct:
     path: ./ml_tests/mlDct #ok
     command: make clean all run
-  # mlQr:
-  #  path: ./ml_tests/mlQr
-  #  command: make clean all run
 
 riscv_tests:
   testBitManipulation:
