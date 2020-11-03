@@ -103,60 +103,35 @@ test-checkout-gitlab:
 test-checkout-regression-gitlab:
 	./update-regression-tests-gitlab
 
-# test with sdk release
-test-gitlab: tests
-	source env/env-sdk-2019.11.03.sh; \
-	source pkg/sdk/2019.11.03/configs/pulp.sh; \
-	source pkg/sdk/2019.11.03/configs/platform-rtl.sh; \
-	cd tests && plptest --threads 16 --stdout
-
-test-runtime-gitlab: pulp-runtime
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v \
-		--report-junit -t 3600 --yaml \
-		-o simplified-runtime.xml runtime-tests.yaml
-
+# gitlab and local test runs
 test-local-regressions: 
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-        ## cd sim; \
-	## make all; \
-	## cd ..;
-	## cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
-	## allowed max 5 minutes per test
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
 
 git-ci-ml-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml ml-tests.yaml
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
 
 git-ci-riscv-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml riscv-tests.yaml
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
 
-git-ci-bare-regs:
+git-ci-s-bare-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml bare-tests.yaml
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
+
+git-ci-p-bare-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
 
 test-local-runtime: 
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-        ## cd sim; \
-	## make all; \
-	## cd ..;
-	## cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
-	## allowed max 5 minutes per test
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
 
-# test with built sdk
-test-gitlab2:
-	cd pulp-builder; \
-	source sdk-setup.sh; \
-	source configs/pulp.sh; \
-	source configs/rtl.sh; \
-	cd ../tests && plptest --threads 16 --stdout
 

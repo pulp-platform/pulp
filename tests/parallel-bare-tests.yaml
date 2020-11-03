@@ -1,0 +1,42 @@
+
+parallel_bare_tests:
+  parMatrixMul8:
+    path: ./parallel_bare_tests/parMatrixMul8 #ok
+    command: make clean all run
+  Sparse:
+    path: ./parallel_bare_tests/Sparse #ok
+    command: make clean all run
+  conv16:
+    path: ./parallel_bare_tests/conv16 #ok
+    command: make clean all run
+  parMatrixMul32:
+    path: ./parallel_bare_tests/parMatrixMul32 #ok
+    command: make clean all run
+  parWorkload:
+    path: ./parallel_bare_tests/parWorkload #ok
+    command: make clean all run
+  LU:
+    path: ./parallel_bare_tests/LU #ok
+    command: make clean all run
+  LU/golden:
+    path: ./parallel_bare_tests/LU/golden #ok
+    command: make clean all run
+  multicore/stencil:
+    path: ./parallel_bare_tests/multicore/stencil #ok
+    command: make clean all run
+  dummypar1:
+    path: ./parallel_bare_tests/dummypar1 #ok
+    command: make clean all run
+  Dijkstra/golden:
+    path: ./parallel_bare_tests/Dijkstra/golden
+    command: make clean all run
+  Dijkstra:
+    path: ./parallel_bare_tests/Dijkstra #ok
+    command: make clean all run
+  parMatrixMul:
+    path: ./parallel_bare_tests/parMatrixMul #ok
+    command: make clean all run
+  parMatrixMul16:
+    path: ./parallel_bare_tests/parMatrixMul16 #ok
+    command: make clean all run
+

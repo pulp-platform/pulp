@@ -73,7 +73,7 @@ build_rtl:
 
 
 # Use simplified pulp-runtime to run a subset of tests
-test_bare_regressions:
+test_p_bare_regressions:
   stage: test
   before_script:
     - echo "Re-build"
@@ -86,7 +86,30 @@ test_bare_regressions:
     - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
   script:
     - echo "Running software test"
-    - make git-ci-bare-regs
+    - make git-ci-p-bare-regs
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - tests/*.html
+      - tests/*.xml
+    reports:
+      junit: tests/*.xml
+
+# Use simplified pulp-runtime to run a subset of tests
+test_s_bare_regressions:
+  stage: test
+  before_script:
+    - echo "Re-build"
+    - make build
+    - echo "Fetching Runtime"
+    - make pulp-runtime
+    - echo "Source and exports"
+    - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
+  script:
+    - echo "Running software test"
+    - make git-ci-s-bare-regs
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
