@@ -1,0 +1,8 @@
+/.cached*
+/__pycache__*
+/ips
+/ipstools
+/sim/modelsim*
+/sim/ncompile/*
+!/sim/ncompile/build.mk
+/tests/*/

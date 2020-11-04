@@ -329,6 +329,25 @@ module pulp
   logic [127:0]                s_pad_mux_soc;
   logic [383:0]                s_pad_cfg_soc;
 
+  // due to the pad frame these numbers are fixed. Adjust the padframe
+  // accordingly if you change these.
+  localparam int unsigned N_UART = 1;
+  localparam int unsigned N_SPI = 1;
+  localparam int unsigned N_I2C = 2;
+
+  logic [N_SPI-1:0]            s_spi_clk;
+  logic [N_SPI-1:0][3:0]       s_spi_csn;
+  logic [N_SPI-1:0][3:0]       s_spi_oen;
+  logic [N_SPI-1:0][3:0]       s_spi_sdo;
+  logic [N_SPI-1:0][3:0]       s_spi_sdi;
+
+  logic [N_I2C-1:0]            s_i2c_scl_in;
+  logic [N_I2C-1:0]            s_i2c_scl_out;
+  logic [N_I2C-1:0]            s_i2c_scl_oe;
+  logic [N_I2C-1:0]            s_i2c_sda_in;
+  logic [N_I2C-1:0]            s_i2c_sda_out;
+  logic [N_I2C-1:0]            s_i2c_sda_oe;
+
   //***********************************************************
   //********** SOC TO CLUSTER DOMAINS SIGNALS *****************
   //***********************************************************
@@ -651,19 +670,12 @@ module pulp
         .uart_tx_i                  ( s_uart_tx                   ),
         .uart_rx_o                  ( s_uart_rx                   ),
 
-        .i2c0_scl_out_i             ( s_i2c0_scl_out              ),
-        .i2c0_scl_in_o              ( s_i2c0_scl_in               ),
-        .i2c0_scl_oe_i              ( s_i2c0_scl_oe               ),
-        .i2c0_sda_out_i             ( s_i2c0_sda_out              ),
-        .i2c0_sda_in_o              ( s_i2c0_sda_in               ),
-        .i2c0_sda_oe_i              ( s_i2c0_sda_oe               ),
-
-        .i2c1_scl_out_i             ( s_i2c1_scl_out              ),
-        .i2c1_scl_in_o              ( s_i2c1_scl_in               ),
-        .i2c1_scl_oe_i              ( s_i2c1_scl_oe               ),
-        .i2c1_sda_out_i             ( s_i2c1_sda_out              ),
-        .i2c1_sda_in_o              ( s_i2c1_sda_in               ),
-        .i2c1_sda_oe_i              ( s_i2c1_sda_oe               ),
+        .i2c_scl_out_i              ( s_i2c_scl_out               ),
+        .i2c_scl_in_o               ( s_i2c_scl_in                ),
+        .i2c_scl_oe_i               ( s_i2c_scl_oe                ),
+        .i2c_sda_out_i              ( s_i2c_sda_out               ),
+        .i2c_sda_in_o               ( s_i2c_sda_in                ),
+        .i2c_sda_oe_i               ( s_i2c_sda_oe                ),
 
         .i2s_slave_sd0_o            ( s_i2s_sd0_in                ),
         .i2s_slave_sd1_o            ( s_i2s_sd1_in                ),
@@ -674,28 +686,11 @@ module pulp
         .i2s_slave_sck_i            ( s_i2s_sck0_out              ),
         .i2s_slave_sck_oe           ( s_i2s_slave_sck_oe          ),
 
-        .spi_master0_csn0_i         ( s_spi_master0_csn0          ),
-        .spi_master0_csn1_i         ( s_spi_master0_csn1          ),
-        .spi_master0_sck_i          ( s_spi_master0_sck           ),
-        .spi_master0_sdi0_o         ( s_spi_master0_sdi0          ),
-        .spi_master0_sdi1_o         ( s_spi_master0_sdi1          ),
-        .spi_master0_sdi2_o         ( s_spi_master0_sdi2          ),
-        .spi_master0_sdi3_o         ( s_spi_master0_sdi3          ),
-        .spi_master0_sdo0_i         ( s_spi_master0_sdo0          ),
-        .spi_master0_sdo1_i         ( s_spi_master0_sdo1          ),
-        .spi_master0_sdo2_i         ( s_spi_master0_sdo2          ),
-        .spi_master0_sdo3_i         ( s_spi_master0_sdo3          ),
-        .spi_master0_oen0_i         ( s_spi_master0_oen0          ),
-        .spi_master0_oen1_i         ( s_spi_master0_oen1          ),
-        .spi_master0_oen2_i         ( s_spi_master0_oen2          ),
-        .spi_master0_oen3_i         ( s_spi_master0_oen3          ),
-
-        .spi_master1_csn0_i         ( 1'b1                        ),
-        .spi_master1_csn1_i         ( 1'b1                        ),
-        .spi_master1_sck_i          ( 1'b0                        ),
-        .spi_master1_sdi_o          (                             ),
-        .spi_master1_sdo_i          ( 1'b0                        ),
-        .spi_master1_mode_i         ( 2'b00                       ),
+        .spi_clk_i                  ( s_spi_clk                   ),
+        .spi_csn_i                  ( s_spi_csn                   ),
+        .spi_oen_i                  ( s_spi_oen                   ),
+        .spi_sdo_i                  ( s_spi_sdo                   ),
+        .spi_sdi_o                  ( s_spi_sdi                   ),
 
         .sdio_clk_i                 ( s_sdio_clk                  ),
         .sdio_cmd_i                 ( s_sdio_cmdo                 ),
@@ -841,7 +836,11 @@ module pulp
       .AXI_STRB_IN_WIDTH  ( AXI_CLUSTER_SOC_STRB_WIDTH ),
       .AXI_STRB_OUT_WIDTH ( AXI_SOC_CLUSTER_STRB_WIDTH ),
       .BUFFER_WIDTH       ( BUFFER_WIDTH               ),
-      .EVNT_WIDTH         ( EVENT_WIDTH                )
+      .EVNT_WIDTH         ( EVENT_WIDTH                ),
+      .NB_CL_CORES        ( `NB_CORES                  ),
+      .N_UART             ( N_UART                     ),
+      .N_SPI              ( N_SPI                      ),
+      .N_I2C              ( N_I2C                      )
    ) soc_domain_i (
 
         .ref_clk_i                    ( s_ref_clk                        ),
@@ -855,6 +854,10 @@ module pulp
         .dft_test_mode_i              ( s_test_mode                      ),
 
         .bootsel_i                    ( s_bootsel                        ),
+
+        // we immediately start booting in the default setup
+        .fc_fetch_en_valid_i          ( 1'b1                             ),
+        .fc_fetch_en_i                ( 1'b1                             ),
 
         .jtag_tck_i                   ( s_jtag_tck                       ),
         .jtag_trst_ni                 ( s_jtag_trst                      ),
@@ -883,19 +886,12 @@ module pulp
         .timer_ch2_o                  ( s_timer2                         ),
         .timer_ch3_o                  ( s_timer3                         ),
 
-        .i2c0_scl_i                   ( s_i2c0_scl_in                    ),
-        .i2c0_scl_o                   ( s_i2c0_scl_out                   ),
-        .i2c0_scl_oe_o                ( s_i2c0_scl_oe                    ),
-        .i2c0_sda_i                   ( s_i2c0_sda_in                    ),
-        .i2c0_sda_o                   ( s_i2c0_sda_out                   ),
-        .i2c0_sda_oe_o                ( s_i2c0_sda_oe                    ),
-
-        .i2c1_scl_i                   ( s_i2c1_scl_in                    ),
-        .i2c1_scl_o                   ( s_i2c1_scl_out                   ),
-        .i2c1_scl_oe_o                ( s_i2c1_scl_oe                    ),
-        .i2c1_sda_i                   ( s_i2c1_sda_in                    ),
-        .i2c1_sda_o                   ( s_i2c1_sda_out                   ),
-        .i2c1_sda_oe_o                ( s_i2c1_sda_oe                    ),
+        .i2c_scl_i                    ( s_i2c_scl_in                     ),
+        .i2c_scl_o                    ( s_i2c_scl_out                    ),
+        .i2c_scl_oe_o                 ( s_i2c_scl_oe                     ),
+        .i2c_sda_i                    ( s_i2c_sda_in                     ),
+        .i2c_sda_o                    ( s_i2c_sda_out                    ),
+        .i2c_sda_oe_o                 ( s_i2c_sda_oe                     ),
 
         .i2s_slave_sd0_i              ( s_i2s_sd0_in                     ),
         .i2s_slave_sd1_i              ( s_i2s_sd1_in                     ),
@@ -906,21 +902,11 @@ module pulp
         .i2s_slave_sck_o              ( s_i2s_sck0_out                   ),
         .i2s_slave_sck_oe             ( s_i2s_slave_sck_oe               ),
 
-        .spi_master0_clk_o            ( s_spi_master0_sck                ),
-        .spi_master0_csn0_o           ( s_spi_master0_csn0               ),
-        .spi_master0_csn1_o           ( s_spi_master0_csn1               ),
-        .spi_master0_oen0_o           ( s_spi_master0_oen0               ),
-        .spi_master0_oen1_o           ( s_spi_master0_oen1               ),
-        .spi_master0_oen2_o           ( s_spi_master0_oen2               ),
-        .spi_master0_oen3_o           ( s_spi_master0_oen3               ),
-        .spi_master0_sdo0_o           ( s_spi_master0_sdo0               ),
-        .spi_master0_sdo1_o           ( s_spi_master0_sdo1               ),
-        .spi_master0_sdo2_o           ( s_spi_master0_sdo2               ),
-        .spi_master0_sdo3_o           ( s_spi_master0_sdo3               ),
-        .spi_master0_sdi0_i           ( s_spi_master0_sdi0               ),
-        .spi_master0_sdi1_i           ( s_spi_master0_sdi1               ),
-        .spi_master0_sdi2_i           ( s_spi_master0_sdi2               ),
-        .spi_master0_sdi3_i           ( s_spi_master0_sdi3               ),
+        .spi_clk_o                    ( s_spi_clk                        ),
+        .spi_csn_o                    ( s_spi_csn                        ),
+        .spi_oen_o                    ( s_spi_oen                        ),
+        .spi_sdo_o                    ( s_spi_sdo                        ),
+        .spi_sdi_i                    ( s_spi_sdi                        ),
 
         .sdio_clk_o                   ( s_sdio_clk                       ),
         .sdio_cmd_o                   ( s_sdio_cmdo                      ),
