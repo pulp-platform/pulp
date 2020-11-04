@@ -111,29 +111,21 @@ test-local-regressions:
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
 
 git-ci-ml-regs:
-	mkdir -p regression_tests/riscv_tests_soc
-	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
 
 git-ci-riscv-regs:
-	mkdir -p regression_tests/riscv_tests_soc
-	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
 
 git-ci-s-bare-regs:
-	mkdir -p regression_tests/riscv_tests_soc
-	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
 
 git-ci-p-bare-regs:
-	mkdir -p regression_tests/riscv_tests_soc
-	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml

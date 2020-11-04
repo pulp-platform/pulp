@@ -33,7 +33,8 @@ fetch_regression_tests:
   script:
     - echo "Fetching regression tests"
     - make test-checkout-regression-gitlab
-    - cp -r tests/riscv_tests tests/riscv_tests_soc
+    - mkdir -p regression_tests/riscv_tests_soc
+    - cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
   artifacts:
      name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
      paths:
