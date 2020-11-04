@@ -1,0 +1,7 @@
+#!/bin/bash -e
+# This script is solely used on gitlab
+
+GITHUB=github.com
+
+# getting tests
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITHUB}/pulp-platform/regression_tests.git
