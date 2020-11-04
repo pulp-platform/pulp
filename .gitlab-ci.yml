@@ -38,7 +38,7 @@ fetch_regression_tests:
   artifacts:
      name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
      paths:
-       - tests/*
+       - regression_tests/*
 
 fetch_ips:
   stage: fetch
@@ -92,10 +92,10 @@ test_p_bare_regressions:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - tests/*.html
-      - tests/*.xml
+      - regression_tests/*.html
+      - regression_tests/*.xml
     reports:
-      junit: tests/*.xml
+      junit: regression_tests/*.xml
 
 # Use simplified pulp-runtime to run a subset of tests
 test_s_bare_regressions:
@@ -115,10 +115,10 @@ test_s_bare_regressions:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - tests/*.html
-      - tests/*.xml
+      - regression_tests/*.html
+      - regression_tests/*.xml
     reports:
-      junit: tests/*.xml
+      junit: regression_tests/*.xml
 
 
 # Use simplified pulp-runtime to run a subset of tests
@@ -139,10 +139,10 @@ test_ml_regressions:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - tests/*.html
-      - tests/*.xml
+      - regression_tests/*.html
+      - regression_tests/*.xml
     reports:
-      junit: tests/*.xml
+      junit: regression_tests/*.xml
 
 
 # Use simplified pulp-runtime to run a subset of tests
@@ -163,8 +163,8 @@ test_riscv_regressions:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - tests/*.html
-      - tests/*.xml
+      - regression_tests/*.html
+      - regression_tests/*.xml
     reports:
-      junit: tests/*.xml
+      junit: regression_tests/*.xml
 
