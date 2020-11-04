@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: f58645dca3cbb03a9fe1146c81cac53fb000bf5e
+  commit: v1.4.2
   server: https://github.com
   group:  pulp-platform
 
