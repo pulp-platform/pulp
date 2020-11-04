@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: v1.4.1_Zfinx_patch
+  commit: f58645dca3cbb03a9fe1146c81cac53fb000bf5e
   server: https://github.com
   group:  pulp-platform
 
