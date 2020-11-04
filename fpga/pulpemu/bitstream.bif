@@ -1,0 +1,5 @@
+bitstream : {
+[bootloader]../board/fsbl.elf
+pulpemu.bit
+../board/u-boot.elf
+}

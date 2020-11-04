@@ -20,15 +20,18 @@
 
 pulp_soc:
   commit: v1.1.0
+  domain: [soc]
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: pulp_cluster_v1.2
+  commit: pulp_cluster_v1.3
   server: https://github.com
   group:  pulp-platform
 
 tbtools:
   commit: v0.1
+  commit: master
+  domain: [soc]
   server: https://github.com
   group:  pulp-platform

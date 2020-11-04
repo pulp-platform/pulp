@@ -13,10 +13,16 @@
 module pulp
 #(
   parameter CORE_TYPE   = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
-  parameter USE_FPU     = 1,
-  parameter USE_HWPE    = 1
+  parameter USE_FPU     = 0,
+  parameter USE_HWPE    = 0
 )
 (
+`ifdef PULP_FPGA_EMUL
+  // input  logic       zynq_clk_i,
+  // input  logic       zynq_soc_clk_i,
+  // input  logic       zynq_cluster_clk_i,
+  // input  logic       zynq_per_clk_i,
+`endif
 
    inout  wire        pad_spim_sdio0,
    inout  wire        pad_spim_sdio1,
@@ -465,11 +471,16 @@ module pulp
   //***********************************************************
   //********** PAD FRAME **************************************
   //***********************************************************
+`ifdef PULP_FPGA_EMUL
+   //assign s_ref_clk = zynq_clk_i;
+`endif
 
   pad_frame pad_frame_i
   (
         .pad_cfg_i             ( s_pad_cfg              ),
+//`ifndef PULP_FPGA_EMUL
         .ref_clk_o             ( s_ref_clk              ),
+//`endif
         .rstn_o                ( s_rstn                 ),
         .jtag_tdo_i            ( s_jtag_tdo             ),
         .jtag_tck_o            ( s_jtag_tck             ),
@@ -628,7 +639,7 @@ module pulp
    safe_domain safe_domain_i (
 
         .ref_clk_i                  ( s_ref_clk                   ),
-        .slow_clk_o                 ( s_slow_clk                  ),
+        .slow_clk_o                 ( s_slow_clk                 ),
         .rst_ni                     ( s_rstn                     ),
 
         .rst_no                     ( s_rstn_por                  ),
@@ -849,6 +860,11 @@ module pulp
         .test_clk_i                   ( s_test_clk                       ),
 
         .rstn_glob_i                  ( s_rstn_por                       ),
+    `ifdef PULP_FPGA_EMUL
+        //.zynq_soc_clk_i               ( zynq_soc_clk_i      ),
+        //.zynq_cluster_clk_i           ( zynq_cluster_clk_i  ),
+        //.zynq_per_clk_i               ( zynq_per_clk_i      ),
+    `endif
 
         .mode_select_i                ( s_mode_select                    ),
         .dft_cg_enable_i              ( s_dft_cg_enable                  ),
