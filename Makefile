@@ -96,7 +96,7 @@ pulp-runtime:
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
 test-checkout-gitlab:
-	./update-tests-gitlab
+	./update-regression-tests
 
 
 
