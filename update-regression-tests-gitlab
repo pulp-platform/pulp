@@ -4,4 +4,5 @@
 GITHUB=github.com
 
 # getting tests
-git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITHUB}/pulp-platform/regression_tests.git
+#git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITHUB}/pulp-platform/regression_tests.git -b v1.0.1
+git clone https://github.com/pulp-platform/regression_tests.git -b v1.0.1
