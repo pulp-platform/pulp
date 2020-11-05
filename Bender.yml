@@ -10,9 +10,9 @@ package:
     - "Francesco Conti <f.conti@unibo.it>"
 
 dependencies:
-  pulp_soc: {path: "ips/pulp_soc"} # {git: "https://github.com/micprog/pulp_soc.git", version: 1.4.2 }
-  pulp_cluster: {path: "ips/pulp_cluster"} # {git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "pulp_cluster_v1.2" }
-  tbtools: {path: "ips/tbtools"} # {git: "https://github.com/pulp-platform/tbtools.git", rev: "v0.1" }
+  pulp_soc: { git: "git@github.com:micprog/pulp_soc.git", rev: "97d0c316ba582b3a356f786b530804863802ecb3" } # To be updated with pulp-platform dependency
+  pulp_cluster: { git: "git@github.com:micprog/pulp_cluster.git", rev: "d13d5a7433d9aac973f8c4392e190c43f21e999f" } # To be updated with pulp-platform dependency
+  tbtools: { git: "git@github.com:micprog/tbtools.git", rev: "bb312955fa615bf0fb1593440db7c90437801edf" } # To be updated with pulp-platform dependency
 
 export_include_dirs:
   - rtl/includes 
@@ -44,8 +44,8 @@ sources:
       - rtl/tb/pulp_tap_pkg.sv
       - rtl/tb/tb_clk_gen.sv
       - rtl/tb/tb_fs_handler.sv
-      - rtl/tb/dpi_models/dpi_models.sv
-      - rtl/tb/tb_driver/tb_driver.sv
+      # - rtl/tb/dpi_models/dpi_models.sv
+      # - rtl/tb/tb_driver/tb_driver.sv
       - rtl/tb/SimJTAG.sv
       - rtl/tb/SimDTM.sv
       - rtl/tb/tb_pulp.sv
