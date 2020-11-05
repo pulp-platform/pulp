@@ -42,7 +42,7 @@ endif
 
 # generic clean and build targets for the platform
 clean:
-	rm -rf $(VSIM_PATH)
+# 	rm -rf $(VSIM_PATH)
 	cd sim && $(MAKE) BENDER=$(BENDER) clean
 
 build:
