@@ -32,7 +32,7 @@ fetch_regression_tests:
   stage: fetch
   script:
     - echo "Fetching regression tests"
-    - make test-checkout-regression
+    - make test-checkout-gitlab
     - mkdir -p regression_tests/riscv_tests_soc
     - cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
   artifacts:
