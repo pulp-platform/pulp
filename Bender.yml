@@ -1,0 +1,71 @@
+package:
+  name: pulp
+  authors:
+    - "Robert Balas <balasr@iis.ee.ethz.ch>"
+    - "Germain Haugou <haugoug@iis.ee.ethz.ch>"
+    - "Angelo Garofalo <angelo.garofalo@unibo.it>"
+    - "Michael Rogenmoser <michaero@student.ethz.ch>"
+    - "Pasquale Davide Schiavone <pschiavo@iis.ee.ethz.ch>"
+    - "Antonio Pullini <pullinia@iis.ee.ethz.ch>"
+    - "Francesco Conti <f.conti@unibo.it>"
+
+dependencies:
+  pulp_soc: {path: "ips/pulp_soc"} # {git: "https://github.com/micprog/pulp_soc.git", version: 1.4.2 }
+  pulp_cluster: {path: "ips/pulp_cluster"} # {git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "pulp_cluster_v1.2" }
+  tbtools: {path: "ips/tbtools"} # {git: "https://github.com/pulp-platform/tbtools.git", rev: "v0.1" }
+
+export_include_dirs:
+  - rtl/includes 
+
+# workspace:
+#   checkout_dir: "./ips"
+
+sources:
+  # Source files grouped in levels. Files in level 0 have no dependencies on files in this
+  # package. Files in level 1 only depend on files in level 0, files in level 2 on files in
+  # levels 1 and 0, etc. Files within a level are ordered alphabetically.
+  # Level 0
+  - rtl/pulp/jtag_tap_top.sv
+  - rtl/pulp/pad_control.sv
+  - rtl/pulp/pad_frame.sv
+  - rtl/pulp/cluster_domain.sv
+  - rtl/pulp/soc_domain.sv
+  - rtl/pulp/rtc_date.sv
+  - rtl/pulp/rtc_clock.sv
+  # Level 1
+  - rtl/pulp/safe_domain.sv
+  # Level 2
+  - rtl/pulp/pulp.sv
+
+  - target: simulation
+    files:
+      - rtl/tb/riscv_pkg.sv
+      - rtl/tb/jtag_pkg.sv
+      - rtl/tb/pulp_tap_pkg.sv
+      - rtl/tb/tb_clk_gen.sv
+      - rtl/tb/tb_fs_handler.sv
+      - rtl/tb/dpi_models/dpi_models.sv
+      - rtl/tb/tb_driver/tb_driver.sv
+      - rtl/tb/SimJTAG.sv
+      - rtl/tb/SimDTM.sv
+      - rtl/tb/tb_pulp.sv
+  # - target: not(synthesis)
+  #   files:
+  #     - rtl/vip/spi_flash/S25fs256s/model/s25fs256s.v
+  #   defines: {"SPEEDSIM"}
+  # - target: not(synthesis)
+  #   files:
+  #     - rtl/vip/i2c_eeprom/24FC1025.v
+  #   defines: {"SPEEDSIM"}
+  - target: not(synthesis)
+    files:
+      - rtl/vip/i2s/i2c_if.v
+      - rtl/vip/i2s/i2s_vip_channel.sv
+      - rtl/vip/i2s/i2s_vip.sv
+    defines: {"SPEEDSIM"}
+  - target: not(synthesis)
+    files:
+      - rtl/vip/spi_master_padframe.sv
+      - rtl/vip/uart_tb_rx.sv
+      - rtl/vip/camera/cam_vip.sv
+      

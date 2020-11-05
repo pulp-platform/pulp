@@ -91,20 +91,24 @@ public key to install the SDK. You can find detailed instructions on how to do
 that here: https://help.github.com/articles/connecting-to-github-with-ssh/
 
 ### Building the RTL simulation platform
+There are two methods for building PULP: using IPApprox, or using Bender. The 
+default setting is for IPApprox, if you would like to use Bender please set the 
+`BENDER` environment variable to a non-empty value (for example by running 
+`export BENDER=bender`).
+
 To build the RTL simulation platform, start by getting the latest version of the
 IPs composing the PULP system:
 ```
-./update-ips
+make checkout
 ```
 This will download all the required IPs, solve dependencies and generate the
-scripts by calling `./generate-scripts`. 
+scripts by either calling `./generate-scripts` or the bender tool. 
 
 After having access to the SDK, you can build the simulation platform by doing
 the following:
 ```
 source setup/vsim.sh
-cd sim/
-make clean lib build opt
+make clean build
 ```
 This command builds a version of the simulation platform with no dependencies on
 external models for peripherals. See below (Proprietary verification IPs) for
@@ -161,7 +165,10 @@ repository is structured as follows:
 - `rtl` could also contain other material (e.g. global includes, top-level
   files)
 - `ips` contains all IPs downloaded by `update-ips` script. Most of the actual
-  logic of the platform is located in these IPs.
+  logic of the platform is located in these IPs. 
+    - Bender will not checkout the ips to this folder by default. If this 
+    behaviour is desired, uncomment the `workspace: checkout_dir: "./ips"`
+    lines in the `Bender.yml` file.
 - `sim` contains the ModelSim/QuestaSim simulation platform.
 - `pulp-sdk` contains the PULP software development kit; `pulp-sdk/tests`
   contains all tests released with the SDK.
