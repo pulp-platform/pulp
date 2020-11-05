@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+# getting tests
+git clone https://github.com/pulp-platform/regression_tests.git -b v1.0.1

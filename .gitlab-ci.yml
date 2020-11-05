@@ -13,9 +13,11 @@
 # limitations under the License.
 
 
-
+variables:
+  PATH: "/home/gitlabci/bin:/usr/lib64/qt-3.3/bin:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/local/condor/bin:/usr/sepp/bin:/usr/local/anaconda3/bin:/var/lib/snapd/snap/bin"
 before_script:
   - pwd
+  - echo "$PATH"
 
 # after_script:
 #   - echo "stage finished"
@@ -25,45 +27,35 @@ stages:
   - build
   - test
 
-fetch_tests:
+
+fetch_regression_tests:
   stage: fetch
   script:
-    - echo "Fetching tests"
+    - echo "Fetching regression tests"
     - make test-checkout-gitlab
+    - mkdir -p regression_tests/riscv_tests_soc
+    - cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
   artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
-    paths:
-      - tests/*
+     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+     paths:
+       - regression_tests/*
 
 fetch_ips:
   stage: fetch
   script:
+    - source setup/vsim.sh
     - echo "Fetching IPs"
-    - make checkout
-    - echo "Fetching VIPs"
-    - ./rtl/vip/get-vips.sh --yes --gitlab
+    - ./update-ips
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip
-
+    - ./generate-scripts 
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
       - ips/*
       - sim/*
       - ipstools/*
-      - rtl/vip/*
       - .cached_ipdb.json
 
-# This jobs result is too large to produce an artifact
-# fetch_sdk:
-#   stage: fetch
-#   script:
-#     - echo "Fetching SDK from releases and setting up paths"
-#     - make sdk-gitlab
-#   artifacts:
-#     paths:
-#       - pkg/
-#       - env/
 
 build_rtl:
   stage: build
@@ -71,8 +63,6 @@ build_rtl:
   script:
     - echo "Compiling RTL model and DPI libraries"
     - make build
-    - echo "Installing scripts"
-    - make install
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
@@ -80,115 +70,101 @@ build_rtl:
       - ips/*
       - sim/*
       - ipstools/*
-#      - install/* # we have to rebuild in test stage because rtl libraries are
-                   # not relocatable (hardcoded paths)
-      - rtl/tb/remote_bitbang/* # we want to reuse bitbang lib
-#      - pkg/* # sdk is too large
+      - rtl/*
 
-# Use sdk-releases to run all tests
-test_sw:
-  stage: test
-  before_script:
-    - echo "Fetching SDK from releases and setting up paths"
-    - make sdk-gitlab
-    - echo "Compiling RTL model and DPI libraries"
-    - make build
-    - echo "Installing scripts"
-    - make install
-  script:
-    - echo "Running software tests"
-    - make test-gitlab
-    - echo "Generating junit test results"
-    - /usr/sepp/bin/pip3.4 install --user junit2html
-    - /usr/sepp/bin/python3.4 -m junit2htmlreport tests/junit-reports/TEST-*.xml
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
-    paths:
-      - tests/junit-reports/TEST-*.html
-      - tests/junit-reports/TEST-*.xml
-    reports:
-      junit: tests/junit-reports/TEST-*.xml
+
 
 # Use simplified pulp-runtime to run a subset of tests
-test_simplified_sw:
+test_p_bare_regressions:
   stage: test
   before_script:
+    - echo "Re-build"
+    - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
-    - echo "Compiling RTL model and DPI libraries"
-    - make build
-    - echo "Installing scripts"
-    - make install
+    - echo "Source and exports"
+    - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
   script:
     - echo "Running software test"
-    - make test-runtime-gitlab
+    - make git-ci-p-bare-regs
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - tests/*.html
-      - tests/*.xml
+      - regression_tests/*.html
+      - regression_tests/*.xml
     reports:
-      junit: tests/*.xml
+      junit: regression_tests/*.xml
 
-# Built SDK with the `make sdk` target and run all tests
-# test_sw_build_sdk:
-#   variables:
-#     PULP_RISCV_GCC_TOOLCHAIN: your-compiler-path
-#   stage: test
-#   before_script:
-#     - echo "Compiling RTL model and DPI libraries"
-#     - make build
-#     - echo "Installing scripts" # don't call this, breaks build
-#     - make install
-#     - echo "Building SDK"
-#     - make sdk
-#   script:
-#     - echo "Running software tests with built SDK"
-#     - make test-gitlab2
-#     - echo "Generating junit test results"
-#     - /usr/sepp/bin/pip3.4 install --user junit2html
-#     - /usr/sepp/bin/python3.4 -m junit2htmlreport tests/junit-reports/TEST-*.xml
-#   artifacts:
-#     paths:
-#       - tests/junit-reports/TEST-*.html
-#       - tests/junit-reports/TEST-*.xml
-#     reports:
-#       junit: tests/junit-reports/TEST-*.xml
-
-test_dm:
+# Use simplified pulp-runtime to run a subset of tests
+test_s_bare_regressions:
   stage: test
   before_script:
+    - echo "Re-build"
+    - make build
+    - echo "Fetching Runtime"
+    - make pulp-runtime
+    - echo "Source and exports"
+    - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
   script:
-    - echo "(Re)generating scripts with DPI disabled"
-    - ./generate-scripts
-    - echo "Setting up vsim path"
-    - source setup/vsim.sh
-    - echo "Running debug module testbench"
-    - cd sim/ && make lib build opt simc VSIM_FLAGS=-gENABLE_DM_TESTS=1
-
-fpga_synth:
-  stage: test
-  before_script:
-  script:
-    - echo "(Re)generating scripts" # because paths might have changed
-    - ./generate-scripts
-    - echo "Starting synthesis with vivado"
-    - cd fpga/ && make genesys2 VIVADO='vivado-2019.1.1 vivado'
+    - echo "Running software test"
+    - make git-ci-s-bare-regs
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - fpga/pulpissimo_genesys2.bit
-      - fpga/pulpissimo_genesys2.bin
-      - fpga/*.jou
-      - fpga/*.log
-      - fpga/*.str
-      - fpga/pulpissimo-genesys2/reports
-      - fpga/pulpissimo-genesys2/rtl
-      - fpga/pulpissimo-genesys2/tcl
-      - fpga/pulpissimo-genesys2/pulpissimo_genesys2.xpr
-      - fpga/pulpissimo-genesys2/fpga-settings.mk
-      - fpga/pulpissimo-genesys2/*.log
-      - fpga/pulpissimo-genesys2/*.cfg
-      - fpga/pulpissimo-genesys2/*.gdb
-      - fpga/pulpissimo-genesys2/*.jou
-      - fpga/pulpissimo-genesys2/*.log
+      - regression_tests/*.html
+      - regression_tests/*.xml
+    reports:
+      junit: regression_tests/*.xml
+
+
+# Use simplified pulp-runtime to run a subset of tests
+test_ml_regressions:
+  stage: test
+  before_script:
+    - echo "Re-build"
+    - make build
+    - echo "Fetching Runtime"
+    - make pulp-runtime
+    - echo "Source and exports"
+    - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
+  script:
+    - echo "Running software test"
+    - make git-ci-ml-regs
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - regression_tests/*.html
+      - regression_tests/*.xml
+    reports:
+      junit: regression_tests/*.xml
+
+
+# Use simplified pulp-runtime to run a subset of tests
+test_riscv_regressions:
+  stage: test
+  before_script:
+    - echo "Re-build"
+    - make build
+    - echo "Fetching Runtime"
+    - make pulp-runtime
+    - echo "Source and exports"
+    - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
+  script:
+    - echo "Running software test"
+    - make git-ci-riscv-regs
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - regression_tests/*.html
+      - regression_tests/*.xml
+    reports:
+      junit: regression_tests/*.xml
+

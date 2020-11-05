@@ -1,9 +1,9 @@
 
 SHELL=bash
 
-PKG_DIR ?= $(PWD)/install
+PKG_DIR ?= $(PWD)/pulp-runtime
 
-export VSIM_PATH=$(PKG_DIR)
+export VSIM_PATH=$(PWD)/sim
 export PULP_PATH=$(PWD)
 
 export MSIM_LIBS_PATH=$(VSIM_PATH)/modelsim_libs
@@ -32,7 +32,6 @@ $(foreach file, $(INSTALL_FILES), $(eval $(call declareInstallFile,$(file))))
 BRANCH ?= master
 
 checkout:
-	git submodule update --init
 	./update-ips
 
 # generic clean and build targets for the platform
@@ -41,8 +40,9 @@ clean:
 	cd sim && $(MAKE) clean
 
 build:
-	cd sim && $(MAKE) lib build opt
-	cp -r rtl/tb/* $(VSIM_PATH)
+#	cd sim && $(MAKE) lib build opt
+#	cp -r rtl/tb/* $(VSIM_PATH)
+	cd sim && $(MAKE) all
 
 # sdk specific targets
 install: $(INSTALL_HEADERS)
@@ -91,32 +91,49 @@ sdk-gitlab:
 
 # simplified runtime for PULP that doesn't need the sdk
 pulp-runtime:
-	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.3
+	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.4
 
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
 test-checkout-gitlab:
-	./update-tests-gitlab
+	./update-regression-tests
 
-# test with sdk release
-test-gitlab: tests
-	source env/env-sdk-2019.11.03.sh; \
-	source pkg/sdk/2019.11.03/configs/pulp.sh; \
-	source pkg/sdk/2019.11.03/configs/platform-rtl.sh; \
-	cd tests && plptest --threads 16 --stdout
 
-test-runtime-gitlab: pulp-runtime
+
+# gitlab and local test runs
+test-local-regressions: 
+	mkdir -p regression_tests/riscv_tests_soc
+	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v \
-		--report-junit -t 3600 --yaml \
-		-o simplified-runtime.xml runtime-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
 
-# test with built sdk
-test-gitlab2:
-	cd pulp-builder; \
-	source sdk-setup.sh; \
-	source configs/pulp.sh; \
-	source configs/rtl.sh; \
-	cd ../tests && plptest --threads 16 --stdout
+git-ci-ml-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-ml-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
+
+git-ci-riscv-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-riscv-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
+
+git-ci-s-bare-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-sbare-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
+
+git-ci-p-bare-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-pbare-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
+
+test-local-runtime: 
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
 
