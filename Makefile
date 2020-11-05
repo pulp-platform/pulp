@@ -98,8 +98,6 @@ pulp-runtime:
 test-checkout-gitlab:
 	./update-tests-gitlab
 
-test-checkout-regression-gitlab:
-	./update-regression-tests-gitlab
 
 
 # gitlab and local test runs
