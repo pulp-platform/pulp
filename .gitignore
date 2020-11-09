@@ -6,3 +6,10 @@
 /sim/ncompile/*
 !/sim/ncompile/build.mk
 /tests/*/
+/Bender.local
+/Bender.lock
+/.bender
+/bender
+/sim/compile.tcl
+/sim/transcript
+/sim/work

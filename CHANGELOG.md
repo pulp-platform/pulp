@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move tests to subfolder `tests`
 - Allow setting entry point with `-gENTRY_POINT`
 - Update to sdk-release 2019.11.02
-- Bump `pulp_soc` to `v1.1.0`
+- Bump `pulp_soc` to `v1.4.1`
 
 ### Added
 - DPI models for peripherals
@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CHANGELOG.md
 - CI support for pulp-runtime to run tests, using bwruntest.py and
   tests/runtime-tests.yaml
+- Bender integration
 
 ### Removed
 - Support for custom debug module
