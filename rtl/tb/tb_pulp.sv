@@ -31,13 +31,16 @@ module tb_pulp;
 
    /* simulation platform parameters */
 
-   // Choose your core: 0 for RISCY, 1 for ZERORISCY
+   // Choose your Fabric Controller core: 
+   // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
    parameter CORE_TYPE_FC         = 0;
    // if RISCY is instantiated (CORE_TYPE == 0), RISCY_FPU enables the FPU
    parameter RISCY_FPU            = 1;
 
    parameter USE_HWPE             = 0;
 
+   // Choose your Cluster core: 
+   // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
    parameter CORE_TYPE_CL         = 0;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s

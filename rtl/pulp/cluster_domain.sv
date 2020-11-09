@@ -40,14 +40,18 @@ module cluster_domain
     parameter SET_ASSOCIATIVE       = 4,
 `ifdef MP_ICACHE
     parameter NB_CACHE_BANKS        = 2,
-`endif
+`else
 
 `ifdef SP_ICACHE
     parameter NB_CACHE_BANKS        = 8,
-`endif
+`else
 
 `ifdef PRIVATE_ICACHE
-    parameter NB_CACHE_BANKS        = 8,
+    parameter NB_CACHE_BANKS        = `NB_CORES,
+`else 
+    parameter NB_CACHE_BANKS        = 0,
+`endif
+`endif
 `endif
 
     parameter CACHE_LINE            = 1,
