@@ -59,7 +59,11 @@ module pad_frame
         input logic             oe_i2c0_scl_i    ,
         input logic             oe_uart_rx_i     ,
         input logic             oe_uart_tx_i     ,
-
+        // NEW PADS
+        input logic[31:0]       oe_gpios         ,
+        input logic             oe_i2c1_sda_o    ,
+        input logic             oe_i2c1_scl_o    ,     
+  
         // INPUTS SIGNALS TO THE PADS
         input logic             out_sdio_clk_i  ,
         input logic             out_sdio_cmd_i   ,
@@ -93,6 +97,11 @@ module pad_frame
         input logic             out_i2c0_scl_i   ,
         input logic             out_uart_rx_i    ,
         input logic             out_uart_tx_i    ,
+        // NEW PADS
+        input logic[31:0]       out_gpios        ,
+        input logic             out_i2c1_sda_o   ,
+        input logic             out_i2c1_scl_o   ,
+        
 
         // OUTPUT SIGNALS FROM THE PADS
         output logic            in_sdio_clk_o   ,
@@ -127,6 +136,10 @@ module pad_frame
         output logic            in_i2c0_scl_o    ,
         output logic            in_uart_rx_o     ,
         output logic            in_uart_tx_o     ,
+        // NEW PADS
+        output logic[31:0]        in_gpios         ,
+        output logic              in_i2c1_sda_i    ,
+        output logic              in_i2c1_scl_i    , 
 
         output logic            bootsel_o        ,
 
@@ -163,6 +176,10 @@ module pad_frame
         inout wire              pad_i2c0_scl     ,
         inout wire              pad_uart_rx      ,
         inout wire              pad_uart_tx      ,
+        // NEW PADS
+        inout wire [31:0]       pad_gpios        ,
+        inout wire              pad_i2c1_sda     ,
+        inout wire              pad_i2c1_sda     ,
 
         inout wire              pad_reset_n      ,
         inout wire              pad_bootsel      ,
@@ -212,7 +229,16 @@ module pad_frame
     pad_functional_pu padinst_uart_tx    (.OEN(~oe_uart_tx_i   ), .I(out_uart_tx_i   ), .O(in_uart_tx_o   ), .PAD(pad_uart_tx   ), .PEN(~pad_cfg_i[34][0]) );
     pad_functional_pu padinst_i2c0_sda   (.OEN(~oe_i2c0_sda_i  ), .I(out_i2c0_sda_i  ), .O(in_i2c0_sda_o  ), .PAD(pad_i2c0_sda  ), .PEN(~pad_cfg_i[7][0] ) );
     pad_functional_pu padinst_i2c0_scl   (.OEN(~oe_i2c0_scl_i  ), .I(out_i2c0_scl_i  ), .O(in_i2c0_scl_o  ), .PAD(pad_i2c0_scl  ), .PEN(~pad_cfg_i[8][0] ) );
+    // NEW PADS
+    pad_functional_pu padinst_i2c1_sda   (.OEN(~oe_i2c1_sda_i  ), .I(out_i2c1_sda_i  ), .O(in_i2c1_sda_o  ), .PAD(pad_i2c1_sda  ), .PEN(~pad_cfg_i[39][0] ) );
+    pad_functional_pu padinst_i2c1_scl   (.OEN(~oe_i2c1_scl_i  ), .I(out_i2c1_scl_i  ), .O(in_i2c1_scl_o  ), .PAD(pad_i2c1_scl  ), .PEN(~pad_cfg_i[40][0] ) );
 
+    genvar i;
+    generate
+        for (i=0; i < 32; i++) begin
+            pad_functional_pu padinst_gpio   (.OEN(~oe_gpios[i]  ), .I(out_gpios[i]  ), .O(in_gpios[i]  ), .PAD(pad_gpios[i]  ), .PEN(~pad_cfg_i[41+i][0] ) );
+        end
+    endgenerate
 
     pad_functional_pu padinst_bootsel    (.OEN(1'b1            ), .I(                ), .O(bootsel_o      ), .PAD(pad_bootsel   ), .PEN(1'b1             ) );
 
