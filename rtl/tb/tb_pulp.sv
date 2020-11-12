@@ -140,6 +140,8 @@ module tb_pulp;
    wire                  w_i2c0_scl;
    wire                  w_i2c0_sda;
 
+   wire [31:0]           w_gpios;
+
    tri                   w_i2c1_scl;
    tri                   w_i2c1_sda;
 
@@ -425,8 +427,8 @@ module tb_pulp;
          .A1    ( 1'b0       ),
          .A2    ( 1'b1       ),
          .WP    ( 1'b0       ),
-         .SDA   ( w_i2c0_sda ),
-         .SCL   ( w_i2c0_scl ),
+         .SDA   ( w_i2c1_sda ),
+         .SCL   ( w_i2c1_scl ),
          .RESET ( 1'b0       )
       );
    end
@@ -533,6 +535,31 @@ module tb_pulp;
     );
 
 
+   // GPIO TEST
+   genvar i;
+   //genvar j;
+   
+   
+   assign w_gpios[16] = w_gpios[0]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[17] = w_gpios[1]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[18] = w_gpios[2]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[19] = w_gpios[3]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[20] = w_gpios[4]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[21] = w_gpios[5]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[22] = w_gpios[6]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[23] = w_gpios[7]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[24] = w_gpios[8]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[25] = w_gpios[9]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[26] = w_gpios[10] ? 1'b1 : 1'b0 ;
+   assign w_gpios[27] = w_gpios[11] ? 1'b1 : 1'b0 ;
+   assign w_gpios[28] = w_gpios[12] ? 1'b1 : 1'b0 ;
+   assign w_gpios[29] = w_gpios[13] ? 1'b1 : 1'b0 ;
+   assign w_gpios[30] = w_gpios[14] ? 1'b1 : 1'b0 ;
+   assign w_gpios[31] = w_gpios[15] ? 1'b1 : 1'b0 ;
+
+
+
+
    // PULP chip (design under test)
    pulp #(
       .CORE_TYPE ( CORE_TYPE ),
@@ -571,6 +598,11 @@ module tb_pulp;
 
       .pad_i2c0_sda       ( w_i2c0_sda         ),
       .pad_i2c0_scl       ( w_i2c0_scl         ),
+
+      .pad_gpios          ( w_gpios            ),
+
+      .pad_i2c1_sda       ( w_i2c1_sda         ),
+      .pad_i2c1_scl       ( w_i2c1_scl         ),
 
       .pad_i2s0_sck       ( w_i2s0_sck         ),
       .pad_i2s0_ws        ( w_i2s0_ws          ),

@@ -56,6 +56,21 @@ module pulp
    inout  wire        pad_i2s0_sdi,
    inout  wire        pad_i2s1_sdi,
 
+   
+   inout  wire [31:0] pad_gpios,
+   inout  wire        pad_i2c1_sda,
+   inout  wire        pad_i2c1_scl,     
+
+   inout wire [7:0]   pad_hyper_dq0    ,
+   inout wire [7:0]   pad_hyper_dq1    ,
+   inout wire         pad_hyper_ck     ,
+   inout wire         pad_hyper_ckn    ,
+   inout wire         pad_hyper_csn0   ,
+   inout wire         pad_hyper_csn1   ,
+   inout wire         pad_hyper_rwds0  ,
+   inout wire         pad_hyper_rwds1  ,
+   inout wire         pad_hyper_reset  ,
+
    inout  wire        pad_reset_n,
    inout  wire        pad_bootsel,
 
@@ -88,7 +103,7 @@ module pulp
   //********** PAD FRAME TO PAD CONTROL SIGNALS ***************
   //***********************************************************
 
-  logic [47:0][5:0] s_pad_cfg ;
+  logic [72:0][5:0] s_pad_cfg ;
 
   logic s_out_spim_sdio0 ;
   logic s_out_spim_sdio1 ;
@@ -122,6 +137,21 @@ module pulp
   logic s_out_i2s0_ws    ;
   logic s_out_i2s0_sdi   ;
   logic s_out_i2s1_sdi   ;
+  
+  logic[31:0] s_out_gpios;
+  logic s_out_i2c1_sda   ;
+  logic s_out_i2c1_scl   ;
+
+  logic      s_out_hyper_csn0  ;
+  logic      s_out_hyper_csn1  ;
+  logic      s_out_hyper_ck    ;
+  logic      s_out_hyper_ckn   ;
+  logic[7:0] s_out_hyper_rwds0 ;
+  logic[7:0] s_out_hyper_rwds1 ;
+  logic      s_out_hyper_dq0   ;
+  logic      s_out_hyper_dq1   ;
+  logic      s_out_hyper_reset ;
+
 
   logic s_in_spim_sdio0  ;
   logic s_in_spim_sdio1  ;
@@ -155,6 +185,21 @@ module pulp
   logic s_in_i2s0_ws     ;
   logic s_in_i2s0_sdi    ;
   logic s_in_i2s1_sdi    ;
+  
+  logic[31:0] s_in_gpios ;
+  logic s_in_i2c1_sda    ;
+  logic s_in_i2c1_scl    ;
+
+
+  logic      s_in_hyper_csn0  ;
+  logic      s_in_hyper_csn1  ;
+  logic      s_in_hyper_ck    ;
+  logic      s_in_hyper_ckn   ;
+  logic      s_in_hyper_rwds0 ;
+  logic      s_in_hyper_rwds1 ;
+  logic[7:0] s_in_hyper_dq0   ;
+  logic[7:0] s_in_hyper_dq1   ;
+  logic      s_in_hyper_reset ;
 
   logic s_oe_spim_sdio0  ;
   logic s_oe_spim_sdio1  ;
@@ -188,6 +233,20 @@ module pulp
   logic s_oe_i2s0_ws     ;
   logic s_oe_i2s0_sdi    ;
   logic s_oe_i2s1_sdi    ;
+  
+  logic[31:0] s_oe_gpios ;
+  logic s_oe_i2c1_sda    ;
+  logic s_oe_i2c1_scl    ;
+
+  logic s_oe_hyper_csn0  ;
+  logic s_oe_hyper_csn1  ;
+  logic s_oe_hyper_ck    ;
+  logic s_oe_hyper_ckn   ;
+  logic s_oe_hyper_rwds0 ;
+  logic s_oe_hyper_rwds1 ;
+  logic s_oe_hyper_dq0   ;
+  logic s_oe_hyper_dq1   ;
+  logic s_oe_hyper_reset ;
 
   //***********************************************************
   //********** OTHER PAD FRAME SIGNALS ************************
@@ -306,6 +365,17 @@ module pulp
   logic [3:0]                  s_timer1;
   logic [3:0]                  s_timer2;
   logic [3:0]                  s_timer3;
+
+  logic [1:0]                  s_hyper_cs_n;
+  logic                        s_hyper_ck;
+  logic                        s_hyper_ck_n;
+  logic [1:0]                  s_hyper_rwds_o;
+  logic                        s_hyper_rwds_i;
+  logic [1:0]                  s_hyper_rwds_oe;
+  logic [15:0]                 s_hyper_dq_i;
+  logic [15:0]                 s_hyper_dq_o;
+  logic [1:0]                  s_hyper_dq_oe;
+  logic                        s_hyper_reset_n;
 
   logic                        s_jtag_shift_dr;
   logic                        s_jtag_update_dr;
@@ -528,7 +598,21 @@ module pulp
         .oe_i2c0_scl_i         ( s_oe_i2c0_scl          ),
         .oe_uart_rx_i          ( s_oe_uart_rx           ),
         .oe_uart_tx_i          ( s_oe_uart_tx           ),
+        
+        .oe_gpios_i            ( s_oe_gpios             ),
+        .oe_i2c1_sda_i         ( s_oe_i2c1_sda          ),
+        .oe_i2c1_scl_i         ( s_oe_i2c1_scl          ),
 
+        .oe_hyper_cs0n_i       ( s_oe_hyper_csn0        ),
+        .oe_hyper_cs1n_i       ( s_oe_hyper_csn1        ),
+        .oe_hyper_ck_i         ( s_oe_hyper_ck          ),
+        .oe_hyper_ckn_i        ( s_oe_hyper_ckn         ),
+        .oe_hyper_rwds0_i      ( s_oe_hyper_rwds0       ),
+        .oe_hyper_rwds1_i      ( s_oe_hyper_rwds1       ),
+        .oe_hyper_dq0_i        ( s_oe_hyper_dq0         ),
+        .oe_hyper_dq1_i        ( s_oe_hyper_dq1         ),
+        .oe_hyper_resetn_i     ( s_oe_hyper_reset       ),
+ 
         .out_spim_sdio0_i      ( s_out_spim_sdio0       ),
         .out_spim_sdio1_i      ( s_out_spim_sdio1       ),
         .out_spim_sdio2_i      ( s_out_spim_sdio2       ),
@@ -561,6 +645,21 @@ module pulp
         .out_i2c0_scl_i        ( s_out_i2c0_scl         ),
         .out_uart_rx_i         ( s_out_uart_rx          ),
         .out_uart_tx_i         ( s_out_uart_tx          ),
+        
+        .out_gpios_i           ( s_out_gpios            ),
+        .out_i2c1_sda_i        ( s_out_i2c1_sda         ),
+        .out_i2c1_scl_i        ( s_out_i2c1_scl         ),
+
+        .out_hyper_cs0n_i      ( s_out_hyper_csn0       ),
+        .out_hyper_cs1n_i      ( s_out_hyper_csn1       ),
+        .out_hyper_ck_i        ( s_out_hyper_ck         ),
+        .out_hyper_ckn_i       ( s_out_hyper_ckn        ),
+        .out_hyper_rwds0_i     ( s_out_hyper_rwds0      ),
+        .out_hyper_rwds1_i     ( s_out_hyper_rwds1      ),
+        .out_hyper_dq0_i       ( s_out_hyper_dq0        ),
+        .out_hyper_dq1_i       ( s_out_hyper_dq1        ),
+        .out_hyper_resetn_i    ( s_out_hyper_reset      ),
+
 
         .in_spim_sdio0_o       ( s_in_spim_sdio0        ),
         .in_spim_sdio1_o       ( s_in_spim_sdio1        ),
@@ -594,6 +693,21 @@ module pulp
         .in_i2c0_scl_o         ( s_in_i2c0_scl          ),
         .in_uart_rx_o          ( s_in_uart_rx           ),
         .in_uart_tx_o          ( s_in_uart_tx           ),
+        
+        .in_gpios_o            ( s_in_gpios             ),
+        .in_i2c1_sda_o         ( s_in_i2c1_sda          ),
+        .in_i2c1_scl_o         ( s_in_i2c1_scl          ),
+
+        .in_hyper_cs0n_o       ( s_in_hyper_csn0        ),
+        .in_hyper_cs1n_o       ( s_in_hyper_csn1        ),
+        .in_hyper_ck_o         ( s_in_hyper_ck          ),
+        .in_hyper_ckn_o        ( s_in_hyper_ckn         ),
+        .in_hyper_rwds0_o      ( s_in_hyper_rwds0       ),
+        .in_hyper_rwds1_o      ( s_in_hyper_rwds1       ),
+        .in_hyper_dq0_o        ( s_in_hyper_dq0         ),
+        .in_hyper_dq1_o        ( s_in_hyper_dq1         ),
+        .in_hyper_resetn_o     ( s_in_hyper_reset       ),
+
         .bootsel_o             ( s_bootsel              ),
 
         //EXT CHIP to PAD
@@ -629,6 +743,20 @@ module pulp
         .pad_i2c0_scl          ( pad_i2c0_scl           ),
         .pad_uart_rx           ( pad_uart_rx            ),
         .pad_uart_tx           ( pad_uart_tx            ),
+        
+        .pad_gpios             ( pad_gpios              ),
+        .pad_i2c1_sda          ( pad_i2c1_sda           ),
+        .pad_i2c1_scl          ( pad_i2c1_scl           ),
+
+        .pad_hyper_dq0         ( pad_hyper_dq0          ),
+        .pad_hyper_dq1         ( pad_hyper_dq1          ),
+        .pad_hyper_ck          ( pad_hyper_ck           ),
+        .pad_hyper_ckn         ( pad_hyper_ckn          ),
+        .pad_hyper_csn0        ( pad_hyper_csn0         ),
+        .pad_hyper_csn1        ( pad_hyper_csn1         ),
+        .pad_hyper_rwds0       ( pad_hyper_rwds0        ),
+        .pad_hyper_rwds1       ( pad_hyper_rwds1        ),
+        .pad_hyper_reset       ( pad_hyper_reset        ),
 
         .pad_bootsel           ( pad_bootsel            ),
         .pad_reset_n           ( pad_reset_n            ),
@@ -710,6 +838,19 @@ module pulp
         .timer2_i                   ( s_timer2                    ),
         .timer3_i                   ( s_timer3                    ),
 
+
+        .hyper_cs_ni                  ( s_hyper_cs                       ),
+        .hyper_ck_i                   ( s_hyper_ck                       ),
+        .hyper_ck_ni                  ( s_hyper_ck_n                     ),
+        .hyper_rwds_i                 ( s_hyper_rwds_i                   ),
+        .hyper_rwds_o                 ( s_hyper_rwds                     ),
+        .hyper_rwds_oe_i              ( s_hyper_rwds_oe                  ),
+        .hyper_dq_o                   ( s_hyper_dq_i                     ),
+        .hyper_dq_i                   ( s_hyper_dq_o                     ),
+        .hyper_dq_oe_o                ( s_hyper_dq_oe                    ),
+        .hyper_reset_no               ( s_hyper_reset_n                  ),
+
+
         .out_spim_sdio0_o           ( s_out_spim_sdio0            ),
         .out_spim_sdio1_o           ( s_out_spim_sdio1            ),
         .out_spim_sdio2_o           ( s_out_spim_sdio2            ),
@@ -746,6 +887,20 @@ module pulp
         .out_i2s0_ws_o              ( s_out_i2s0_ws               ),
         .out_i2s0_sdi_o             ( s_out_i2s0_sdi              ),
         .out_i2s1_sdi_o             ( s_out_i2s1_sdi              ),
+        
+        .out_gpios_o                ( s_out_gpios                 ),
+        .out_i2c1_sda_o             ( s_out_i2c1_sda              ),
+        .out_i2c1_scl_o             ( s_out_i2c1_scl              ),
+
+        .out_hyper_cs0n_o           ( s_out_hyper_csn0            ),
+        .out_hyper_cs1n_o           ( s_out_hyper_csn1            ),
+        .out_hyper_ck_o             ( s_out_hyper_ck              ),
+        .out_hyper_ckn_o            ( s_out_hyper_ckn             ),
+        .out_hyper_rwds0_o          ( s_out_hyper_rwds0           ),
+        .out_hyper_rwds1_o          ( s_out_hyper_rwds1           ),
+        .out_hyper_dq0_o            ( s_out_hyper_dq0             ),
+        .out_hyper_dq1_o            ( s_out_hyper_dq1             ),
+        .out_hyper_resetn_o         ( s_out_hyper_reset           ),
 
         .in_spim_sdio0_i            ( s_in_spim_sdio0             ),
         .in_spim_sdio1_i            ( s_in_spim_sdio1             ),
@@ -782,6 +937,21 @@ module pulp
         .in_i2s0_ws_i               ( s_in_i2s0_ws                ),
         .in_i2s0_sdi_i              ( s_in_i2s0_sdi               ),
         .in_i2s1_sdi_i              ( s_in_i2s1_sdi               ),
+        
+        .in_gpios_i                 ( s_in_gpios                  ),
+        .in_i2c1_sda_i              ( s_in_i2c1_sda               ),
+        .in_i2c1_scl_i              ( s_in_i2c1_scl               ),
+
+
+        .in_hyper_cs0n_i            ( s_in_hyper_csn0            ),
+        .in_hyper_cs1n_i            ( s_in_hyper_csn1            ),
+        .in_hyper_ck_i              ( s_in_hyper_ck              ),
+        .in_hyper_ckn_i             ( s_in_hyper_ckn             ),
+        .in_hyper_rwds0_i           ( s_in_hyper_rwds0           ),
+        .in_hyper_rwds1_i           ( s_in_hyper_rwds1           ),
+        .in_hyper_dq0_i             ( s_in_hyper_dq0             ),
+        .in_hyper_dq1_i             ( s_in_hyper_dq1             ),
+        .in_hyper_resetn_i          ( s_in_hyper_reset           ),
 
         .oe_spim_sdio0_o            ( s_oe_spim_sdio0             ),
         .oe_spim_sdio1_o            ( s_oe_spim_sdio1             ),
@@ -818,6 +988,20 @@ module pulp
         .oe_i2s0_ws_o               ( s_oe_i2s0_ws                ),
         .oe_i2s0_sdi_o              ( s_oe_i2s0_sdi               ),
         .oe_i2s1_sdi_o              ( s_oe_i2s1_sdi               ),
+        
+        .oe_gpios_o                 ( s_oe_gpios                  ),
+        .oe_i2c1_sda_o              ( s_oe_i2c1_sda               ),
+        .oe_i2c1_scl_o              ( s_oe_i2c1_scl               ),
+     
+        .oe_hyper_cs0n_o            ( s_oe_hyper_csn0             ),
+        .oe_hyper_cs1n_o            ( s_oe_hyper_csn1             ),
+        .oe_hyper_ck_o              ( s_oe_hyper_ck               ),
+        .oe_hyper_ckn_o             ( s_oe_hyper_ckn              ),
+        .oe_hyper_rwds0_o           ( s_oe_hyper_rwds0            ),
+        .oe_hyper_rwds1_o           ( s_oe_hyper_rwds1            ),
+        .oe_hyper_dq0_o             ( s_oe_hyper_dq0              ),
+        .oe_hyper_dq1_o             ( s_oe_hyper_dq1              ),
+        .oe_hyper_resetn_o           ( s_oe_hyper_reset            ),
 
         .*
    );
@@ -915,6 +1099,17 @@ module pulp
         .sdio_data_o                  ( s_sdio_datao                     ),
         .sdio_data_i                  ( s_sdio_datai                     ),
         .sdio_data_oen_o              ( s_sdio_data_oen                  ),
+
+        .hyper_cs_no                  ( s_hyper_cs_n                     ),
+        .hyper_ck_o                   ( s_hyper_ck                       ),
+        .hyper_ck_no                  ( s_hyper_ck_n                     ),
+        .hyper_rwds_o                 ( s_hyper_rwds_o                   ),
+        .hyper_rwds_i                 ( s_hyper_rwds_i                   ),
+        .hyper_rwds_oe_o              ( s_hyper_rwds_oe                  ),
+        .hyper_dq_i                   ( s_hyper_dq_i                     ),
+        .hyper_dq_o                   ( s_hyper_dq_o                     ),
+        .hyper_dq_oe_o                ( s_hyper_dq_oe                    ),
+        .hyper_reset_no               ( s_hyper_reset_n                  ),
 
         .cluster_busy_i               ( s_cluster_busy                   ),
 
