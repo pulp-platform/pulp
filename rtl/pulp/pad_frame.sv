@@ -230,8 +230,8 @@ module pad_frame
     pad_functional_pu padinst_i2c0_sda   (.OEN(~oe_i2c0_sda_i  ), .I(out_i2c0_sda_i  ), .O(in_i2c0_sda_o  ), .PAD(pad_i2c0_sda  ), .PEN(~pad_cfg_i[7][0] ) );
     pad_functional_pu padinst_i2c0_scl   (.OEN(~oe_i2c0_scl_i  ), .I(out_i2c0_scl_i  ), .O(in_i2c0_scl_o  ), .PAD(pad_i2c0_scl  ), .PEN(~pad_cfg_i[8][0] ) );
     // NEW PADS
-    pad_functional_pu padinst_i2c1_sda   (.OEN(~oe_i2c1_sda_i  ), .I(out_i2c1_sda_i  ), .O(in_i2c1_sda_o  ), .PAD(pad_i2c1_sda  ), .PEN(~pad_cfg_i[39][0] ) );
-    pad_functional_pu padinst_i2c1_scl   (.OEN(~oe_i2c1_scl_i  ), .I(out_i2c1_scl_i  ), .O(in_i2c1_scl_o  ), .PAD(pad_i2c1_scl  ), .PEN(~pad_cfg_i[40][0] ) );
+    pad_functional_pu padinst_i2c1_sda   (.OEN(~oe_i2c1_sda_i  ), .I(out_i2c1_sda_i  ), .O(in_i2c1_sda_o  ), .PAD(pad_i2c1_sda  ), .PEN(~pad_cfg_i[26][0] ) );
+    pad_functional_pu padinst_i2c1_scl   (.OEN(~oe_i2c1_scl_i  ), .I(out_i2c1_scl_i  ), .O(in_i2c1_scl_o  ), .PAD(pad_i2c1_scl  ), .PEN(~pad_cfg_i[27][0] ) );
 
     genvar i;
     generate

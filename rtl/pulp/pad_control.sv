@@ -200,7 +200,7 @@ module pad_control #(
         // NEW PADS
         output logic[31:0]       oe_gpios_o       ,
         output logic             oe_i2c1_sda_o    ,
-        output logic             oe_i2c1_scl_o    ,
+        output logic             oe_i2c1_scl_o    
 
     );
 

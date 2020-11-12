@@ -320,7 +320,7 @@ module safe_domain
         .out_i2s0_sdi_o        ( out_i2s0_sdi_o        ),
         .out_i2s1_sdi_o        ( out_i2s1_sdi_o        ),
         // NEW PADS
-        .out_gpios             ( out_gpios_o           ), 
+        .out_gpios_o           ( out_gpios_o           ), 
         .out_i2c1_sda_o        ( out_i2c1_sda_o        ),
         .out_i2c1_scl_o        ( out_i2c1_scl_o        ),
 
