@@ -12,7 +12,7 @@
 module pad_frame
     (
 
-        input logic [47:0][5:0] pad_cfg_i        ,
+        input logic [72:0][5:0] pad_cfg_i        ,
 
         // REF CLOCK
         output logic            ref_clk_o        ,
@@ -60,9 +60,9 @@ module pad_frame
         input logic             oe_uart_rx_i     ,
         input logic             oe_uart_tx_i     ,
         // NEW PADS
-        input logic[31:0]       oe_gpios         ,
-        input logic             oe_i2c1_sda_o    ,
-        input logic             oe_i2c1_scl_o    ,     
+        input logic[31:0]       oe_gpios_i       ,
+        input logic             oe_i2c1_sda_i    ,
+        input logic             oe_i2c1_scl_i    ,     
   
         // INPUTS SIGNALS TO THE PADS
         input logic             out_sdio_clk_i  ,
@@ -98,9 +98,9 @@ module pad_frame
         input logic             out_uart_rx_i    ,
         input logic             out_uart_tx_i    ,
         // NEW PADS
-        input logic[31:0]       out_gpios        ,
-        input logic             out_i2c1_sda_o   ,
-        input logic             out_i2c1_scl_o   ,
+        input logic[31:0]       out_gpios_i      ,
+        input logic             out_i2c1_sda_i   ,
+        input logic             out_i2c1_scl_i   ,
         
 
         // OUTPUT SIGNALS FROM THE PADS
@@ -137,19 +137,19 @@ module pad_frame
         output logic            in_uart_rx_o     ,
         output logic            in_uart_tx_o     ,
         // NEW PADS
-        output logic[31:0]        in_gpios         ,
-        output logic              in_i2c1_sda_i    ,
-        output logic              in_i2c1_scl_i    , 
+        output logic[31:0]      in_gpios_o       ,
+        output logic            in_i2c1_sda_o    ,
+        output logic            in_i2c1_scl_o    , 
 
         output logic            bootsel_o        ,
 
         // EXT CHIP TP PADS
-        inout wire              pad_sdio_clk    ,
+        inout wire              pad_sdio_clk     ,
         inout wire              pad_sdio_cmd     ,
-        inout wire              pad_sdio_data0    ,
-        inout wire              pad_sdio_data1    ,
-        inout wire              pad_sdio_data2    ,
-        inout wire              pad_sdio_data3    ,
+        inout wire              pad_sdio_data0   ,
+        inout wire              pad_sdio_data1   ,
+        inout wire              pad_sdio_data2   ,
+        inout wire              pad_sdio_data3   ,
         inout wire              pad_spim_sdio0   ,
         inout wire              pad_spim_sdio1   ,
         inout wire              pad_spim_sdio2   ,
@@ -179,7 +179,7 @@ module pad_frame
         // NEW PADS
         inout wire [31:0]       pad_gpios        ,
         inout wire              pad_i2c1_sda     ,
-        inout wire              pad_i2c1_sda     ,
+        inout wire              pad_i2c1_scl     ,
 
         inout wire              pad_reset_n      ,
         inout wire              pad_bootsel      ,
@@ -236,7 +236,7 @@ module pad_frame
     genvar i;
     generate
         for (i=0; i < 32; i++) begin
-            pad_functional_pu padinst_gpio   (.OEN(~oe_gpios[i]  ), .I(out_gpios[i]  ), .O(in_gpios[i]  ), .PAD(pad_gpios[i]  ), .PEN(~pad_cfg_i[41+i][0] ) );
+            pad_functional_pu padinst_gpio   (.OEN(~oe_gpios_i[i]  ), .I(out_gpios_i[i]  ), .O(in_gpios_o[i]  ), .PAD(pad_gpios[i]  ), .PEN(~pad_cfg_i[41+i][0] ) );
         end
     endgenerate
 

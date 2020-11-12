@@ -121,7 +121,7 @@ module pad_control #(
         output logic             out_i2s0_sdi_o   ,
         output logic             out_i2s1_sdi_o   ,
         // NEW PADS
-        output logic[31:0]       out_gpios        ,
+        output logic[31:0]       out_gpios_o      ,
         output logic             out_i2c1_sda_o   ,
         output logic             out_i2c1_scl_o   ,
 
@@ -159,7 +159,7 @@ module pad_control #(
         input logic              in_i2s0_sdi_i    ,
         input logic              in_i2s1_sdi_i    ,
         // NEW PADS
-        input logic[31:0]        in_gpios         ,
+        input logic[31:0]        in_gpios_i       ,
         input logic              in_i2c1_sda_i    ,
         input logic              in_i2c1_scl_i    ,
 
@@ -198,7 +198,7 @@ module pad_control #(
         output logic             oe_i2s0_sdi_o    ,
         output logic             oe_i2s1_sdi_o    ,
         // NEW PADS
-        output logic[31:0]       oe_gpios         ,
+        output logic[31:0]       oe_gpios_o       ,
         output logic             oe_i2c1_sda_o    ,
         output logic             oe_i2c1_scl_o    ,
 
@@ -290,7 +290,7 @@ module pad_control #(
    assign oe_i2s0_sdi_o    = 1'b0                ;
    assign oe_i2s1_sdi_o    = 1'b0                ;
    // New Pads
-   assign oe_gpios[31:0]   = gpio_dir_i[31:0]    ;
+   assign oe_gpios_o[31:0] = gpio_dir_i[31:0]    ;
    assign oe_i2c1_sda_o    = i2c_sda_oe_i[1]     ;
    assign oe_i2c1_scl_o    = i2c_scl_oe_i[1]     ;
 
@@ -367,7 +367,7 @@ module pad_control #(
    assign out_i2s0_sdi_o   = 1'b0               ;
    assign out_i2s1_sdi_o   = 1'b0               ;
    // New Pads
-   assign out_gpios[31:0]  = gpio_out_i[31:0]   ;
+   assign out_gpios_o[31:0]= gpio_out_i[31:0]   ;
    assign out_i2c1_sda_o   = i2c_sda_out_i[1]   ;
    assign out_i2c1_scl_o   = i2c_scl_out_i[1]   ;
 
@@ -493,7 +493,7 @@ module pad_control #(
    assign gpio_in_o[30] = (pad_mux_i[37] == 2'b01) ? in_i2s0_sdi_i   : 1'b0 ;
    assign gpio_in_o[31] = (pad_mux_i[38] == 2'b01) ? in_i2s1_sdi_i   : 1'b0 ;
    */
-   assign gpio_in_o[31:0] = in_gpios[31:0] ;
+   assign gpio_in_o[31:0] = in_gpios_i[31:0] ;
 
    // PAD CFG mux between default and GPIO
    /*

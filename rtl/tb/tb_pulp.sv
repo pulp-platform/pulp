@@ -38,9 +38,9 @@ module tb_pulp;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
-   parameter  USE_S25FS256S_MODEL = 0;
-   parameter  USE_24FC1025_MODEL  = 0;
-   parameter  USE_I2S_MODEL       = 0;
+   parameter  USE_S25FS256S_MODEL = 1;
+   parameter  USE_24FC1025_MODEL  = 1;
+   parameter  USE_I2S_MODEL       = 1;
 
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
@@ -139,6 +139,8 @@ module tb_pulp;
 
    wire                  w_i2c0_scl;
    wire                  w_i2c0_sda;
+
+   wire [31:0]           w_gpios;
 
    tri                   w_i2c1_scl;
    tri                   w_i2c1_sda;
@@ -416,8 +418,8 @@ module tb_pulp;
          .A1    ( 1'b0       ),
          .A2    ( 1'b1       ),
          .WP    ( 1'b0       ),
-         .SDA   ( w_i2c0_sda ),
-         .SCL   ( w_i2c0_scl ),
+         .SDA   ( w_i2c1_sda ),
+         .SCL   ( w_i2c1_scl ),
          .RESET ( 1'b0       )
       );
       M24FC1025 i_i2c_mem_1 (
@@ -425,8 +427,8 @@ module tb_pulp;
          .A1    ( 1'b0       ),
          .A2    ( 1'b1       ),
          .WP    ( 1'b0       ),
-         .SDA   ( w_i2c0_sda ),
-         .SCL   ( w_i2c0_scl ),
+         .SDA   ( w_i2c1_sda ),
+         .SCL   ( w_i2c1_scl ),
          .RESET ( 1'b0       )
       );
    end
@@ -533,6 +535,17 @@ module tb_pulp;
     );
 
 
+   // GPIO TEST
+   genvar i;
+   //genvar j;
+
+   generate
+      for (i=0;i<32;i++) begin
+         buf (weak0, strong1) buf_gpio    (w_gpios[i]  , w_gpios[(i+4)%32]  );
+      end
+   endgenerate
+
+
    // PULP chip (design under test)
    pulp #(
       .CORE_TYPE ( CORE_TYPE ),
@@ -571,6 +584,11 @@ module tb_pulp;
 
       .pad_i2c0_sda       ( w_i2c0_sda         ),
       .pad_i2c0_scl       ( w_i2c0_scl         ),
+
+      .pad_gpios          ( w_gpios            ),
+
+      .pad_i2c1_sda       ( w_i2c1_sda         ),
+      .pad_i2c1_scl       ( w_i2c1_scl         ),
 
       .pad_i2s0_sck       ( w_i2s0_sck         ),
       .pad_i2s0_ws        ( w_i2s0_ws          ),
