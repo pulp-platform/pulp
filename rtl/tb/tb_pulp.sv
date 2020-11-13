@@ -418,8 +418,8 @@ module tb_pulp;
          .A1    ( 1'b0       ),
          .A2    ( 1'b1       ),
          .WP    ( 1'b0       ),
-         .SDA   ( w_i2c1_sda ),
-         .SCL   ( w_i2c1_scl ),
+         .SDA   ( w_i2c0_sda ),
+         .SCL   ( w_i2c0_scl ),
          .RESET ( 1'b0       )
       );
       M24FC1025 i_i2c_mem_1 (
@@ -538,12 +538,26 @@ module tb_pulp;
    // GPIO TEST
    genvar i;
    //genvar j;
+   
+   
+   assign w_gpios[16] = w_gpios[0]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[17] = w_gpios[1]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[18] = w_gpios[2]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[19] = w_gpios[3]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[20] = w_gpios[4]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[21] = w_gpios[5]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[22] = w_gpios[6]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[23] = w_gpios[7]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[24] = w_gpios[8]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[25] = w_gpios[9]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[26] = w_gpios[10] ? 1'b1 : 1'b0 ;
+   assign w_gpios[27] = w_gpios[11] ? 1'b1 : 1'b0 ;
+   assign w_gpios[28] = w_gpios[12] ? 1'b1 : 1'b0 ;
+   assign w_gpios[29] = w_gpios[13] ? 1'b1 : 1'b0 ;
+   assign w_gpios[30] = w_gpios[14] ? 1'b1 : 1'b0 ;
+   assign w_gpios[31] = w_gpios[15] ? 1'b1 : 1'b0 ;
 
-   generate
-      for (i=0;i<32;i++) begin
-         buf (weak0, strong1) buf_gpio    (w_gpios[i]  , w_gpios[(i+4)%32]  );
-      end
-   endgenerate
+
 
 
    // PULP chip (design under test)
