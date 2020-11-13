@@ -106,7 +106,7 @@ test-local-regressions:
 	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml regression-tests.yaml
 
 git-ci-ml-regs:
 	source setup/vsim.sh; \
