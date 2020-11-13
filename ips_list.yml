@@ -24,9 +24,9 @@ pulp_soc:
   group:  pulp-platform
 
 pulp_cluster:
-  commit: ibex_integration
+  commit: d124108e8688f89baa56dd9247b3b198ddb0f3b3
   server: https://github.com
-  group:  micprog
+  group:  pulp-platform
 
 tbtools:
   commit: v0.1
