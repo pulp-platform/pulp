@@ -45,9 +45,11 @@ fetch_ips:
   script:
     - source setup/vsim.sh
     - echo "Fetching IPs"
-    - ./update-ips
+    - ./update-ips 
+    - echo "Fetching vips"
+    - ./rtl/vip/get-vips.sh --yes --gitlab
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts 
+    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
@@ -55,6 +57,7 @@ fetch_ips:
       - sim/*
       - ipstools/*
       - .cached_ipdb.json
+      - rtl/vip/*
 
 
 build_rtl:
@@ -160,6 +163,30 @@ test_riscv_regressions:
   script:
     - echo "Running software test"
     - make git-ci-riscv-regs
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - regression_tests/*.html
+      - regression_tests/*.xml
+    reports:
+      junit: regression_tests/*.xml
+
+
+# Use simplified pulp-runtime to run a subset of tests
+test_periph_regressions:
+  stage: test
+  before_script:
+    - echo "Re-build"
+    - make build
+    - echo "Fetching Runtime"
+    - make pulp-runtime
+    - echo "Source and exports"
+    - source pulp-runtime/configs/pulp.sh; 
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
+  script:
+    - echo "Running software test"
+    - make git-ci-periphs-regs
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:

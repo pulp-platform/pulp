@@ -132,6 +132,13 @@ git-ci-p-bare-regs:
 	touch regression_tests/simplified-pbare-runtime.xml; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
 
+git-ci-periphs-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-periph-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-periph-runtime.xml periph-tests.yaml
+
+
 test-local-runtime: 
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
