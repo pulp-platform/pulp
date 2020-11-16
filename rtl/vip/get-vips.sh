@@ -27,7 +27,7 @@ if [[ "$AGREE_LICENSE" -ne "1" ]]; then
 fi
 if [[ ! -d "vip-proprietary" ]]; then
     if [[ "$USE_GITLAB" -eq "1" ]]; then
-	git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-open/pulp-vip-proprietary \
+	git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-ci/vip-prop-pulp \
 	    "$VIP_DIR"
     else
 	git clone git@iis-git.ee.ethz.ch:pulp-open/pulp-vip-proprietary.git \
