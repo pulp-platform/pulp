@@ -120,7 +120,7 @@ module pad_control #(
         output logic             out_i2s0_ws_o    ,
         output logic             out_i2s0_sdi_o   ,
         output logic             out_i2s1_sdi_o   ,
-        // NEW PADS
+        
         output logic[31:0]       out_gpios_o      ,
         output logic             out_i2c1_sda_o   ,
         output logic             out_i2c1_scl_o   ,
@@ -158,7 +158,7 @@ module pad_control #(
         input logic              in_i2s0_ws_i     ,
         input logic              in_i2s0_sdi_i    ,
         input logic              in_i2s1_sdi_i    ,
-        // NEW PADS
+        
         input logic[31:0]        in_gpios_i       ,
         input logic              in_i2c1_sda_i    ,
         input logic              in_i2c1_scl_i    ,
@@ -197,7 +197,7 @@ module pad_control #(
         output logic             oe_i2s0_ws_o     ,
         output logic             oe_i2s0_sdi_o    ,
         output logic             oe_i2s1_sdi_o    ,
-        // NEW PADS
+        
         output logic[31:0]       oe_gpios_o       ,
         output logic             oe_i2c1_sda_o    ,
         output logic             oe_i2c1_scl_o    
@@ -218,7 +218,7 @@ module pad_control #(
    assign s_alt3 = 1'b0;
 
    /////////////////////////////////////////////////////////////////////////////////////////////
-   // EXPLODED OUTPUT ENABLE (Which means configuration 0 with also the added pads)
+   // OUTPUT ENABLE 
    /////////////////////////////////////////////////////////////////////////////////////////////
    assign oe_spim_sdio0_o  = ~spi_oen_i[0][0]    ;
    assign oe_spim_sdio1_o  = ~spi_oen_i[0][1]    ;
@@ -252,13 +252,13 @@ module pad_control #(
    assign oe_i2s0_ws_o     = i2s_slave_ws_oe     ;
    assign oe_i2s0_sdi_o    = 1'b0                ;
    assign oe_i2s1_sdi_o    = 1'b0                ;
-   // New Pads
+   
    assign oe_gpios_o[31:0] = gpio_dir_i[31:0]    ;
    assign oe_i2c1_sda_o    = i2c_sda_oe_i[1]     ;
    assign oe_i2c1_scl_o    = i2c_scl_oe_i[1]     ;
 
    ////////////////////////////////////////////////////////////////
-   // EXPLODED DATA OUTPUT
+   // DATA OUTPUT
    ////////////////////////////////////////////////////////////////
    assign out_spim_sdio0_o = spi_sdo_i[0][0]    ;
    assign out_spim_sdio1_o = spi_sdo_i[0][1]    ;
@@ -292,12 +292,11 @@ module pad_control #(
    assign out_i2s0_ws_o    = i2s_slave_ws_i     ;
    assign out_i2s0_sdi_o   = 1'b0               ;
    assign out_i2s1_sdi_o   = 1'b0               ;
-   // New Pads
+   
    assign out_gpios_o[31:0]= gpio_out_i[31:0]   ;
    assign out_i2c1_sda_o   = i2c_sda_out_i[1]   ;
    assign out_i2c1_scl_o   = i2c_scl_out_i[1]   ;
 
-   // EXPLODED
    // SPI
    assign sdio_cmd_o      = in_sdio_cmd_i    ;
    assign sdio_data_o[0]  = in_sdio_data0_i  ;
@@ -305,7 +304,7 @@ module pad_control #(
    assign sdio_data_o[2]  = in_sdio_data2_i  ;
    assign sdio_data_o[3]  = in_sdio_data3_i  ;
 
-   //    CAMERA
+   // CAMERA
    assign cam_pclk_o      = in_cam_pclk_i    ;
    assign cam_hsync_o     = in_cam_hsync_i   ;
    assign cam_data_o[0]   = in_cam_data0_i   ;
@@ -318,30 +317,30 @@ module pad_control #(
    assign cam_data_o[7]   = in_cam_data7_i   ;
    assign cam_vsync_o     = in_cam_vsync_i   ;
 
-   //    I2C1
+   // I2C1
    assign i2c_sda_in_o[1] = in_i2c1_sda_i;
    assign i2c_scl_in_o[1] = in_i2c1_scl_i;
 
    assign i2s_slave_sd1_o = in_i2s1_sdi_i    ;
 
-   //    UART
+   // UART
    assign uart_rx_o       = in_uart_rx_i     ;
 
-   // EXPLODED SPI
+   // SPI
    assign spi_sdi_o[0][0] = in_spim_sdio0_i  ;
    assign spi_sdi_o[0][1] = in_spim_sdio1_i  ;
    assign spi_sdi_o[0][2] = in_spim_sdio2_i  ;
    assign spi_sdi_o[0][3] = in_spim_sdio3_i  ;
 
    
-   // EXPLODED I2C0
+   // I2C0
    assign i2c_sda_in_o[0] = in_i2c0_sda_i    ;
    assign i2c_scl_in_o[0] = in_i2c0_scl_i    ;
    assign i2s_slave_sck_o = in_i2s0_sck_i    ;
    assign i2s_slave_ws_o  = in_i2s0_ws_i     ;
    assign i2s_slave_sd0_o = in_i2s0_sdi_i    ;
 
-   //    GPIO
+   // GPIO
    assign gpio_in_o[31:0] = in_gpios_i[31:0] ;
 
    // PAD CFG mux between default and GPIO

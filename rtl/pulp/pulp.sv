@@ -56,7 +56,7 @@ module pulp
    inout  wire        pad_i2s0_sdi,
    inout  wire        pad_i2s1_sdi,
 
-   // NEW PADS
+   
    inout  wire [31:0] pad_gpios,
    inout  wire        pad_i2c1_sda,
    inout  wire        pad_i2c1_scl,     
@@ -127,7 +127,7 @@ module pulp
   logic s_out_i2s0_ws    ;
   logic s_out_i2s0_sdi   ;
   logic s_out_i2s1_sdi   ;
-  // NEW PADS
+  
   logic[31:0] s_out_gpios;
   logic s_out_i2c1_sda   ;
   logic s_out_i2c1_scl   ;
@@ -164,7 +164,7 @@ module pulp
   logic s_in_i2s0_ws     ;
   logic s_in_i2s0_sdi    ;
   logic s_in_i2s1_sdi    ;
-  // NEW PADS
+  
   logic[31:0] s_in_gpios ;
   logic s_in_i2c1_sda    ;
   logic s_in_i2c1_scl    ;
@@ -201,7 +201,7 @@ module pulp
   logic s_oe_i2s0_ws     ;
   logic s_oe_i2s0_sdi    ;
   logic s_oe_i2s1_sdi    ;
-  // NEW PADS
+  
   logic[31:0] s_oe_gpios ;
   logic s_oe_i2c1_sda    ;
   logic s_oe_i2c1_scl    ;
@@ -545,7 +545,7 @@ module pulp
         .oe_i2c0_scl_i         ( s_oe_i2c0_scl          ),
         .oe_uart_rx_i          ( s_oe_uart_rx           ),
         .oe_uart_tx_i          ( s_oe_uart_tx           ),
-        // NEW PADS
+        
         .oe_gpios_i            ( s_oe_gpios             ),
         .oe_i2c1_sda_i         ( s_oe_i2c1_sda          ),
         .oe_i2c1_scl_i         ( s_oe_i2c1_scl          ),
@@ -582,7 +582,7 @@ module pulp
         .out_i2c0_scl_i        ( s_out_i2c0_scl         ),
         .out_uart_rx_i         ( s_out_uart_rx          ),
         .out_uart_tx_i         ( s_out_uart_tx          ),
-        // NEW PADS
+        
         .out_gpios_i           ( s_out_gpios            ),
         .out_i2c1_sda_i        ( s_out_i2c1_sda         ),
         .out_i2c1_scl_i        ( s_out_i2c1_scl         ),
@@ -619,7 +619,7 @@ module pulp
         .in_i2c0_scl_o         ( s_in_i2c0_scl          ),
         .in_uart_rx_o          ( s_in_uart_rx           ),
         .in_uart_tx_o          ( s_in_uart_tx           ),
-        // NEW PADS
+        
         .in_gpios_o            ( s_in_gpios             ),
         .in_i2c1_sda_o         ( s_in_i2c1_sda          ),
         .in_i2c1_scl_o         ( s_in_i2c1_scl          ),
@@ -659,7 +659,7 @@ module pulp
         .pad_i2c0_scl          ( pad_i2c0_scl           ),
         .pad_uart_rx           ( pad_uart_rx            ),
         .pad_uart_tx           ( pad_uart_tx            ),
-        // NEW PADS
+        
         .pad_gpios             ( pad_gpios              ),
         .pad_i2c1_sda          ( pad_i2c1_sda           ),
         .pad_i2c1_scl          ( pad_i2c1_scl           ),
@@ -781,7 +781,7 @@ module pulp
         .out_i2s0_ws_o              ( s_out_i2s0_ws               ),
         .out_i2s0_sdi_o             ( s_out_i2s0_sdi              ),
         .out_i2s1_sdi_o             ( s_out_i2s1_sdi              ),
-        // NEW PADS
+        
         .out_gpios_o                ( s_out_gpios                 ),
         .out_i2c1_sda_o             ( s_out_i2c1_sda              ),
         .out_i2c1_scl_o             ( s_out_i2c1_scl              ),
@@ -821,7 +821,7 @@ module pulp
         .in_i2s0_ws_i               ( s_in_i2s0_ws                ),
         .in_i2s0_sdi_i              ( s_in_i2s0_sdi               ),
         .in_i2s1_sdi_i              ( s_in_i2s1_sdi               ),
-        // NEW PADS
+        
         .in_gpios_i                 ( s_in_gpios                  ),
         .in_i2c1_sda_i              ( s_in_i2c1_sda               ),
         .in_i2c1_scl_i              ( s_in_i2c1_scl               ),
@@ -861,7 +861,7 @@ module pulp
         .oe_i2s0_ws_o               ( s_oe_i2s0_ws                ),
         .oe_i2s0_sdi_o              ( s_oe_i2s0_sdi               ),
         .oe_i2s1_sdi_o              ( s_oe_i2s1_sdi               ),
-        // NEW PADS
+        
         .oe_gpios_o                 ( s_oe_gpios                  ),
         .oe_i2c1_sda_o              ( s_oe_i2c1_sda               ),
         .oe_i2c1_scl_o              ( s_oe_i2c1_scl               ),

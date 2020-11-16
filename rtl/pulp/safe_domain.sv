@@ -131,7 +131,7 @@ module safe_domain
         output logic             out_i2s0_ws_o        ,
         output logic             out_i2s0_sdi_o       ,
         output logic             out_i2s1_sdi_o       ,
-        // NEW PADS
+        
         output logic[31:0]       out_gpios_o          ,
         output logic             out_i2c1_sda_o       ,
         output logic             out_i2c1_scl_o       ,
@@ -169,7 +169,7 @@ module safe_domain
         input logic              in_i2s0_ws_i         ,
         input logic              in_i2s0_sdi_i        ,
         input logic              in_i2s1_sdi_i        ,
-        // NEW PADS
+        
         input logic [31:0]       in_gpios_i           ,
         input logic              in_i2c1_sda_i        ,
         input logic              in_i2c1_scl_i        ,
@@ -207,7 +207,7 @@ module safe_domain
         output logic             oe_i2s0_ws_o         ,
         output logic             oe_i2s0_sdi_o        ,
         output logic             oe_i2s1_sdi_o        ,
-        // NEW PADS 
+         
         output logic [31:0]      oe_gpios_o           ,
         output logic             oe_i2c1_sda_o        ,
         output logic             oe_i2c1_scl_o        
@@ -319,7 +319,7 @@ module safe_domain
         .out_i2s0_ws_o         ( out_i2s0_ws_o         ),
         .out_i2s0_sdi_o        ( out_i2s0_sdi_o        ),
         .out_i2s1_sdi_o        ( out_i2s1_sdi_o        ),
-        // NEW PADS
+        
         .out_gpios_o           ( out_gpios_o           ), 
         .out_i2c1_sda_o        ( out_i2c1_sda_o        ),
         .out_i2c1_scl_o        ( out_i2c1_scl_o        ),
@@ -356,7 +356,7 @@ module safe_domain
         .in_i2s0_ws_i          ( in_i2s0_ws_i          ),
         .in_i2s0_sdi_i         ( in_i2s0_sdi_i         ),
         .in_i2s1_sdi_i         ( in_i2s1_sdi_i         ),
-        // NEW PADS
+        
         .in_gpios_i            ( in_gpios_i            ),
         .in_i2c1_sda_i         ( in_i2c1_sda_i         ),
         .in_i2c1_scl_i         ( in_i2c1_scl_i         ),
@@ -393,7 +393,7 @@ module safe_domain
         .oe_i2s0_ws_o          ( oe_i2s0_ws_o          ),
         .oe_i2s0_sdi_o         ( oe_i2s0_sdi_o         ),
         .oe_i2s1_sdi_o         ( oe_i2s1_sdi_o         ),
-        // NEW PADS
+        
         .oe_gpios_o            ( oe_gpios_o            ),
         .oe_i2c1_scl_o         ( oe_i2c1_scl_o         ),
         .oe_i2c1_sda_o         ( oe_i2c1_sda_o         ),
