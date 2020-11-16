@@ -344,6 +344,9 @@ module pad_control #(
    assign gpio_in_o[31:0] = in_gpios_i[31:0] ;
 
    // PAD CFG mux between default and GPIO
-   assign pad_cfg_o[40:0]  = pad_cfg_i[40:0]  ; 
-   assign pad_cfg_o[72:41] = gpio_cfg_i[32:0] ;
+   assign pad_cfg_o[40:0]  = pad_cfg_i[40:0]  ;
+   for(genvar i=0; i<32; i++)  begin
+        assign pad_cfg_o[i+41] = { 2'b00 , gpio_cfg_i[i][3:0] } ;
+   end
+
 endmodule
