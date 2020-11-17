@@ -101,6 +101,13 @@ test-checkout-gitlab:
 
 
 # gitlab and local test runs
+test-fast-regressions:
+	mkdir -p regression_tests/riscv_tests_soc
+	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml simple-regression-tests.yaml
+
 test-local-regressions: 
 	mkdir -p regression_tests/riscv_tests_soc
 	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
