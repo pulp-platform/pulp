@@ -38,9 +38,9 @@ module tb_pulp;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
-   parameter  USE_S25FS256S_MODEL = 1;
-   parameter  USE_24FC1025_MODEL  = 1;
-   parameter  USE_I2S_MODEL       = 1;
+   parameter  USE_S25FS256S_MODEL = 0;
+   parameter  USE_24FC1025_MODEL  = 0;
+   parameter  USE_I2S_MODEL       = 0;
 
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
