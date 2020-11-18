@@ -83,6 +83,19 @@ module pad_control #(
         input  logic [3:0]       timer2_i         ,
         input  logic [3:0]       timer3_i         ,
 
+        // HYPERBUS
+        input  logic  [1:0]       hyper_cs_ni        ,
+        input  logic              hyper_ck_i         ,
+        input  logic              hyper_ck_ni        ,
+        input  logic  [1:0]       hyper_rwds_i       ,
+        output logic              hyper_rwds_o       ,
+        input  logic  [1:0]       hyper_rwds_oe_i    ,
+        output logic  [15:0]      hyper_dq_o         ,
+        input  logic  [15:0]      hyper_dq_i         ,
+        input  logic  [1:0]       hyper_dq_oe_o      ,
+        input  logic              hyper_reset_no     , 
+
+
         //********************************************************************//
         //*** PAD FRAME SIGNALS **********************************************//
         //********************************************************************//
@@ -125,6 +138,16 @@ module pad_control #(
         output logic             out_i2c1_sda_o   ,
         output logic             out_i2c1_scl_o   ,
 
+        output logic             out_hyper_cs0n_o     ,
+        output logic             out_hyper_cs1n_o     ,
+        output logic             out_hyper_ck_o       ,
+        output logic             out_hyper_ckn_o      ,
+        output logic             out_hyper_rwds0_o    ,
+        output logic             out_hyper_rwds1_o    ,
+        output logic  [7:0]      out_hyper_dq0_o      ,
+        output logic  [7:0]      out_hyper_dq1_o      ,
+        output logic             out_hyper_resetn_o   ,
+
         // PAD INPUTS
         input logic              in_spim_sdio0_i  ,
         input logic              in_spim_sdio1_i  ,
@@ -163,6 +186,15 @@ module pad_control #(
         input logic              in_i2c1_sda_i    ,
         input logic              in_i2c1_scl_i    ,
 
+        input logic              in_hyper_cs0n_i     ,
+        input logic              in_hyper_cs1n_i     ,
+        input logic              in_hyper_ck_i       ,
+        input logic              in_hyper_ckn_i      ,
+        input logic              in_hyper_rwds0_i    ,
+        input logic              in_hyper_rwds1_i    ,
+        input logic  [7:0]       in_hyper_dq0_i      ,
+        input logic  [7:0]       in_hyper_dq1_i      ,
+        input logic              in_hyper_resetn_i   ,
 
         // OUTPUT ENABLE
         output logic             oe_spim_sdio0_o  ,
@@ -200,7 +232,17 @@ module pad_control #(
         
         output logic[31:0]       oe_gpios_o       ,
         output logic             oe_i2c1_sda_o    ,
-        output logic             oe_i2c1_scl_o    
+        output logic             oe_i2c1_scl_o    ,
+
+        output logic             oe_hyper_cs0n_o      ,
+        output logic             oe_hyper_cs1n_o      ,
+        output logic             oe_hyper_ck_o        ,
+        output logic             oe_hyper_ckn_o       ,
+        output logic             oe_hyper_rwds0_o     ,
+        output logic             oe_hyper_rwds1_o     ,
+        output logic             oe_hyper_dq0_o       ,
+        output logic             oe_hyper_dq1_o       ,
+        output logic             oe_hyper_resetn_o    ,
 
     );
 
@@ -257,6 +299,16 @@ module pad_control #(
    assign oe_i2c1_sda_o    = i2c_sda_oe_i[1]     ;
    assign oe_i2c1_scl_o    = i2c_scl_oe_i[1]     ;
 
+   assign oe_hyper_cs0n_o   = 1'b0               ;
+   assign oe_hyper_cs1n_o   = 1'b0               ;
+   assign oe_hyper_ck_o     = 1'b0               ;
+   assign oe_hyper_ckn_o    = 1'b0               ;
+   assign oe_hyper_rwds0_o  = hyper_rwds_oe_i[0] ;
+   assign oe_hyper_rwds1_o  = hyper_rwds_oe_i[1] ;
+   assign oe_hyper_dq0_o    = hyper_dq_oe_o[0]   ;
+   assign oe_hyper_dq1_o    = hyper_dq_oe_o[1]   ;
+   assign oe_hyper_resetn_o = 1'b0               ;
+
    ////////////////////////////////////////////////////////////////
    // DATA OUTPUT
    ////////////////////////////////////////////////////////////////
@@ -296,6 +348,21 @@ module pad_control #(
    assign out_gpios_o[31:0]= gpio_out_i[31:0]   ;
    assign out_i2c1_sda_o   = i2c_sda_out_i[1]   ;
    assign out_i2c1_scl_o   = i2c_scl_out_i[1]   ;
+
+   assign out_hyper_csn0_o   = hyper_cs_ni[0]    ;
+   assign out_hyper_csn1_o   = hyper_cs_ni[1]    ;
+   assign out_hyper_ck_o     = hyper_ck_i        ;
+   assign out_hyper_ckn_o    = hyper_ck_ni       ;
+   assign out_hyper_rwds0_o  = hyper_rwds_i[0]   ;
+   assign out_hyper_rwds1_o  = hyper_rwds_i[1]   ;
+   assign out_hyper_dq0_o    = hyper_dq_i[7:0]   ;
+   assign out_hyper_dq1_o    = hyper_dq_i[15:8]  ;
+   assign out_hyper_resetn_o = hyper_reset_no    ; 
+        
+
+   ////////////////////////////////////////////////////////////////
+   // DATA INPUT
+   ////////////////////////////////////////////////////////////////
 
    // SPI
    assign sdio_cmd_o      = in_sdio_cmd_i    ;
@@ -342,6 +409,11 @@ module pad_control #(
 
    // GPIO
    assign gpio_in_o[31:0] = in_gpios_i[31:0] ;
+
+   // HYPER
+   assign hyper_dq_o[7:0]  = in_hyper_dq0_i   ;
+   assign hyper_dq_o[15:8] = in_hyper_dq1_i   ;
+   assign hyper_rwds_o     = in_hyper_rwds0_i ;
 
    // PAD CFG mux between default and GPIO
    assign pad_cfg_o[40:0]  = pad_cfg_i[40:0]  ;

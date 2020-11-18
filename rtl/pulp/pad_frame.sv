@@ -63,6 +63,16 @@ module pad_frame
         input logic[31:0]       oe_gpios_i       ,
         input logic             oe_i2c1_sda_i    ,
         input logic             oe_i2c1_scl_i    ,     
+
+        input logic             oe_hyper_cs0n_i      ,
+        input logic             oe_hyper_cs1n_i      ,
+        input logic             oe_hyper_ck_i        ,
+        input logic             oe_hyper_ckn_i       ,
+        input logic             oe_hyper_rwds0_i     ,
+        input logic             oe_hyper_rwds1_i     ,
+        input logic             oe_hyper_dq0_i       ,
+        input logic             oe_hyper_dq1_i       ,
+        input logic             oe_hyper_resetn_i    ,
   
         // INPUTS SIGNALS TO THE PADS
         input logic             out_sdio_clk_i  ,
@@ -102,6 +112,15 @@ module pad_frame
         input logic             out_i2c1_sda_i   ,
         input logic             out_i2c1_scl_i   ,
         
+        input logic             out_hyper_cs0n_i     ,
+        input logic             out_hyper_cs1n_i     ,
+        input logic             out_hyper_ck_i       ,
+        input logic             out_hyper_ckn_i      ,
+        input logic             out_hyper_rwds0_i    ,
+        input logic             out_hyper_rwds1_i    ,
+        input logic  [7:0]      out_hyper_dq0_i      ,
+        input logic  [7:0]      out_hyper_dq1_i      ,
+        input logic             out_hyper_resetn_i   ,
 
         // OUTPUT SIGNALS FROM THE PADS
         output logic            in_sdio_clk_o   ,
@@ -140,6 +159,16 @@ module pad_frame
         output logic[31:0]      in_gpios_o       ,
         output logic            in_i2c1_sda_o    ,
         output logic            in_i2c1_scl_o    , 
+
+        output logic              in_hyper_cs0n_o     ,
+        output logic              in_hyper_cs1n_o     ,
+        output logic              in_hyper_ck_o       ,
+        output logic              in_hyper_ckn_o      ,
+        output logic              in_hyper_rwds0_o    ,
+        output logic              in_hyper_rwds1_o    ,
+        output logic  [7:0]       in_hyper_dq0_o      ,
+        output logic  [7:0]       in_hyper_dq1_o      ,
+        output logic              in_hyper_resetn_o   ,
 
         output logic            bootsel_o        ,
 
@@ -180,6 +209,18 @@ module pad_frame
         inout wire [31:0]       pad_gpios        ,
         inout wire              pad_i2c1_sda     ,
         inout wire              pad_i2c1_scl     ,
+
+
+        inout wire [7:0]        pad_hyper_dq0    ,
+        inout wire [7:0]        pad_hyper_dq1    ,
+        inout wire              pad_hyper_ck     ,
+        inout wire              pad_hyper_ckn    ,
+        inout wire              pad_hyper_csn0   ,
+        inout wire              pad_hyper_csn1   ,
+        inout wire              pad_hyper_rwds0  ,
+        inout wire              pad_hyper_rwds1  ,
+        inout wire              pad_hyper_reset  ,
+
 
         inout wire              pad_reset_n      ,
         inout wire              pad_bootsel      ,
@@ -233,6 +274,23 @@ module pad_frame
     pad_functional_pu padinst_i2c1_sda   (.OEN(~oe_i2c1_sda_i  ), .I(out_i2c1_sda_i  ), .O(in_i2c1_sda_o  ), .PAD(pad_i2c1_sda  ), .PEN(~pad_cfg_i[26][0] ) );
     pad_functional_pu padinst_i2c1_scl   (.OEN(~oe_i2c1_scl_i  ), .I(out_i2c1_scl_i  ), .O(in_i2c1_scl_o  ), .PAD(pad_i2c1_scl  ), .PEN(~pad_cfg_i[27][0] ) );
 
+
+    pad_functional_pu padinst_hyper_csno0  (.OEN(~oe_hyper_cs0n_i   ), .I( out_hyper_cs0n_i   ), .O( in_hyper_cs0n_o   ), .PAD( pad_hyper_csn0    ), .PEN(1'b1 ) );
+    pad_functional_pu padinst_hyper_csno1  (.OEN(~oe_hyper_cs1n_i   ), .I( out_hyper_cs1n_i   ), .O( in_hyper_cs1n_o   ), .PAD( pad_hyper_csn1    ), .PEN(1'b1 ) );
+    pad_functional_pu padinst_hyper_ck     (.OEN(~oe_hyper_ck_i     ), .I( out_hyper_ck_i     ), .O( in_hyper_ck_o     ), .PAD( pad_hyper_ck      ), .PEN(1'b1 ) );
+    pad_functional_pu padinst_hyper_ckno   (.OEN(~oe_hyper_ckn_i    ), .I( out_hyper_ckn_i    ), .O( in_hyper_ckn_o    ), .PAD( pad_hyper_ckn     ), .PEN(1'b1 ) );
+    pad_functional_pu padinst_hyper_rwds0  (.OEN(~oe_hyper_rwds0_i  ), .I( out_hyper_rwds0_i  ), .O( in_hyper_rwds0_o  ), .PAD( pad_hyper_rwds0   ), .PEN(1'b1 ) );
+    pad_functional_pu padinst_hyper_rwds1  (.OEN(~oe_hyper_rwds1_i  ), .I( out_hyper_rwds1_i  ), .O( in_hyper_rwds1_o  ), .PAD( pad_hyper_rwds1   ), .PEN(1'b1 ) );
+    pad_functional_pu padinst_hyper_resetn (.OEN(~oe_hyper_resetn_i ), .I( out_hyper_resetn_i ), .O( in_hyper_resetn_o ), .PAD( pad_hyper_reset   ), .PEN(1'b1 ) );
+
+    genvar j;
+    generate
+       for (j=0; j<8; j++) begin
+                pad_functional_pu padinst_hyper_dqio  (.OEN(~oe_hyper_dq0_i   ), .I( out_hyper_dq0_i[i]   ), .O( in_hyper_dq0_o[i]  ), .PAD( pad_hyper_dq0[i]   ), .PEN(1'b1 ) );
+                pad_functional_pu padinst_hyper_dqio  (.OEN(~oe_hyper_dq1_i   ), .I( out_hyper_dq1_i[i]   ), .O( in_hyper_dq1_o[i]  ), .PAD( pad_hyper_dq1[i]   ), .PEN(1'b1 ) );
+       end
+    endgenerate
+
     genvar i;
     generate
         for (i=0; i < 32; i++) begin
@@ -241,6 +299,8 @@ module pad_frame
     endgenerate
 
     pad_functional_pu padinst_bootsel    (.OEN(1'b1            ), .I(                ), .O(bootsel_o      ), .PAD(pad_bootsel   ), .PEN(1'b1             ) );
+        
+
 
 
 `ifndef PULP_FPGA_EMUL
