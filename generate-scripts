@@ -24,6 +24,12 @@ parser.add_argument('--flash-vip', action='store_true',
 parser.add_argument('--i2s-vip', action='store_true',
                     help="""Use the i2s model (24FC1025).
                     Needs to be installed.""")
+parser.add_argument('--hyper-vip', action='store_true',
+                    help="""Use the hyperbus models (S27KS0641 and S26KS512S).
+                    Needs to be installed.""")
+parser.add_argument('--psram-vip', action='store_true',
+                    help="""Use the psram models.
+                    Needs to be installed.""")
 parser.add_argument('--verbose', action='store_true',
                     help='Show more information about commands')
 
@@ -61,6 +67,12 @@ if not args.i2c_vip:
 
 if not args.flash_vip:
     del (ipdb.rtl_dic['vip'].sub_ips['S25FS256_model'])
+
+if not args.hyper_vip:
+    del (ipdb.rtl_dic['vip'].sub_ips['hyper_model'])
+
+if not args.psram_vip:
+    del (ipdb.rtl_dic['vip'].sub_ips['PSRAM_model'])
 
 if not args.i2s_vip:
     del (ipdb.rtl_dic['vip'].sub_ips['i2s_model'])

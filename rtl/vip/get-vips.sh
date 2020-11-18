@@ -44,3 +44,9 @@ cp --verbose -r "$VIP_DIR"/S25fs256s-spi-flash/* spi_flash/S25fs256s
 echo "Installing i2s model"
 cp --verbose "$VIP_DIR"/24FC1025-i2c-eeprom/24FC1025.v i2s/i2c_if.v
 patch i2s/i2c_if.v < i2s/i2c_if_timings.patch
+echo "Installing hyperram model"
+cp --verbose -r "$VIP_DIR"/hyperram_model .
+echo "Installing hyperflash model"
+cp --verbose -r "$VIP_DIR"/hyperflash_model .
+echo "Installing i2s model"
+cp --verbose -r "$VIP_DIR"/psram_model .

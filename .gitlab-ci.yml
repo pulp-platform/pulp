@@ -49,7 +49,7 @@ fetch_ips:
     - echo "Fetching vips"
     - ./rtl/vip/get-vips.sh --yes --gitlab
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip
+    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --psram-vip
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:

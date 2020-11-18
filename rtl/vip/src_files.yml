@@ -20,6 +20,29 @@ S25FS256_model:
     skip_synthesis,
   ]
 
+hyperflash_model:
+  defines: [
+    SPEEDSIM,
+  ]
+  files: [
+    hyperflash_model/s26ks512s.v,
+  ]
+  flags: [
+    skip_synthesis,
+  ]
+
+
+hyperram_model:
+  defines: [
+    SPEEDSIM,
+  ]
+  files: [
+    hyperram_model/s27ks0641.v,
+  ]
+  flags: [
+    skip_synthesis,
+  ]
+
 i2s_model:
   defines: [
     SPEEDSIM,
