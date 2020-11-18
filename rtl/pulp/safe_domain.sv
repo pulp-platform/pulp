@@ -198,15 +198,15 @@ module safe_domain
         input logic              in_i2c1_scl_i        ,
 
 
-        input logic              in_hyper_cs0n_o     ,
-        input logic              in_hyper_cs1n_o     ,
-        input logic              in_hyper_ck_o       ,
-        input logic              in_hyper_ckn_o      ,
-        input logic              in_hyper_rwds0_o    ,
-        input logic              in_hyper_rwds1_o    ,
-        input logic  [7:0]       in_hyper_dq0_o      ,
-        input logic  [7:0]       in_hyper_dq1_o      ,
-        input logic              in_hyper_resetn_o   ,
+        input logic              in_hyper_cs0n_i     ,
+        input logic              in_hyper_cs1n_i     ,
+        input logic              in_hyper_ck_i       ,
+        input logic              in_hyper_ckn_i      ,
+        input logic              in_hyper_rwds0_i    ,
+        input logic              in_hyper_rwds1_i    ,
+        input logic  [7:0]       in_hyper_dq0_i      ,
+        input logic  [7:0]       in_hyper_dq1_i      ,
+        input logic              in_hyper_resetn_i   ,
 
         // OUTPUT ENABLE
         output logic             oe_spim_sdio0_o      ,
@@ -255,7 +255,7 @@ module safe_domain
         output logic             oe_hyper_rwds1_o     ,
         output logic             oe_hyper_dq0_o       ,
         output logic             oe_hyper_dq1_o       ,
-        output logic             oe_hyper_resetn_o    ,
+        output logic             oe_hyper_resetn_o    
 
     );
 

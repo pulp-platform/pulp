@@ -242,7 +242,7 @@ module pad_control #(
         output logic             oe_hyper_rwds1_o     ,
         output logic             oe_hyper_dq0_o       ,
         output logic             oe_hyper_dq1_o       ,
-        output logic             oe_hyper_resetn_o    ,
+        output logic             oe_hyper_resetn_o    
 
     );
 

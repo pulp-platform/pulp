@@ -286,8 +286,8 @@ module pad_frame
     genvar j;
     generate
        for (j=0; j<8; j++) begin
-                pad_functional_pu padinst_hyper_dqio  (.OEN(~oe_hyper_dq0_i   ), .I( out_hyper_dq0_i[i]   ), .O( in_hyper_dq0_o[i]  ), .PAD( pad_hyper_dq0[i]   ), .PEN(1'b1 ) );
-                pad_functional_pu padinst_hyper_dqio  (.OEN(~oe_hyper_dq1_i   ), .I( out_hyper_dq1_i[i]   ), .O( in_hyper_dq1_o[i]  ), .PAD( pad_hyper_dq1[i]   ), .PEN(1'b1 ) );
+                pad_functional_pu padinst_hyper_dqio0  (.OEN(~oe_hyper_dq0_i   ), .I( out_hyper_dq0_i[j]   ), .O( in_hyper_dq0_o[j]  ), .PAD( pad_hyper_dq0[j]   ), .PEN(1'b1 ) );
+                pad_functional_pu padinst_hyper_dqio1  (.OEN(~oe_hyper_dq1_i   ), .I( out_hyper_dq1_i[j]   ), .O( in_hyper_dq1_o[j]  ), .PAD( pad_hyper_dq1[j]   ), .PEN(1'b1 ) );
        end
     endgenerate
 
