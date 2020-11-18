@@ -27,7 +27,7 @@ if [[ "$AGREE_LICENSE" -ne "1" ]]; then
 fi
 if [[ ! -d "vip-proprietary" ]]; then
     if [[ "$USE_GITLAB" -eq "1" ]]; then
-	git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-ci/vip-prop-pulp \
+	git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB}/pulp-open/pulp-vip-proprietary \
 	    "$VIP_DIR"
     else
 	git clone git@iis-git.ee.ethz.ch:pulp-open/pulp-vip-proprietary.git \
@@ -44,3 +44,9 @@ cp --verbose -r "$VIP_DIR"/S25fs256s-spi-flash/* spi_flash/S25fs256s
 echo "Installing i2s model"
 cp --verbose "$VIP_DIR"/24FC1025-i2c-eeprom/24FC1025.v i2s/i2c_if.v
 patch i2s/i2c_if.v < i2s/i2c_if_timings.patch
+echo "Installing hyperram model"
+cp --verbose -r "$VIP_DIR"/hyperram_model .
+echo "Installing hyperflash model"
+cp --verbose -r "$VIP_DIR"/hyperflash_model .
+echo "Installing i2s model"
+cp --verbose -r "$VIP_DIR"/psram_model .
