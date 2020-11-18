@@ -41,6 +41,7 @@ module tb_pulp;
    parameter  USE_S25FS256S_MODEL = 0;
    parameter  USE_24FC1025_MODEL  = 0;
    parameter  USE_I2S_MODEL       = 0;
+   parameter  USE_HYPER_MODELS    = 1;
 
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
@@ -144,6 +145,16 @@ module tb_pulp;
 
    tri                   w_i2c1_scl;
    tri                   w_i2c1_sda;
+   
+   wire [7:0]            w_hyper_dq0    ;
+   wire [7:0]            w_hyper_dq1    ;
+   wire                  w_hyper_ck     ;
+   wire                  w_hyper_ckn    ;
+   wire                  w_hyper_csn0   ;
+   wire                  w_hyper_csn1   ;
+   wire                  w_hyper_rwds0  ;
+   wire                  w_hyper_rwds1  ;
+   wire                  w_hyper_reset  ;
 
    logic [1:0]           s_padmode_spi_master = SPI_STD;
 
@@ -378,6 +389,47 @@ module tb_pulp;
       end
    endgenerate
 
+// Hyperram and hyperflash modules
+   generate
+      if(USE_HYPER_MODELS == 1) begin
+         s27ks0641 #(
+            .TimingModel  ("S27KS0641DPBHI020")
+         ) hyperram_model (
+            .DQ7      ( w_hyper_dq0[7] ),
+            .DQ6      ( w_hyper_dq0[6] ),
+            .DQ5      ( w_hyper_dq0[5] ),
+            .DQ4      ( w_hyper_dq0[4] ),
+            .DQ3      ( w_hyper_dq0[3] ),
+            .DQ2      ( w_hyper_dq0[2] ),
+            .DQ1      ( w_hyper_dq0[1] ),
+            .DQ0      ( w_hyper_dq0[0] ),
+            .RWDS     ( w_hyper_rwds0  ),
+            .CSNeg    ( w_hyper_csn1   ),
+            .CK       ( w_hyper_ck     ),
+            .CKNeg    ( w_hyper_ckn    ),
+            .RESETNeg ( w_hyper_reset  )
+         );
+         s26ks512s #(
+            .TimingModel   ( "S26KS512SDPBHI000"),
+            .mem_file_name ( "slm_files/flash_stim_hyper.slm" )
+         ) hyperflash_model (
+            .DQ7      ( w_hyper_dq0[7] ),
+            .DQ6      ( w_hyper_dq0[6] ),
+            .DQ5      ( w_hyper_dq0[5] ),
+            .DQ4      ( w_hyper_dq0[4] ),
+            .DQ3      ( w_hyper_dq0[3] ),
+            .DQ2      ( w_hyper_dq0[2] ),
+            .DQ1      ( w_hyper_dq0[1] ),
+            .DQ0      ( w_hyper_dq0[0] ),
+            .RWDS     ( w_hyper_rwds0  ),
+            .CSNeg    ( w_hyper_csn0   ),
+            .CK       ( w_hyper_ck     ),
+            .CKNeg    ( w_hyper_ckn    ),
+            .RESETNeg ( w_hyper_reset  )
+         );
+      end
+   endgenerate
+
    /* SPI flash model (not open-source, from Spansion) */
    generate
       if(USE_S25FS256S_MODEL == 1) begin
@@ -608,6 +660,16 @@ module tb_pulp;
       .pad_i2s0_ws        ( w_i2s0_ws          ),
       .pad_i2s0_sdi       ( w_i2s0_sdi         ),
       .pad_i2s1_sdi       ( w_i2s1_sdi         ),
+
+      .pad_hyper_dq0     ( w_hyper_dq0         ),
+      .pad_hyper_dq1     ( w_hyper_dq1         ),
+      .pad_hyper_ck      ( w_hyper_ck          ),
+      .pad_hyper_ckn     ( w_hyper_ckn         ),
+      .pad_hyper_csn0    ( w_hyper_csn0        ),
+      .pad_hyper_csn1    ( w_hyper_csn1        ),
+      .pad_hyper_rwds0   ( w_hyper_rwds0       ),
+      .pad_hyper_rwds1   ( w_hyper_rwds1       ),
+      .pad_hyper_reset   ( w_hyper_reset       ),
 
       .pad_reset_n        ( w_rst_n            ),
       .pad_bootsel        ( w_bootsel          ),

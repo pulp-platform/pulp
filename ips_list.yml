@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: v1.4.2
+  commit: hyperbus_integration
   server: https://github.com
   group:  pulp-platform
 
