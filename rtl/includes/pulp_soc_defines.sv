@@ -25,7 +25,7 @@
 // To use new icache use this define
 `define MP_ICACHE
 //`define SP_ICACHE
-//`define PRIVATE_ICACHE
+// `define PRIVATE_ICACHE
 
 // To use The L2 Multibank Feature, please decomment this define
 `define USE_L2_MULTIBANK

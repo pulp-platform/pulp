@@ -13,3 +13,5 @@
 /sim/compile.tcl
 /sim/transcript
 /sim/work
+/pulp-runtime/*
+/regression_tests/*

@@ -61,10 +61,10 @@ endif
 clean: clean-deps
 ifdef BENDER
 	@mkdir -p work
-	@rm -r work 
+	rm -r work 
 else
 	@make --no-print-directory -f $(mkfile_path)/vcompile/ips.mk clean
 	@make --no-print-directory -f $(mkfile_path)/vcompile/rtl.mk clean
 endif
 	@touch modelsim.ini
-	@rm modelsim.ini
+	rm modelsim.ini
