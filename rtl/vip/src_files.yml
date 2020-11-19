@@ -43,6 +43,17 @@ hyperram_model:
     skip_synthesis,
   ]
 
+psram_model:
+  defines: [
+    SPEEDSIM,
+  ]
+  files: [
+    psram_model/*.v,
+  ]
+  flags: [
+    skip_synthesis,
+  ]
+
 i2s_model:
   defines: [
     SPEEDSIM,
