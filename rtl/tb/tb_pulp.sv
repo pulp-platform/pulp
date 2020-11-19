@@ -38,10 +38,23 @@ module tb_pulp;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
-   parameter  USE_S25FS256S_MODEL = 0;
-   parameter  USE_24FC1025_MODEL  = 0;
-   parameter  USE_I2S_MODEL       = 0;
-   parameter  USE_HYPER_MODELS    = 1;
+   `ifdef USE_VIPS
+     parameter  USE_S25FS256S_MODEL = 1;
+     parameter  USE_24FC1025_MODEL  = 1;
+     parameter  USE_I2S_MODEL       = 1;
+     parameter  USE_HYPER_MODELS    = 1;
+   `else
+     parameter  USE_S25FS256S_MODEL = 0;
+     parameter  USE_24FC1025_MODEL  = 0;
+     parameter  USE_I2S_MODEL       = 0;
+     parameter  USE_HYPER_MODELS    = 0;
+   `endif
+    //psram model, cannot be tested simultaneously with the hyperram
+   `ifdef USE_PSRAM
+     parameter  PSRAM_MODELS        = 1;
+   `else
+     parameter  PSRAM_MODELS        = 0;
+   `endif
 
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
@@ -315,6 +328,8 @@ module tb_pulp;
    pullup sda1_pullup_i (w_i2c1_sda);
    pullup scl1_pullup_i (w_i2c1_scl);
 
+  // pullup hyper_rwds0_pu (w_hyper_rwds0);
+
    always_comb begin
       sim_jtag_enable = 1'b0;
 
@@ -430,6 +445,16 @@ module tb_pulp;
       end
    endgenerate
 
+   generate
+      if(PSRAM_MODELS == 1) begin
+         psram_model psram_model_i (
+            .xDQ      ( {w_hyper_dq1, w_hyper_dq0} ),
+            .xDQSDM   ( {w_hyper_rwds1, w_hyper_rwds0}       ),
+            .xCEn     ( w_hyper_csn1 ),
+            .xCLK     ( w_hyper_ck   )
+         );
+      end
+   endgenerate
    /* SPI flash model (not open-source, from Spansion) */
    generate
       if(USE_S25FS256S_MODEL == 1) begin

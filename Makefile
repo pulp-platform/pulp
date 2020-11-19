@@ -42,7 +42,7 @@ clean:
 build:
 #	cd sim && $(MAKE) lib build opt
 #	cp -r rtl/tb/* $(VSIM_PATH)
-	cd sim && $(MAKE) all
+	cd sim && $(MAKE) clean all
 
 # sdk specific targets
 install: $(INSTALL_HEADERS)
@@ -145,6 +145,11 @@ git-ci-periphs-regs:
 	touch regression_tests/simplified-periph-runtime.xml; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-periph-runtime.xml periph-tests.yaml
 
+git-ci-psram:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-psram-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-psram-runtime.xml psram-test.yaml
 
 test-local-runtime: 
 	source setup/vsim.sh; \
