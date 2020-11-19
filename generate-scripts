@@ -74,7 +74,7 @@ if not args.hyper_vip:
     
 
 if not args.psram_vip:
-    del (ipdb.rtl_dic['vip'].sub_ips['PSRAM_model'])
+    del (ipdb.rtl_dic['vip'].sub_ips['psram_model'])
 
 if not args.i2s_vip:
     del (ipdb.rtl_dic['vip'].sub_ips['i2s_model'])
