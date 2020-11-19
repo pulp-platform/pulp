@@ -146,10 +146,10 @@ module pulp
   logic      s_out_hyper_csn1  ;
   logic      s_out_hyper_ck    ;
   logic      s_out_hyper_ckn   ;
-  logic[7:0] s_out_hyper_rwds0 ;
-  logic[7:0] s_out_hyper_rwds1 ;
-  logic      s_out_hyper_dq0   ;
-  logic      s_out_hyper_dq1   ;
+  logic      s_out_hyper_rwds0 ;
+  logic      s_out_hyper_rwds1 ;
+  logic[7:0] s_out_hyper_dq0   ;
+  logic[7:0] s_out_hyper_dq1   ;
   logic      s_out_hyper_reset ;
 
 
@@ -708,6 +708,8 @@ module pulp
         .in_hyper_dq1_o        ( s_in_hyper_dq1         ),
         .in_hyper_resetn_o     ( s_in_hyper_reset       ),
 
+ 
+
         .bootsel_o             ( s_bootsel              ),
 
         //EXT CHIP to PAD
@@ -839,11 +841,11 @@ module pulp
         .timer3_i                   ( s_timer3                    ),
 
 
-        .hyper_cs_ni                  ( s_hyper_cs                       ),
+        .hyper_cs_ni                  ( s_hyper_cs_n                     ),
         .hyper_ck_i                   ( s_hyper_ck                       ),
         .hyper_ck_ni                  ( s_hyper_ck_n                     ),
-        .hyper_rwds_i                 ( s_hyper_rwds_i                   ),
-        .hyper_rwds_o                 ( s_hyper_rwds                     ),
+        .hyper_rwds_i                 ( s_hyper_rwds_o                   ),
+        .hyper_rwds_o                 ( s_hyper_rwds_i                   ),
         .hyper_rwds_oe_i              ( s_hyper_rwds_oe                  ),
         .hyper_dq_o                   ( s_hyper_dq_i                     ),
         .hyper_dq_i                   ( s_hyper_dq_o                     ),
@@ -1001,7 +1003,7 @@ module pulp
         .oe_hyper_rwds1_o           ( s_oe_hyper_rwds1            ),
         .oe_hyper_dq0_o             ( s_oe_hyper_dq0              ),
         .oe_hyper_dq1_o             ( s_oe_hyper_dq1              ),
-        .oe_hyper_resetn_o           ( s_oe_hyper_reset            ),
+        .oe_hyper_resetn_o          ( s_oe_hyper_reset            ),
 
         .*
    );

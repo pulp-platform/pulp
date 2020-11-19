@@ -299,15 +299,15 @@ module pad_control #(
    assign oe_i2c1_sda_o    = i2c_sda_oe_i[1]     ;
    assign oe_i2c1_scl_o    = i2c_scl_oe_i[1]     ;
 
-   assign oe_hyper_cs0n_o   = 1'b0               ;
-   assign oe_hyper_cs1n_o   = 1'b0               ;
-   assign oe_hyper_ck_o     = 1'b0               ;
-   assign oe_hyper_ckn_o    = 1'b0               ;
+   assign oe_hyper_cs0n_o   = 1'b1               ;
+   assign oe_hyper_cs1n_o   = 1'b1               ;
+   assign oe_hyper_ck_o     = 1'b1               ;
+   assign oe_hyper_ckn_o    = 1'b1               ;
    assign oe_hyper_rwds0_o  = hyper_rwds_oe_i[0] ;
    assign oe_hyper_rwds1_o  = hyper_rwds_oe_i[1] ;
    assign oe_hyper_dq0_o    = hyper_dq_oe_o[0]   ;
    assign oe_hyper_dq1_o    = hyper_dq_oe_o[1]   ;
-   assign oe_hyper_resetn_o = 1'b0               ;
+   assign oe_hyper_resetn_o = 1'b1               ;
 
    ////////////////////////////////////////////////////////////////
    // DATA OUTPUT
@@ -349,8 +349,8 @@ module pad_control #(
    assign out_i2c1_sda_o   = i2c_sda_out_i[1]   ;
    assign out_i2c1_scl_o   = i2c_scl_out_i[1]   ;
 
-   assign out_hyper_csn0_o   = hyper_cs_ni[0]    ;
-   assign out_hyper_csn1_o   = hyper_cs_ni[1]    ;
+   assign out_hyper_cs0n_o   = hyper_cs_ni[0]    ;
+   assign out_hyper_cs1n_o   = hyper_cs_ni[1]    ;
    assign out_hyper_ck_o     = hyper_ck_i        ;
    assign out_hyper_ckn_o    = hyper_ck_ni       ;
    assign out_hyper_rwds0_o  = hyper_rwds_i[0]   ;
@@ -358,7 +358,6 @@ module pad_control #(
    assign out_hyper_dq0_o    = hyper_dq_i[7:0]   ;
    assign out_hyper_dq1_o    = hyper_dq_i[15:8]  ;
    assign out_hyper_resetn_o = hyper_reset_no    ; 
-        
 
    ////////////////////////////////////////////////////////////////
    // DATA INPUT
