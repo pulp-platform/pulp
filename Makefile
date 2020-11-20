@@ -42,7 +42,7 @@ clean:
 build:
 #	cd sim && $(MAKE) lib build opt
 #	cp -r rtl/tb/* $(VSIM_PATH)
-	cd sim && $(MAKE) all
+	cd sim && $(MAKE) clean all
 
 # sdk specific targets
 install: $(INSTALL_HEADERS)
