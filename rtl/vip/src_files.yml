@@ -48,7 +48,7 @@ psram_model:
     SPEEDSIM,
   ]
   files: [
-    psram_model/*.v,
+    psram_model/*.vp_modelsim,
   ]
   flags: [
     skip_synthesis,
