@@ -86,7 +86,7 @@ b&t_rtl_vip:
   stage: build_and_test_vips
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --psram-vip --use-vip --verbose 
+    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose 
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
