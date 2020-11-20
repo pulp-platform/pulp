@@ -35,7 +35,7 @@ fetch_std:
     - echo "Fetching regression tests"
     - make test-checkout-gitlab
     - mkdir -p regression_tests/riscv_tests_soc
-    - cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_
+    - cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
     - source setup/vsim.sh
     - echo "Fetching IPs"
     - ./update-ips 
