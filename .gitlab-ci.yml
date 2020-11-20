@@ -24,8 +24,7 @@ before_script:
 
 stages:
   - fetch
-  - build
-  - test
+  - build_and_test
 
 
 fetch_regression_tests:
@@ -48,8 +47,6 @@ fetch_ips:
     - ./update-ips 
     - echo "Fetching vips"
     - ./rtl/vip/get-vips.sh --yes --gitlab
-    - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --psram-vip
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
@@ -60,28 +57,12 @@ fetch_ips:
       - rtl/vip/*
 
 
-build_rtl:
-  stage: build
+b&t_rtl_std:
+  stage: build_and_test
   before_script:
-  script:
+    - echo "Generate scripts with DPI and VIP support"
+    - ./generate-scripts 
     - echo "Compiling RTL model and DPI libraries"
-    - make build
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
-    paths:
-      - tests/*
-      - ips/*
-      - sim/*
-      - ipstools/*
-      - rtl/*
-
-
-
-# Use simplified pulp-runtime to run a subset of tests
-test_p_bare_regressions:
-  stage: test
-  before_script:
-    - echo "Re-build"
     - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
@@ -91,85 +72,78 @@ test_p_bare_regressions:
     - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
   script:
     - echo "Running software test"
-    - make git-ci-p-bare-regs
+    - make test-fast-regressions
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
       - regression_tests/*.html
       - regression_tests/*.xml
+      - tests/*
+      - ips/*
+      - sim/*
+      - ipstools/*
+      - rtl/*
     reports:
       junit: regression_tests/*.xml
 
-# Use simplified pulp-runtime to run a subset of tests
-test_s_bare_regressions:
-  stage: test
+
+
+b&t_rtl_vip:
+  stage: build_and_test
   before_script:
-    - echo "Re-build"
+    - echo "Generate scripts with DPI and VIP support"
+    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --psram-vip --use-vip --verbose 
+    - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
     - echo "Source and exports"
     - source pulp-runtime/configs/pulp.sh; 
-    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
-    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
   script:
     - echo "Running software test"
-    - make git-ci-s-bare-regs
+    - make git-ci-periphs-regs
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
       - regression_tests/*.html
       - regression_tests/*.xml
+      - tests/*
+      - ips/*
+      - sim/*
+      - ipstools/*
+      - rtl/*
     reports:
       junit: regression_tests/*.xml
 
-
-# Use simplified pulp-runtime to run a subset of tests
-test_ml_regressions:
-  stage: test
+b&t_rtl_psram:
+  stage: build_and_test
   before_script:
-    - echo "Re-build"
+    - echo "Generate scripts with DPI and VIP support"
+    - ./generate-scripts --psram-vip 
+    - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
     - echo "Source and exports"
     - source pulp-runtime/configs/pulp.sh; 
-    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
-    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
+    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
   script:
     - echo "Running software test"
-    - make git-ci-ml-regs
+    - cd regression_tests/peripherals/psram
+    - make clean all run
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
       - regression_tests/*.html
       - regression_tests/*.xml
+      - tests/*
+      - ips/*
+      - sim/*
+      - ipstools/*
+      - rtl/*
     reports:
       junit: regression_tests/*.xml
-
-
-# Use simplified pulp-runtime to run a subset of tests
-test_riscv_regressions:
-  stage: test
-  before_script:
-    - echo "Re-build"
-    - make build
-    - echo "Fetching Runtime"
-    - make pulp-runtime
-    - echo "Source and exports"
-    - source pulp-runtime/configs/pulp.sh; 
-    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/
-    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.14/bin/:$PATH
-  script:
-    - echo "Running software test"
-    - make git-ci-riscv-regs
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
-    paths:
-      - regression_tests/*.html
-      - regression_tests/*.xml
-    reports:
-      junit: regression_tests/*.xml
-
-
 
