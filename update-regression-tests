@@ -2,4 +2,4 @@
 
 # getting tests
 #git clone https://github.com/pulp-platform/regression_tests.git -b d2e6073f2b29987b9620a3b913f66d935416887f
- git clone https://github.com/pulp-platform/regression_tests.git -b hyperbus_tests
+ git clone https://github.com/pulp-platform/regression_tests.git -b v1.6
