@@ -38,11 +38,23 @@ module tb_pulp;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
-   parameter  USE_S25FS256S_MODEL = 0;
-   parameter  USE_24FC1025_MODEL  = 0;
-   parameter  USE_I2S_MODEL       = 0;
-   parameter  USE_HYPER_MODELS    = 0;
-   parameter  PSRAM_MODELS        = 0;
+   `ifdef USE_VIPS
+     parameter  USE_S25FS256S_MODEL = 1;
+     parameter  USE_24FC1025_MODEL  = 1;
+     parameter  USE_I2S_MODEL       = 1;
+     parameter  USE_HYPER_MODELS    = 1;
+   `else
+     parameter  USE_S25FS256S_MODEL = 0;
+     parameter  USE_24FC1025_MODEL  = 0;
+     parameter  USE_I2S_MODEL       = 0;
+     parameter  USE_HYPER_MODELS    = 0;
+   `endif
+    //psram model, cannot be tested simultaneously with the hyperram
+   `ifdef USE_PSRAM
+     parameter  PSRAM_MODELS        = 1;
+   `else
+     parameter  PSRAM_MODELS        = 0;
+   `endif
 
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
