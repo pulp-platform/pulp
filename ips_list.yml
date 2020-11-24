@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: 9c3c83bc88053f9869028ca900e977ff8e2af89f
+  commit: boot_hyperflash
   server: https://github.com
   group:  pulp-platform
 
