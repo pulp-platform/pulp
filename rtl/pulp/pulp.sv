@@ -72,7 +72,8 @@ module pulp
    inout wire         pad_hyper_reset  ,
 
    inout  wire        pad_reset_n,
-   inout  wire        pad_bootsel,
+   inout  wire        pad_bootsel0,
+   inout  wire        pad_bootsel1,
 
    inout  wire        pad_jtag_tck,
    inout  wire        pad_jtag_tdi,
@@ -546,7 +547,7 @@ module pulp
   logic [7:0]                            s_cluster_soc_bus_b_readpointer;
   
 
-  logic                        s_bootsel;
+  logic[1:0]                        s_bootsel;
 
   APB_BUS        apb_debug();  //not used
   XBAR_TCDM_BUS  lint_debug(); //not used
@@ -760,7 +761,8 @@ module pulp
         .pad_hyper_rwds1       ( pad_hyper_rwds1        ),
         .pad_hyper_reset       ( pad_hyper_reset        ),
 
-        .pad_bootsel           ( pad_bootsel            ),
+        .pad_bootsel0          ( pad_bootsel0           ),
+        .pad_bootsel1          ( pad_bootsel1           ),
         .pad_reset_n           ( pad_reset_n            ),
         .pad_jtag_tck          ( pad_jtag_tck           ),
         .pad_jtag_tdi          ( pad_jtag_tdi           ),
