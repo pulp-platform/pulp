@@ -160,17 +160,17 @@ module pad_frame
         output logic            in_i2c1_sda_o    ,
         output logic            in_i2c1_scl_o    , 
 
-        output logic              in_hyper_cs0n_o     ,
-        output logic              in_hyper_cs1n_o     ,
-        output logic              in_hyper_ck_o       ,
-        output logic              in_hyper_ckn_o      ,
-        output logic              in_hyper_rwds0_o    ,
-        output logic              in_hyper_rwds1_o    ,
-        output logic  [7:0]       in_hyper_dq0_o      ,
-        output logic  [7:0]       in_hyper_dq1_o      ,
-        output logic              in_hyper_resetn_o   ,
+        output logic            in_hyper_cs0n_o     ,
+        output logic            in_hyper_cs1n_o     ,
+        output logic            in_hyper_ck_o       ,
+        output logic            in_hyper_ckn_o      ,
+        output logic            in_hyper_rwds0_o    ,
+        output logic            in_hyper_rwds1_o    ,
+        output logic  [7:0]     in_hyper_dq0_o      ,
+        output logic  [7:0]     in_hyper_dq1_o      ,
+        output logic            in_hyper_resetn_o   ,
 
-        output logic            bootsel_o        ,
+        output logic [1:0]      bootsel_o        ,
 
         // EXT CHIP TP PADS
         inout wire              pad_sdio_clk     ,
@@ -223,7 +223,8 @@ module pad_frame
 
 
         inout wire              pad_reset_n      ,
-        inout wire              pad_bootsel      ,
+        inout wire              pad_bootsel0     ,
+        inout wire              pad_bootsel1     ,
         inout wire              pad_jtag_tck     ,
         inout wire              pad_jtag_tdi     ,
         inout wire              pad_jtag_tdo     ,
@@ -298,8 +299,8 @@ module pad_frame
         end
     endgenerate
 
-    pad_functional_pu padinst_bootsel    (.OEN(1'b1            ), .I(                ), .O(bootsel_o      ), .PAD(pad_bootsel   ), .PEN(1'b1             ) );
-        
+    pad_functional_pu padinst_bootsel0    (.OEN(1'b1            ), .I(                ), .O(bootsel_o[0]      ), .PAD(pad_bootsel0   ), .PEN(1'b1             ) );
+    pad_functional_pu padinst_bootsel1    (.OEN(1'b1            ), .I(                ), .O(bootsel_o[1]      ), .PAD(pad_bootsel1   ), .PEN(1'b1             ) );
 
 
 
