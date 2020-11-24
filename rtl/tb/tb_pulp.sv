@@ -62,6 +62,10 @@ module tb_pulp;
    // how L2 is loaded. valid values are "JTAG" or "STANDALONE", the latter works only when USE_S25FS256S_MODEL is 1
    parameter  LOAD_L2 = "JTAG";
 
+   // STIM_FROM sets where is the image data.
+   // In case any values are not given, the debug module takes over the boot process.
+   parameter  STIM_FROM = "JTAG"; // can be "JTAG" "SPI_FLASH", "HYPER_FLASH", or ""
+
    // enable DPI-based JTAG
    parameter  ENABLE_DPI = 0;
 
@@ -237,8 +241,8 @@ module tb_pulp;
    wire w_master_i2s_sck;
    wire w_master_i2s_ws ;
 
-   wire w_bootsel;
-   logic s_bootsel;
+   wire[1:0] w_bootsel;
+   logic[1:0] s_bootsel;
 
 
    logic [8:0] jtag_conf_reg, jtag_conf_rego; //22bits but actually only the last 9bits are used
@@ -697,7 +701,9 @@ module tb_pulp;
       .pad_hyper_reset   ( w_hyper_reset       ),
 
       .pad_reset_n        ( w_rst_n            ),
-      .pad_bootsel        ( w_bootsel          ),
+      .pad_bootsel0       ( w_bootsel[0]       ),
+      .pad_bootsel1       ( w_bootsel[1]       ),
+
 
       .pad_jtag_tck       ( w_tck              ),
       .pad_jtag_tdi       ( w_tdi              ),
@@ -760,10 +766,12 @@ module tb_pulp;
             // Use only the testbench to do the loading and running
 
             // determine if we want to load the binary with jtag or from flash
-            if (LOAD_L2 == "STANDALONE")
-               s_bootsel = 1'b1;
+            if (LOAD_L2 == "STANDALONE") begin
+               s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
+            s_rst_n = 1'b1;
+            end
             else if (LOAD_L2 == "JTAG") begin
-               s_bootsel = 1'b0;
+               s_bootsel = 2'b01;
             end
 
             if (LOAD_L2 == "JTAG") begin
@@ -800,9 +808,16 @@ module tb_pulp;
 
                test_mode_if.init(s_tck, s_tms, s_trstn, s_tdi);
 
-               jtag_conf_reg = {USE_FLL ? 1'b0 : 1'b1, 6'b0, LOAD_L2 == "JTAG" ? 2'b11 : 2'b00};
                $display("[TB] %t - Enabling clock out via jtag", $realtime);
 
+               // The boot code installed in the ROM checks the JTAG register value.
+               // If jtag_conf_reg is set to 0, the debug module will take over the boot process
+               // The image file can be loaded also from SPI flash and Hyper flash
+               // even though this is not the stand-alone boot
+
+               jtag_conf_reg = (STIM_FROM == "JTAG")           ? {1'b0, 4'b0, 3'b001, 1'b0}:
+                               (STIM_FROM == "SPI_FLASH")      ? {1'b0, 4'b0, 3'b111, 1'b0}:
+                               (STIM_FROM == "HYPER_FLASH")    ? {1'b0, 4'b0, 3'b101, 1'b0}: '0;
                test_mode_if.set_confreg(jtag_conf_reg, jtag_conf_rego,
                    s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
