@@ -60,11 +60,11 @@ module tb_pulp;
    parameter  REF_CLK_PERIOD = 30517ns;
 
    // how L2 is loaded. valid values are "JTAG" or "STANDALONE", the latter works only when USE_S25FS256S_MODEL is 1
-   parameter  LOAD_L2 = "STANDALONE";
+   parameter  LOAD_L2 = "JTAG";
 
    // STIM_FROM sets where is the image data.
    // In case any values are not given, the debug module takes over the boot process.
-   parameter  STIM_FROM = "SPI_FLASH"; // can be "JTAG" "SPI_FLASH", "HYPER_FLASH", or ""
+   parameter  STIM_FROM = "JTAG"; // can be "JTAG" "SPI_FLASH", "HYPER_FLASH", or ""
 
    // enable DPI-based JTAG
    parameter  ENABLE_DPI = 0;
