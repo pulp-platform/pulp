@@ -465,7 +465,7 @@ module tb_pulp;
          s25fs256s #(
             .TimingModel   ( "S25FS256SAGMFI000_F_30pF" ),
             .mem_file_name ( "./vectors/qspi_stim.slm" ),
-            .UserPreload   (1)
+            .UserPreload   (0)
          ) i_spi_flash_csn0 (
             .SI       ( w_spi_master_sdio0 ),
             .SO       ( w_spi_master_sdio1 ),
@@ -885,38 +885,11 @@ module tb_pulp;
                $display("[TB] %t - Loading L2", $realtime);
                if (USE_PULP_BUS_ACCESS) begin
                   // use pulp tap to load binary 
-                  if (jtag_conf_reg ==0) begin
-                      pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-                  end else
-                  if ( STIM_FROM == "JTAG") begin
-                  // Set fc_boot_addr
-                     pulp_tap.init(s_tck, s_tms, s_trstn, s_tdi);
-                     pulp_tap.write32(32'h1a104004, 1, begin_l2_instr, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-                     $display("[TB] %t - set fc_boot_addr:%h", $realtime, begin_l2_instr);
+                  pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
-                  // JTAG boot requires handshaking between the boot code and test bench 
-                  // The while loop corresponds to the handshake.
-                     pulp_tap.init(s_tck, s_tms, s_trstn, s_tdi);
-
-                     pulp_tap.read32(32'h1a104074, 1, jtag_data,s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-
-                     while(!jtag_data[0][0]) begin
-                        pulp_tap.read32(32'h1a104074, 1, jtag_data,s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-                     end
-
-                     $display("[JTAG] synchronizing at the boot code %t",$realtime);
-                     jtag_conf_reg = {USE_FLL ? 1'b0 : 1'b1, 6'b0, LOAD_L2 == "JTAG" ? 2'b11 : 2'b00};
-                     pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-                     #5us;
-                     test_mode_if.init(s_tck, s_tms, s_trstn, s_tdi);
-                     #5us;
-                     test_mode_if.set_confreg(jtag_conf_reg, jtag_conf_rego, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-                     #50us;
-
-                  end
                end else begin
                   // use debug module to load binary
-                  if (jtag_conf_reg == 0) debug_mode_if.load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+                  debug_mode_if.load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
                end
 
