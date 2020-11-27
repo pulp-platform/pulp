@@ -10,8 +10,8 @@ package:
     - "Francesco Conti <f.conti@unibo.it>"
 
 dependencies:
-  pulp_soc: { git: "git@github.com:micprog/pulp_soc.git", rev: "97d0c316ba582b3a356f786b530804863802ecb3" } # To be updated with pulp-platform dependency
-  pulp_cluster: { git: "git@github.com:micprog/pulp_cluster.git", rev: "d13d5a7433d9aac973f8c4392e190c43f21e999f" } # To be updated with pulp-platform dependency
+  pulp_soc:     { git: "git@github.com:micprog/pulp_soc.git", rev: "5847b1d45bceb9cf6275c3468e9a0180c94af3bd" } # To be updated with pulp-platform dependency
+  pulp_cluster: { git: "git@github.com:micprog/pulp_cluster.git", rev: "b07b7249293483fc3a0ae6aec31431a81fee0577" } # To be updated with pulp-platform dependency
   tbtools:      { git: "git@github.com:pulp-platform/tbtools.git", version: 0.2.1 }
 
 export_include_dirs:

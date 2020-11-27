@@ -2,3 +2,4 @@ overrides:
   tech_cells_generic:  { git: "git@github.com:pulp-platform/tech_cells_generic.git", version: 0.2.2 }
   axi:                 { git: "git@github.com:pulp-platform/axi.git", version: 0.7.2 } # really old (now 0.24?)
   common_verification: { git: "git@github.com:pulp-platform/common_verification.git", version: 0.2.0 }
+  udma_core:           { git: "git@github.com:pulp-platform/udma_core.git", rev: "c36a405f33275576700746b0d90eab0ce278e600" }
