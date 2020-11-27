@@ -1129,8 +1129,8 @@ module pulp
         .dma_pe_evt_valid_i           ( s_dma_pe_evt_valid               ),
         .dma_pe_irq_ack_o             ( s_dma_pe_irq_ack                 ),
         .dma_pe_irq_valid_i           ( '0 ), // s_dma_pe_irq_valid               ),
-        .pf_evt_ack_o                 ( '0 ), //  s_pf_evt_ack                     ),
-        .pf_evt_valid_i               ( s_pf_evt_valid                   ),
+        .pf_evt_ack_o                 ( s_pf_evt_ack                     ),
+        .pf_evt_valid_i               ( '0 ), // s_pf_evt_valid                   ),
 
         .cluster_pow_o                ( s_cluster_pow                    ),
         .cluster_byp_o                ( s_cluster_byp                    ),
