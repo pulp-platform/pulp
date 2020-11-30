@@ -160,6 +160,32 @@ set_property -dict "PACKAGE_PIN AM14 IOSTANDARD LVCMOS18" [get_ports FMC_cam_dat
 # PULP pad_cam_vsync - FPGA AW7 - FMC C19
 set_property -dict "PACKAGE_PIN AW7 IOSTANDARD LVCMOS18" [get_ports FMC_cam_vsync]
 
+####################################################################
+# Hyper Bus
+####################################################################
+
+set_property -dict "PACKAGE_PIN AV14 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_csn0]
+set_property -dict "PACKAGE_PIN AV13 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_csn1]
+set_property -dict "PACKAGE_PIN BD12 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_ck]
+set_property -dict "PACKAGE_PIN BE12 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_ckn]
+set_property -dict "PACKAGE_PIN BE15 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_rwds0]
+set_property -dict "PACKAGE_PIN BF15 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_reset]
+set_property -dict "PACKAGE_PIN BC9  IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio0]
+set_property -dict "PACKAGE_PIN BC8  IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio1]
+set_property -dict "PACKAGE_PIN BF11 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio2]
+set_property -dict "PACKAGE_PIN BC15 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio3]
+set_property -dict "PACKAGE_PIN BD15 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio4]
+set_property -dict "PACKAGE_PIN BA16 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio5]
+set_property -dict "PACKAGE_PIN BA15 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio6]
+set_property -dict "PACKAGE_PIN BC16 IOSTANDARD LVCMOS18"  [get_ports FMC_hyper_dqio7]
+
+
+#set_property -dict {PACKAGE_PIN D20 IOSTANDARD LVCMOS33} [get_ports test_hyper_cko]
+#set_property -dict {PACKAGE_PIN E20 IOSTANDARD LVCMOS33} [get_ports test_hyper_cs_no]
+#set_property -dict {PACKAGE_PIN D22 IOSTANDARD LVCMOS33} [get_ports test_hyper_dqio0]
+#set_property -dict {PACKAGE_PIN E22 IOSTANDARD LVCMOS33} [get_ports test_hyper_rwdso]
+#set_property PACKAGE_PIN M15 [get_ports fmc_hyperflash_csn]
+#set_property IOSTANDARD LVCMOS18 [get_ports fmc_hyperflash_csn]
 
 #LED
 #set_property PACKAGE_PIN AG14 [get_ports LED]
