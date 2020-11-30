@@ -1,7 +1,6 @@
 # FPGA
 
-PULP has been implemented on FPGA for various Xilinx FPGA boards
-
+PULP has been implemented on FPGA for various Xilinx FPGA boards. The module that will be emulated in the PL is pulpemu, that can be found in `tl/pulpemu/pulpemu.sv`. The other files you want to check are `fpga/pulpemu/tcl/fmc_board_*.xdc` that map the pulp I/Os to the FPGA PINs.
 
 ### CurrentlySupported Boards
 
@@ -57,7 +56,10 @@ make synth-pulpcluster
 If you already synthesized the cluster you can run the following command:
 
 ```Shell
-make synth-pulpemu
+cd pulpemu 
+
+make synth
+
 ```
 
 Otherwise you can run the following, which synthesizes the cluster, the top and then generates the bitstream
@@ -116,11 +118,12 @@ you want to change it:
 unsigned int __rt_iodev_uart_baudrate = your baudrate;
 ```
 
-Compile your application with
+To compile your application make sure that you are using the pulp-sdk (or pulp-runtime) targeting fpga implementation! Then, compile your application with
 
 ```Shell
 make clean all io=uart
 ```
+
 This command builds the ELF binary with UART as the default io peripheral.
 The binary will be stored at `build/pulp/[app_name]/[app_name]`.
 
