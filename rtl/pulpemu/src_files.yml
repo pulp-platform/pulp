@@ -1,0 +1,19 @@
+pulpemu:
+  incdirs: [
+    ../includes,
+    .,
+  ]
+  targets: [
+    xilinx,
+  ]
+  files: [
+    fpga_clk_gen.sv,
+    fpga_slow_clk_gen.sv,
+    pad_functional_xilinx.sv,
+    fpga_bootrom.sv,
+    fpga_interleaved_ram.sv,
+    fpga_private_ram.sv,
+    pulpemu.sv,
+    pulpemu_ref_clk_div.sv,
+    pulp_clock_gating_xilinx.sv
+  ]

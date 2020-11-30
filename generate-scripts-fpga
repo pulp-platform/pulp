@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+# Francesco Conti <f.conti@unibo.it>
+#
+# Copyright (C) 2016 ETH Zurich, University of Bologna.
+# All rights reserved.
+
+from ipstools_cfg import *
+
+execute("mkdir -p fpga/sim/vcompile/ips")
+execute("rm -rf fpga/sim/vcompile/ips/*")
+execute("mkdir -p fpga/sim/vcompile/rtl")
+execute("rm -rf fpga/sim/vcompile/rtl/*")
+
+# creates an IPApproX database
+ipdb = ipstools.IPDatabase(rtl_dir='rtl', ips_dir='ips', vsim_dir='sim', load_cache=True)
+
+
+# do the same for FPGA platform simulation
+ipdb.export_make(script_path="fpga/sim/vcompile/ips", target_tech='xilinx')
+ipdb.export_make(script_path="fpga/sim/vcompile/rtl", target_tech='xilinx', source='rtl')
+ipdb.generate_vsim_tcl("fpga/sim/tcl_files/config/vsim_ips.tcl")
+ipdb.generate_vsim_tcl("fpga/sim/tcl_files/config/vsim_rtl.tcl", source='rtl')
+ipdb.generate_makefile("fpga/sim/vcompile/ips.mk", target_tech='xilinx')
+ipdb.generate_makefile("fpga/sim/vcompile/rtl.mk", target_tech='xilinx', source='rtl')
+
+# generate Vivado compilation scripts
+ipdb.export_vivado(script_path="fpga/pulp_cluster/tcl/ips_src_files.tcl", domain='cluster')
+ipdb.export_vivado(script_path="fpga/pulp_cluster/tcl/rtl_src_files.tcl", domain='cluster', source='rtl')
+ipdb.export_vivado(script_path="fpga/pulpemu/tcl/ips_src_files.tcl", domain='soc')
+ipdb.export_vivado(script_path="fpga/pulpemu/tcl/rtl_src_files.tcl", domain='soc', source='rtl')
+# generate Vivado add_files.tcl
+ipdb.generate_vivado_add_files("fpga/pulp_cluster/tcl/ips_add_files.tcl", domain='cluster')
+ipdb.generate_vivado_add_files("fpga/pulp_cluster/tcl/rtl_add_files.tcl", domain='cluster', source='rtl')
+ipdb.generate_vivado_add_files("fpga/pulpemu/tcl/ips_add_files.tcl", domain='soc')
+ipdb.generate_vivado_add_files("fpga/pulpemu/tcl/rtl_add_files.tcl", domain='soc', source='rtl')
+# generate Vivado inc_dirs.tcl
+ipdb.generate_vivado_inc_dirs("fpga/pulp_cluster/tcl/ips_inc_dirs.tcl", domain='cluster')
+ipdb.generate_vivado_inc_dirs("fpga/pulp_cluster/tcl/rtl_inc_dirs.tcl", domain='cluster', source='rtl')
+ipdb.generate_vivado_inc_dirs("fpga/pulpemu/tcl/ips_inc_dirs.tcl", domain='soc')
+ipdb.generate_vivado_inc_dirs("fpga/pulpemu/tcl/rtl_inc_dirs.tcl", domain='soc', source='rtl')
+
+print tcolors.OK + "Generated sim scripts for IPs!" + tcolors.ENDC
+
