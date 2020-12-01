@@ -288,17 +288,20 @@ module pad_frame
     generate
        for (j=0; j<8; j++) begin
                 pad_functional_pu padinst_hyper_dqio0  (.OEN(~oe_hyper_dq0_i   ), .I( out_hyper_dq0_i[j]   ), .O( in_hyper_dq0_o[j]  ), .PAD( pad_hyper_dq0[j]   ), .PEN(1'b1 ) );
+		`ifndef PULP_FPGA_EMUL
                 pad_functional_pu padinst_hyper_dqio1  (.OEN(~oe_hyper_dq1_i   ), .I( out_hyper_dq1_i[j]   ), .O( in_hyper_dq1_o[j]  ), .PAD( pad_hyper_dq1[j]   ), .PEN(1'b1 ) );
-       end
+                `endif
+        end
     endgenerate
-
+ 
+    `ifndef PULP_FPGA_EMUL
     genvar i;
     generate
         for (i=0; i < 32; i++) begin
             pad_functional_pu padinst_gpio   (.OEN(~oe_gpios_i[i]  ), .I(out_gpios_i[i]  ), .O(in_gpios_o[i]  ), .PAD(pad_gpios[i]  ), .PEN(~pad_cfg_i[41+i][0] ) );
         end
     endgenerate
-
+    `endif
     pad_functional_pu padinst_bootsel0    (.OEN(1'b1            ), .I(                ), .O(bootsel_o[0]      ), .PAD(pad_bootsel0   ), .PEN(1'b1             ) );
     pad_functional_pu padinst_bootsel1    (.OEN(1'b1            ), .I(                ), .O(bootsel_o[1]      ), .PAD(pad_bootsel1   ), .PEN(1'b1             ) );
 
