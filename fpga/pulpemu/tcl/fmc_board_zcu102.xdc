@@ -105,8 +105,8 @@ set_property -dict {PACKAGE_PIN U11 IOSTANDARD LVCMOS18} [get_ports FMC_i2c0_sda
 set_property -dict {PACKAGE_PIN K12 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sck]
 # PULP pad_i2s_mst_ws - FPGA AC7 - FMC C18
 set_property -dict {PACKAGE_PIN AC7 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_ws]
-# PULP pad_i2s_slv_sdi0 - FPGA AB4 - FMC D8
-set_property -dict {PACKAGE_PIN AB4 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sdi]
+# PULP pad_i2s_slv_sdi0 - FPGA AC1 - FMC D8
+set_property -dict {PACKAGE_PIN AC1 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sdi]
 # PULP pad_i2s_slv_sdi1 - FPGA AC2 - FMC C10
 set_property -dict {PACKAGE_PIN AC2 IOSTANDARD LVCMOS18} [get_ports FMC_i2s1_sdi]
 
