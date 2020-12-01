@@ -99,6 +99,16 @@ module pulpemu
 
    assign reset_n = ~pad_reset & pad_jtag_trst;
 
+   wire [7:0] s_pad_hyper_dq0;
+
+   assign s_pad_hyper_dq0[0] = FMC_hyper_dqio0;
+   assign s_pad_hyper_dq0[1] = FMC_hyper_dqio1;
+   assign s_pad_hyper_dq0[2] = FMC_hyper_dqio2;
+   assign s_pad_hyper_dq0[3] = FMC_hyper_dqio3;
+   assign s_pad_hyper_dq0[4] = FMC_hyper_dqio4;
+   assign s_pad_hyper_dq0[5] = FMC_hyper_dqio5;
+   assign s_pad_hyper_dq0[6] = FMC_hyper_dqio6;
+   assign s_pad_hyper_dq0[7] = FMC_hyper_dqio7;
 
    //Differential to single ended clock conversion
    IBUFGDS
@@ -160,14 +170,7 @@ module pulpemu
         
         .pad_reset_n(reset_n),
         
-        .pad_hyper_dq0[0](FMC_hyper_dqio0),
-        .pad_hyper_dq0[1](FMC_hyper_dqio1),
-        .pad_hyper_dq0[2](FMC_hyper_dqio2),
-        .pad_hyper_dq0[3](FMC_hyper_dqio3),
-        .pad_hyper_dq0[4](FMC_hyper_dqio4),
-        .pad_hyper_dq0[5](FMC_hyper_dqio5),
-        .pad_hyper_dq0[6](FMC_hyper_dqio6),
-        .pad_hyper_dq0[7](FMC_hyper_dqio7),
+        .pad_hyper_dq0(s_pad_hyper_dq0),
         .pad_hyper_ck(FMC_hyper_ck)       ,
         .pad_hyper_ckn(FMC_hyper_ckn)     ,
         .pad_hyper_csn0(FMC_hyper_csn0)   ,
