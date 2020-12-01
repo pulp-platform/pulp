@@ -60,7 +60,7 @@ set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins i_pulpis
 
 #Hyper bus
 
-create_clock -period 200.000 -name rwds_clk [get_ports pad_hyper_rwds]
+create_clock -period 200.000 -name rwds_clk [get_ports FMC_hyper_rwds]
 create_generated_clock -name phy_twotimes -source [get_pins i_pulp/soc_domain_i/pulp_soc_i/i_clk_rst_gen/i_fpga_clk_gen/per_clk_o] -multiply_by 2 [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/periph_clk_i]
 
 create_generated_clock -name clk_phy -source [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/periph_clk_i] -divide_by 2 [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/ddr_clk/clk0_o]
@@ -75,12 +75,11 @@ set_max_delay -datapath_only -from [get_pins {i_pulp/soc_domain_i/pulp_soc_i/soc
 set_max_delay -datapath_only -from [get_pins {i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/i_read_clk_rwds/i_cdc_fifo_hyper/dst_rptr_bin_q_reg[4]/C}] -to [get_pins {i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/i_read_clk_rwds/i_cdc_fifo_hyper/src_rptr_gray_q_reg[4]/D}] 30.000
 set_max_delay -datapath_only -from [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/read_clk_en_reg/C] -to [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/i_read_clk_rwds/read_in_valid_reg/CLR] 70
 
-set_max_delay -datapath_only -from [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/hyper_dq_oe_o_reg/C] -to [get_ports {pad_hyper_dqio*}] 100
-set_max_delay -datapath_only -from [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/hyper_rwds_oe_o_reg/C] -to [get_ports {pad_hyper_rwds}] 100
-
+set_max_delay -datapath_only -from [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/hyper_dq_oe_o_reg/C] -to [get_ports {FMC_hyper_dqio*}] 100
+set_max_delay -datapath_only -from [get_pins i_pulp/soc_domain_i/pulp_soc_i/soc_peripherals_i/i_udma/i_hyper/udma_hyperbus_i/phy_i/hyper_rwds_oe_o_reg/C] -to [get_ports {FMC_hyper_rwds}] 100
 
 #needed as input is sampled with clk_rwds but output is clk0 - see saved report
-set_false_path -from [get_ports pad_hyper_rwds] -to [get_ports pad_hyper_rwds]
+set_false_path -from [get_ports FMC_hyper_rwds] -to [get_ports FMC_hyper_rwds]
 # these are for clock domain crossing
 set_false_path -from [get_clocks rwds_clk] -to [get_clocks clk_phy]
 set_false_path -from [get_clocks clk_phy] -to [get_clocks rwds_clk]
@@ -95,7 +94,7 @@ set_false_path -from [get_clocks hyper_ck_o] -to [get_clocks rwds_clk]
  set skew_are            0.6;             # Data invalid after the rising clock edge
  set skew_bfe            0.6;             # Data invalid before the falling clock edge
  set skew_afe            0.6;             # Data invalid after the falling clock edge
- set input_ports         {{pad_hyper_dqio*} pad_hyper_rwds};   # List of input ports
+ set input_ports         {{FMC_hyper_dqio*} FMC_hyper_rwds};   # List of input ports
  set phy_period          200
 
  set_input_delay -clock $input_clock -max [expr $phy_period/2 + $skew_afe] [get_ports $input_ports];
@@ -109,4 +108,4 @@ set_false_path -from [get_clocks hyper_ck_o] -to [get_clocks rwds_clk]
  set skew_are            0.45+1;             # Data invalid after the rising clock edge
  set skew_bfe            0.45+1;             # Data invalid before the falling clock edge
  set skew_afe            0.45+1;             # Data invalid after the falling clock edge
- set input_ports         {pad_hyper_dqio*};   # List of input ports
+ set input_ports         {FMC_hyper_dqio*};   # List of input ports
