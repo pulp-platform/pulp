@@ -272,9 +272,6 @@ module pad_frame
     pad_functional_pu padinst_i2c0_sda   (.OEN(~oe_i2c0_sda_i  ), .I(out_i2c0_sda_i  ), .O(in_i2c0_sda_o  ), .PAD(pad_i2c0_sda  ), .PEN(~pad_cfg_i[7][0] ) );
     pad_functional_pu padinst_i2c0_scl   (.OEN(~oe_i2c0_scl_i  ), .I(out_i2c0_scl_i  ), .O(in_i2c0_scl_o  ), .PAD(pad_i2c0_scl  ), .PEN(~pad_cfg_i[8][0] ) );
     
-    pad_functional_pu padinst_i2c1_sda   (.OEN(~oe_i2c1_sda_i  ), .I(out_i2c1_sda_i  ), .O(in_i2c1_sda_o  ), .PAD(pad_i2c1_sda  ), .PEN(~pad_cfg_i[26][0] ) );
-    pad_functional_pu padinst_i2c1_scl   (.OEN(~oe_i2c1_scl_i  ), .I(out_i2c1_scl_i  ), .O(in_i2c1_scl_o  ), .PAD(pad_i2c1_scl  ), .PEN(~pad_cfg_i[27][0] ) );
-
 
     pad_functional_pu padinst_hyper_csno0  (.OEN(~oe_hyper_cs0n_i   ), .I( out_hyper_cs0n_i   ), .O( in_hyper_cs0n_o   ), .PAD( pad_hyper_csn0    ), .PEN(1'b1 ) );
     pad_functional_pu padinst_hyper_csno1  (.OEN(~oe_hyper_cs1n_i   ), .I( out_hyper_cs1n_i   ), .O( in_hyper_cs1n_o   ), .PAD( pad_hyper_csn1    ), .PEN(1'b1 ) );
@@ -288,10 +285,13 @@ module pad_frame
     generate
        for (j=0; j<8; j++) begin
                 pad_functional_pu padinst_hyper_dqio0  (.OEN(~oe_hyper_dq0_i   ), .I( out_hyper_dq0_i[j]   ), .O( in_hyper_dq0_o[j]  ), .PAD( pad_hyper_dq0[j]   ), .PEN(1'b1 ) );
+		`ifndef PULP_FPGA_EMUL
                 pad_functional_pu padinst_hyper_dqio1  (.OEN(~oe_hyper_dq1_i   ), .I( out_hyper_dq1_i[j]   ), .O( in_hyper_dq1_o[j]  ), .PAD( pad_hyper_dq1[j]   ), .PEN(1'b1 ) );
-       end
+                `endif
+        end
     endgenerate
-
+ 
+    `ifndef PULP_FPGA_EMUL
     genvar i;
     generate
         for (i=0; i < 32; i++) begin
@@ -299,9 +299,13 @@ module pad_frame
         end
     endgenerate
 
+    pad_functional_pu padinst_i2c1_sda   (.OEN(~oe_i2c1_sda_i  ), .I(out_i2c1_sda_i  ), .O(in_i2c1_sda_o  ), .PAD(pad_i2c1_sda  ), .PEN(~pad_cfg_i[26][0] ) );
+    pad_functional_pu padinst_i2c1_scl   (.OEN(~oe_i2c1_scl_i  ), .I(out_i2c1_scl_i  ), .O(in_i2c1_scl_o  ), .PAD(pad_i2c1_scl  ), .PEN(~pad_cfg_i[27][0] ) );
+
+
     pad_functional_pu padinst_bootsel0    (.OEN(1'b1            ), .I(                ), .O(bootsel_o[0]      ), .PAD(pad_bootsel0   ), .PEN(1'b1             ) );
     pad_functional_pu padinst_bootsel1    (.OEN(1'b1            ), .I(                ), .O(bootsel_o[1]      ), .PAD(pad_bootsel1   ), .PEN(1'b1             ) );
-
+    `endif
 
 
 `ifndef PULP_FPGA_EMUL
