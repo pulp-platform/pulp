@@ -66,6 +66,7 @@ module pulpemu
 
    input wire  pad_reset,
 
+   input wire  pad_jtag_trst,
    input wire  pad_jtag_tck,
    input wire  pad_jtag_tdi,
    output wire pad_jtag_tdo,
@@ -150,7 +151,8 @@ module pulpemu
         .pad_jtag_trst(1'b1),        //keep
         
         .pad_xtal_in(ref_clk),       //keep
-        .pad_bootsel()               //keep
-        );
+        .pad_bootsel0(),             //keep
+        .pad_bootsel1()               //keep
+);
 
 endmodule
