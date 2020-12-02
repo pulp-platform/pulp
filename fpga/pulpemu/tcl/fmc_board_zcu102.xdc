@@ -179,8 +179,8 @@ set_property -dict {PACKAGE_PIN AC6 IOSTANDARD LVCMOS18} [get_ports FMC_cam_vsyn
 # Hyper Bus
 ####################################################################
 
-set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_csn0]
-set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_csn1]
+set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_csn1]
+set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_csn0]
 set_property -dict {PACKAGE_PIN AB4 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_ck]
 set_property -dict {PACKAGE_PIN AC4 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_ckn]
 set_property -dict {PACKAGE_PIN AB8 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_rwds0]
