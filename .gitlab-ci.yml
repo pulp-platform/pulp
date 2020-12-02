@@ -77,7 +77,7 @@ b&t_rtl_std:
       - ipstools/*
       - rtl/*
     reports:
-      junit: regression_tests/*.xml
+      junit: regression_tests/simplified-runtime.xml
 
 
 
@@ -106,7 +106,7 @@ b&t_rtl_vip:
       - ipstools/*
       - rtl/*
     reports:
-      junit: regression_tests/*.xml
+      junit: regression_tests/simplified-periph-runtime.xml
 
 b&t_rtl_psram:
   stage: build_and_test_psram
@@ -133,5 +133,5 @@ b&t_rtl_psram:
       - ipstools/*
       - rtl/*
     reports:
-      junit: regression_tests/*.xml
+      junit: regression_tests/simplified-psram-runtime.xml
 

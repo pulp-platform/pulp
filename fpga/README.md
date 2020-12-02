@@ -89,6 +89,13 @@ source configs/pulp.sh
 source configs/fpgas/pulp/genesys2.sh
 ```
 
+If you like to use pulp-runtime instead, do the following:
+```Shell
+git clone https://github.com/pulp-platform/pulp-runtime.git -b pulp-fpga
+source pulp-runtime/configs/fpgas/pulp/* target board
+export the PULP_RISCV_GCC_TOOLCHAIN as usual
+```
+
 In order for the SDK to be able to configure clock dividers (e.g. the ones for
 the UART module) to the right values it needs to know which frequencies
 PULP is running at. You can find the default frequencies in the above
