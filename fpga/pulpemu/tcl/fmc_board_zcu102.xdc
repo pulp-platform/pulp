@@ -202,10 +202,10 @@ set_property -dict {PACKAGE_PIN M11 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_r
 #set_property IOSTANDARD LVCMOS18 [get_ports fmc_hyperflash_csn]
 
 
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tdi]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tdo]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tck]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tms]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_reset_n]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/s_ref_clk]
-set_property MARK_DEBUG true [get_nets pulp_chip_i/s_bootsel]
+#set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tdi]
+#set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tdo]
+#set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tck]
+#set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_jtag_tms]
+#set_property MARK_DEBUG true [get_nets pulp_chip_i/pad_reset_n]
+#set_property MARK_DEBUG true [get_nets pulp_chip_i/s_ref_clk]
+#set_property MARK_DEBUG true [get_nets pulp_chip_i/s_bootsel]
