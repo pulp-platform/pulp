@@ -24,82 +24,82 @@
 
 module cluster_domain
 #(
-    //CLUSTER PARAMETERS
-    parameter NB_CORES              = `NB_CORES,
-    parameter NB_HWPE_PORTS         = 4,
-    parameter NB_DMAS               = 4,
+  //CLUSTER PARAMETERS
+  parameter NB_CORES                = `NB_CORES,
+  parameter NB_HWPE_PORTS           = 4,
+  parameter NB_DMAS                 = 4,
 
-    parameter TCDM_SIZE             = 64*1024,                 // in Byte, POWER of 2
-    parameter NB_TCDM_BANKS         = 16,                      // POWER of 2
-    parameter TCDM_BANK_SIZE        = TCDM_SIZE/NB_TCDM_BANKS, // eg 4096
-    parameter TCDM_NUM_ROWS         = TCDM_BANK_SIZE/4,        // --> 4 byte, mem are 32 bit wide
-    parameter L2_SIZE               = 512*1024,
+  parameter TCDM_SIZE               = 64*1024,                 // in Byte, POWER of 2
+  parameter NB_TCDM_BANKS           = 16,                      // POWER of 2
+  localparam TCDM_BANK_SIZE         = TCDM_SIZE/NB_TCDM_BANKS, // eg 4096
+  localparam TCDM_NUM_ROWS          = TCDM_BANK_SIZE/4,        // --> 4 byte, mem are 32 bit wide
+  parameter L2_SIZE                 = 512*1024,
 
-    //ICACHE PARAMETERS
-    parameter SET_ASSOCIATIVE       = 4,
+  //ICACHE PARAMETERS
+  parameter SET_ASSOCIATIVE         = 4,
 `ifdef MP_ICACHE
-    parameter NB_CACHE_BANKS        = 2,
+  localparam NB_CACHE_BANKS         = 2,
 `endif
 
 `ifdef SP_ICACHE
-    parameter NB_CACHE_BANKS        = 8,
+  localparam NB_CACHE_BANKS         = 8,
 `endif
 
 `ifdef PRIVATE_ICACHE
-    parameter NB_CACHE_BANKS        = 8,
+  localparam NB_CACHE_BANKS         = 8,
 `endif
 
-    parameter CACHE_LINE            = 1,
-    parameter CACHE_SIZE            = 4096,
-    parameter ICACHE_DATA_WIDTH     = 128,
-    parameter L0_BUFFER_FEATURE     = "DISABLED",
-    parameter MULTICAST_FEATURE     = "DISABLED",
-    parameter SHARED_ICACHE         = "ENABLED",
-    parameter DIRECT_MAPPED_FEATURE = "DISABLED",
-    
-    //CORE PARAMETERS
-    parameter ROM_BOOT_ADDR         = 32'h1A000000,
-    parameter BOOT_ADDR             = 32'h1C000000,
-    parameter INSTR_RDATA_WIDTH     = 128,
+  parameter CACHE_LINE              = 1,
+  parameter CACHE_SIZE              = 4096,
+  parameter ICACHE_DATA_WIDTH       = 128,
+  parameter L0_BUFFER_FEATURE       = "DISABLED",
+  parameter MULTICAST_FEATURE       = "DISABLED",
+  parameter SHARED_ICACHE           = "ENABLED",
+  parameter DIRECT_MAPPED_FEATURE   = "DISABLED",
+  
+  //CORE PARAMETERS
+  parameter ROM_BOOT_ADDR           = 32'h1A000000,
+  parameter BOOT_ADDR               = 32'h1C000000,
+  parameter INSTR_RDATA_WIDTH       = 128,
 
-    parameter CLUST_FPU               = `CLUST_FPU,
-    parameter CLUST_FP_DIVSQRT        = `CLUST_FP_DIVSQRT,
-    parameter CLUST_SHARED_FP         = `CLUST_SHARED_FP,
-    parameter CLUST_SHARED_FP_DIVSQRT = `CLUST_SHARED_FP_DIVSQRT,
+  parameter CLUST_FPU               = `CLUST_FPU,
+  parameter CLUST_FP_DIVSQRT        = `CLUST_FP_DIVSQRT,
+  parameter CLUST_SHARED_FP         = `CLUST_SHARED_FP,
+  parameter CLUST_SHARED_FP_DIVSQRT = `CLUST_SHARED_FP_DIVSQRT,
 
-    // AXI PARAMETERS
-    parameter AXI_ADDR_WIDTH        = 32,
-    parameter AXI_DATA_S2C_WIDTH    = 32,
-    parameter AXI_DATA_C2S_WIDTH    = 64,
-    parameter AXI_USER_WIDTH        = 6,
-    parameter AXI_ID_IN_WIDTH       = 4,
-    parameter AXI_ID_OUT_WIDTH      = 6,
-    parameter AXI_STRB_S2C_WIDTH    = AXI_DATA_S2C_WIDTH/8,
-    parameter AXI_STRB_C2S_WIDTH    = AXI_DATA_C2S_WIDTH/8,
-    parameter DC_SLICE_BUFFER_WIDTH = 8,
+  // AXI PARAMETERS
+  parameter AXI_ADDR_WIDTH          = 32,
+  parameter AXI_DATA_S2C_WIDTH      = 32,
+  parameter AXI_DATA_C2S_WIDTH      = 64,
+  parameter AXI_USER_WIDTH          = 6,
+  parameter AXI_ID_IN_WIDTH         = 4,
+  parameter AXI_ID_OUT_WIDTH        = 6,
+  localparam AXI_STRB_S2C_WIDTH     = AXI_DATA_S2C_WIDTH/8,
+  localparam AXI_STRB_C2S_WIDTH     = AXI_DATA_C2S_WIDTH/8,
+  parameter DC_SLICE_BUFFER_WIDTH   = 8,
 
-    //CLUSTER MAIN PARAMETERS
-    parameter DATA_WIDTH            = 32,
-    parameter ADDR_WIDTH            = 32,
-    parameter BE_WIDTH              = DATA_WIDTH/8,
+  //CLUSTER MAIN PARAMETERS
+  parameter DATA_WIDTH              = 32,
+  parameter ADDR_WIDTH              = 32,
+  localparam BE_WIDTH               = DATA_WIDTH/8,
 
-    //TCDM PARAMETERS
-    parameter TEST_SET_BIT          = 20, // bits used to indicate a test and set opration during a load in TCDM
-    parameter ADDR_MEM_WIDTH        = $clog2(TCDM_BANK_SIZE/4), // Memory datawidth is 4 byte (32bit) --> bits used to address a single bank in SRAM TCDM
+  //TCDM PARAMETERS
+  parameter TEST_SET_BIT            = 20, // bits used to indicate a test and set opration during a load in TCDM
+  localparam ADDR_MEM_WIDTH         = $clog2(TCDM_BANK_SIZE/4), // Memory datawidth is 4 byte (32bit) --> bits used to address a single bank in SRAM TCDM
 
-    //MCHAN PARAMETERS
-    parameter TCDM_ADD_WIDTH        = ADDR_MEM_WIDTH + $clog2(NB_TCDM_BANKS) + 2, // Total bit used to address the whole TCDM ( 2^17 = 128K, TCDM SIZE = 64Kof SRAM + 8K of SCM, ADDR WIDTH = 17 bits )
+  //MCHAN PARAMETERS
+  localparam TCDM_ADD_WIDTH         = ADDR_MEM_WIDTH + $clog2(NB_TCDM_BANKS) + 2, // Total bit used to address the whole TCDM ( 2^17 = 128K, TCDM SIZE = 64Kof SRAM + 8K of SCM, ADDR WIDTH = 17 bits )
 
-    //PERIPH PARAMETERS
-    parameter LOG_CLUSTER           = 5,  // NOT USED RIGTH NOW
-    parameter PE_ROUTING_LSB        = 10, //LSB used as routing BIT in periph interco
-    //parameter PE_ROUTING_MSB        = 13, //MSB used as routing BIT in periph interco
+  //PERIPH PARAMETERS
+  parameter LOG_CLUSTER             = 5,  // NOT USED RIGTH NOW
+  parameter PE_ROUTING_LSB          = 10, //LSB used as routing BIT in periph interco
+  //parameter PE_ROUTING_MSB        = 13, //MSB used as routing BIT in periph interco
 
-    parameter EVNT_WIDTH            = 8, //size of the event bus
+  parameter EVNT_WIDTH              = 8, //size of the event bus
 `ifdef PULP_HSA
-    parameter CLUSTER_ALIAS_BASE    = 12'h1B0
+  localparam CLUSTER_ALIAS_BASE     = 12'h1B0
 `else
-    parameter CLUSTER_ALIAS_BASE    = 12'h000
+  localparam CLUSTER_ALIAS_BASE     = 12'h000
 `endif
 )
 (
