@@ -9,6 +9,7 @@
 // specific language governing permissions and limitations under the License.
 
 `include "pulp_soc_defines.sv"
+`include "soc_bus_defines.sv"
 
 module pulp
 #(
@@ -71,8 +72,8 @@ module pulp
   localparam AXI_ADDR_WIDTH             = 32;
   localparam AXI_CLUSTER_SOC_DATA_WIDTH = 64;
   localparam AXI_SOC_CLUSTER_DATA_WIDTH = 32;
-  localparam AXI_CLUSTER_SOC_ID_WIDTH   = 6;
-  localparam AXI_SOC_CLUSTER_ID_WIDTH   = 6;
+  localparam AXI_SOC_CLUSTER_ID_WIDTH   = pkg_soc_interconnect::AXI_ID_OUT_WIDTH; // Backrouting through the AXI-XBAR in pulp_soc requries some extra ID bits. Check axi_xbar docu for details
+  localparam AXI_CLUSTER_SOC_ID_WIDTH   = AXI_SOC_CLUSTER_ID_WIDTH + $clog2(`NB_SLAVE);
 
   localparam AXI_USER_WIDTH             = 6;
   localparam AXI_CLUSTER_SOC_STRB_WIDTH = AXI_CLUSTER_SOC_DATA_WIDTH/8;

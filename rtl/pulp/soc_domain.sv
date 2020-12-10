@@ -246,7 +246,6 @@ module soc_domain #(
         .AXI_DATA_IN_WIDTH       ( AXI_DATA_IN_WIDTH  ),
         .AXI_DATA_OUT_WIDTH      ( AXI_DATA_OUT_WIDTH ),
         .AXI_ID_IN_WIDTH         ( AXI_ID_IN_WIDTH    ),
-        .AXI_ID_OUT_WIDTH        ( AXI_ID_OUT_WIDTH   ),
         .AXI_USER_WIDTH          ( AXI_USER_WIDTH     ),
         .EVNT_WIDTH              ( EVNT_WIDTH         ),
         .BUFFER_WIDTH            ( BUFFER_WIDTH       ),
@@ -256,7 +255,8 @@ module soc_domain #(
         .NBIT_PADMUX             ( 2                  ),
         .N_UART                  ( N_UART             ),
         .N_SPI                   ( N_SPI              ),
-        .N_I2C                   ( N_I2C              )
+        .N_I2C                   ( N_I2C              ),
+        .ISOLATE_CLUSTER_CDC     ( 0                  )
    ) pulp_soc_i (
 
         .boot_l2_i                    ( 1'b0                         ),
