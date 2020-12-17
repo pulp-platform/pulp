@@ -19,12 +19,12 @@
 #
 
 pulp_soc:
-  commit: boot_hyperflash
+  commit: hyper_merge
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: pulp_cluster_v1.3
+  commit: new_soc_interconnect
   server: https://github.com
   group:  pulp-platform
 

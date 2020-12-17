@@ -9,6 +9,7 @@
 // specific language governing permissions and limitations under the License.
 
 `include "pulp_soc_defines.sv"
+`include "soc_bus_defines.sv"
 
 module pulp
 #(
@@ -87,8 +88,8 @@ module pulp
   localparam AXI_ADDR_WIDTH             = 32;
   localparam AXI_CLUSTER_SOC_DATA_WIDTH = 64;
   localparam AXI_SOC_CLUSTER_DATA_WIDTH = 32;
-  localparam AXI_CLUSTER_SOC_ID_WIDTH   = 6;
-  localparam AXI_SOC_CLUSTER_ID_WIDTH   = 6;
+  localparam AXI_SOC_CLUSTER_ID_WIDTH   = pkg_soc_interconnect::AXI_ID_OUT_WIDTH; // Backrouting through the AXI-XBAR in pulp_soc requries some extra ID bits. Check axi_xbar docu for details
+  localparam AXI_CLUSTER_SOC_ID_WIDTH   = AXI_SOC_CLUSTER_ID_WIDTH + $clog2(`NB_SLAVE);
 
   localparam AXI_USER_WIDTH             = 6;
   localparam AXI_CLUSTER_SOC_STRB_WIDTH = AXI_CLUSTER_SOC_DATA_WIDTH/8;
@@ -1007,8 +1008,7 @@ module pulp
         .oe_hyper_dq1_o             ( s_oe_hyper_dq1              ),
         .oe_hyper_resetn_o          ( s_oe_hyper_reset            ),
 
-        .*
-   );
+        .*);
 
    // SOC DOMAIN
    soc_domain #(
@@ -1240,11 +1240,52 @@ module pulp
         .cluster_fetch_enable_o       ( s_cluster_fetch_enable           ),
         .cluster_boot_addr_o          ( s_cluster_boot_addr              ),
         .cluster_test_en_o            ( s_cluster_test_en                ),
-        .*
-    );
+        .*);
 
-cluster_domain cluster_domain_i
-    (
+  cluster_domain #(
+  //CLUSTER PARAMETERS
+        .NB_CORES            (`NB_CORES),
+        .NB_HWPE_PORTS       (4),
+        .NB_DMAS             (4),
+        .TCDM_SIZE           (64*1024),
+        .NB_TCDM_BANKS       (16),
+        .L2_SIZE             (512*1024),
+  // ICACHE PARAMETERS
+        .SET_ASSOCIATIVE     (4),
+        .CACHE_LINE          (1),
+        .CACHE_SIZE          (4096),
+        .ICACHE_DATA_WIDTH   (128),
+        .L0_BUFFER_FEATURE   ("DISABLED"),
+        .MULTICAST_FEATURE   ("DISABLED"),
+        .SHARED_ICACHE       ("ENABLED"),
+        .DIRECT_MAPPED_FEATURE("DISABLED"),
+  // CORE PARAMETERS
+        .ROM_BOOT_ADDR       (32'h1A000000),
+        .BOOT_ADDR           (32'h1C000000),
+        .INSTR_RDATA_WIDTH   (128),
+        .CLUST_FPU           (`CLUST_FPU),
+        .CLUST_FP_DIVSQRT    (`CLUST_FP_DIVSQRT),
+        .CLUST_SHARED_FP     (`CLUST_SHARED_FP),
+        .CLUST_SHARED_FP_DIVSQRT(`CLUST_SHARED_FP_DIVSQRT),
+
+  // AXI ADDR WIDTH
+        .AXI_ADDR_WIDTH      (AXI_ADDR_WIDTH),
+        .AXI_DATA_S2C_WIDTH  (AXI_SOC_CLUSTER_DATA_WIDTH),
+        .AXI_DATA_C2S_WIDTH  (AXI_CLUSTER_SOC_DATA_WIDTH),
+        .AXI_USER_WIDTH      (AXI_USER_WIDTH),
+        .AXI_ID_IN_WIDTH     (AXI_SOC_CLUSTER_ID_WIDTH),
+        .AXI_ID_OUT_WIDTH    (AXI_CLUSTER_SOC_ID_WIDTH),
+        .DC_SLICE_BUFFER_WIDTH(8),
+  // CLUSTER MAIN PARAMETERS
+        .DATA_WIDTH          (32),
+        .ADDR_WIDTH          (32),
+  // TCDM PARAMETERS
+        .TEST_SET_BIT        (20), // bits used to indicate a test and set opration during a load in TCDM
+  // PERIPH PARAMETERS
+        .LOG_CLUSTER         (5), // NOT USED RIGHT NOW
+        .PE_ROUTING_LSB      (10), //LSB used as routing BIT in periph interco
+        .EVNT_WIDTH          (8)
+        ) cluster_domain_i(
         .clk_i                        ( s_cluster_clk                    ),
         .rst_ni                       ( s_cluster_rstn                   ),
         .ref_clk_i                    ( s_ref_clk                        ),
