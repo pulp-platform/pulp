@@ -24,7 +24,7 @@ pulp_soc:
   group:  pulp-platform
 
 pulp_cluster:
-  commit: new_soc_interconnect
+  commit: new_axi_cluster
   server: https://github.com
   group:  pulp-platform
 
