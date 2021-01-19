@@ -26,7 +26,7 @@ module cluster_domain
 #(
     //CLUSTER PARAMETERS
     parameter NB_CORES              = `NB_CORES,
-    parameter NB_HWPE_PORTS         = 4,
+    parameter NB_HWPE_PORTS         = 9,
     parameter NB_DMAS               = 4,
 
     parameter TCDM_SIZE             = 64*1024,                 // in Byte, POWER of 2
