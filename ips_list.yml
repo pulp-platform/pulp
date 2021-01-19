@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: hyper_merge
+  commit: new_axi_cdc
   server: https://github.com
   group:  pulp-platform
 
