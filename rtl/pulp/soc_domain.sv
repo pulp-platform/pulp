@@ -199,7 +199,6 @@ module soc_domain #(
     input  logic                             data_slave_b_ready_i,
 
     // AXI4 MASTER
-    output logic [7:0]                       data_master_aw_writetoken_o,
     output logic [AXI_ADDR_WIDTH-1:0]        data_master_aw_addr_o,
     output logic [2:0]                       data_master_aw_prot_o,
     output logic [3:0]                       data_master_aw_region_o,
@@ -211,9 +210,9 @@ module soc_domain #(
     output logic [3:0]                       data_master_aw_qos_o,
     output logic [AXI_ID_OUT_WIDTH-1:0]      data_master_aw_id_o,
     output logic [AXI_USER_WIDTH-1:0]        data_master_aw_user_o,
-    input  logic [7:0]                       data_master_aw_readpointer_i,
+    output logic                             data_master_aw_valid_o,
+    input  logic                             data_master_aw_ready_i,
 
-    output logic [7:0]                       data_master_ar_writetoken_o,
     output logic [AXI_ADDR_WIDTH-1:0]        data_master_ar_addr_o,
     output logic [2:0]                       data_master_ar_prot_o,
     output logic [3:0]                       data_master_ar_region_o,
@@ -225,28 +224,29 @@ module soc_domain #(
     output logic [3:0]                       data_master_ar_qos_o,
     output logic [AXI_ID_OUT_WIDTH-1:0]      data_master_ar_id_o,
     output logic [AXI_USER_WIDTH-1:0]        data_master_ar_user_o,
-    input  logic [7:0]                       data_master_ar_readpointer_i,
+    output logic                             data_master_ar_valid_o,
+    input  logic                             data_master_ar_ready_i,
 
-    output logic [7:0]                       data_master_w_writetoken_o,
     output logic [AXI_DATA_OUT_WIDTH-1:0]    data_master_w_data_o,
     output logic [AXI_STRB_OUT_WIDTH-1:0]    data_master_w_strb_o,
     output logic [AXI_USER_WIDTH-1:0]        data_master_w_user_o,
     output logic                             data_master_w_last_o,
-    input  logic [7:0]                       data_master_w_readpointer_i,
+    output logic                             data_master_w_valid_o,
+    input  logic                             data_master_w_ready_i,
 
-    input  logic [7:0]                       data_master_r_writetoken_i,
     input  logic [AXI_DATA_OUT_WIDTH-1:0]    data_master_r_data_i,
     input  logic [1:0]                       data_master_r_resp_i,
     input  logic                             data_master_r_last_i,
     input  logic [AXI_ID_OUT_WIDTH-1:0]      data_master_r_id_i,
     input  logic [AXI_USER_WIDTH-1:0]        data_master_r_user_i,
-    output logic [7:0]                       data_master_r_readpointer_o,
+    input  logic                             data_master_r_valid_i,
+    output logic                             data_master_r_ready_o,
 
-    input  logic [7:0]                       data_master_b_writetoken_i,
     input  logic [1:0]                       data_master_b_resp_i,
     input  logic [AXI_ID_OUT_WIDTH-1:0]      data_master_b_id_i,
     input  logic [AXI_USER_WIDTH-1:0]        data_master_b_user_i,
-    output logic [7:0]                       data_master_b_readpointer_o
+    input  logic                             data_master_b_valid_i,
+    output logic                             data_master_b_ready_o
     );
 
     pulp_soc #(

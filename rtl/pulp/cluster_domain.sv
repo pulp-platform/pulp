@@ -130,7 +130,6 @@ module cluster_domain
    // AXI4 SLAVE
    //***************************************
    // WRITE ADDRESS CHANNEL
-   input  logic [7:0]                       data_slave_aw_writetoken_i,
    input  logic [AXI_ADDR_WIDTH-1:0]        data_slave_aw_addr_i,
    input  logic [2:0]                       data_slave_aw_prot_i,
    input  logic [3:0]                       data_slave_aw_region_i,
@@ -142,10 +141,10 @@ module cluster_domain
    input  logic [3:0]                       data_slave_aw_qos_i,
    input  logic [AXI_ID_IN_WIDTH-1:0]       data_slave_aw_id_i,
    input  logic [AXI_USER_WIDTH-1:0]        data_slave_aw_user_i,
-   output logic [7:0]                       data_slave_aw_readpointer_o,
+   input  logic                             data_slave_aw_valid_i,
+   output logic                             data_slave_aw_ready_o,
    
    // READ ADDRESS CHANNEL
-   input  logic [7:0]                       data_slave_ar_writetoken_i,
    input  logic [AXI_ADDR_WIDTH-1:0]        data_slave_ar_addr_i,
    input  logic [2:0]                       data_slave_ar_prot_i,
    input  logic [3:0]                       data_slave_ar_region_i,
@@ -157,31 +156,32 @@ module cluster_domain
    input  logic [3:0]                       data_slave_ar_qos_i,
    input  logic [AXI_ID_IN_WIDTH-1:0]       data_slave_ar_id_i,
    input  logic [AXI_USER_WIDTH-1:0]        data_slave_ar_user_i,
-   output logic [7:0]                       data_slave_ar_readpointer_o,
+   input  logic                             data_slave_ar_valid_i,
+   output logic                             data_slave_ar_ready_o,
    
    // WRITE DATA CHANNEL
-   input  logic [7:0]                       data_slave_w_writetoken_i,
    input  logic [AXI_DATA_S2C_WIDTH-1:0]    data_slave_w_data_i,
    input  logic [AXI_STRB_S2C_WIDTH-1:0]    data_slave_w_strb_i,
    input  logic [AXI_USER_WIDTH-1:0]        data_slave_w_user_i,
    input  logic                             data_slave_w_last_i,
-   output logic [7:0]                       data_slave_w_readpointer_o,
+   input  logic                             data_slave_w_valid_i,
+   output logic                             data_slave_w_ready_o,
           
    // READ DATA CHANNEL
-   output logic [7:0]                       data_slave_r_writetoken_o,
    output logic [AXI_DATA_S2C_WIDTH-1:0]    data_slave_r_data_o,
    output logic [1:0]                       data_slave_r_resp_o,
    output logic                             data_slave_r_last_o,
    output logic [AXI_ID_IN_WIDTH-1:0]       data_slave_r_id_o,
    output logic [AXI_USER_WIDTH-1:0]        data_slave_r_user_o,
-   input  logic [7:0]                       data_slave_r_readpointer_i,
+   output logic                             data_slave_r_valid_o,
+   input  logic                             data_slave_r_ready_i,
    
    // WRITE RESPONSE CHANNEL
-   output logic [7:0]                       data_slave_b_writetoken_o,
    output logic [1:0]                       data_slave_b_resp_o,
    output logic [AXI_ID_IN_WIDTH-1:0]       data_slave_b_id_o,
    output logic [AXI_USER_WIDTH-1:0]        data_slave_b_user_o,
-   input  logic [7:0]                       data_slave_b_readpointer_i,
+   output logic                             data_slave_b_valid_o,
+   input  logic                             data_slave_b_ready_i,
    
    // AXI4 MASTER
    //***************************************
@@ -387,9 +387,9 @@ module cluster_domain
         .data_slave_aw_qos_i          ( data_slave_aw_qos_i          ),
         .data_slave_aw_id_i           ( data_slave_aw_id_i           ),
         .data_slave_aw_user_i         ( data_slave_aw_user_i         ),
-        .data_slave_aw_writetoken_i   ( data_slave_aw_writetoken_i   ),
-        .data_slave_aw_readpointer_o  ( data_slave_aw_readpointer_o  ),
-  
+        .data_slave_aw_valid_i        ( data_slave_aw_valid_i         ),
+        .data_slave_aw_ready_o        ( data_slave_aw_ready_o         ),
+
         .data_slave_ar_addr_i         ( data_slave_ar_addr_i         ),
         .data_slave_ar_prot_i         ( data_slave_ar_prot_i         ),
         .data_slave_ar_region_i       ( data_slave_ar_region_i       ),
@@ -401,29 +401,29 @@ module cluster_domain
         .data_slave_ar_qos_i          ( data_slave_ar_qos_i          ),
         .data_slave_ar_id_i           ( data_slave_ar_id_i           ),
         .data_slave_ar_user_i         ( data_slave_ar_user_i         ),
-        .data_slave_ar_writetoken_i   ( data_slave_ar_writetoken_i   ),
-        .data_slave_ar_readpointer_o  ( data_slave_ar_readpointer_o  ),
+        .data_slave_ar_valid_i         ( data_slave_ar_valid_i         ),
+        .data_slave_ar_ready_o         ( data_slave_ar_ready_o         ),
   
         .data_slave_w_data_i          ( data_slave_w_data_i          ),
         .data_slave_w_strb_i          ( data_slave_w_strb_i          ),
         .data_slave_w_user_i          ( data_slave_w_user_i          ),
         .data_slave_w_last_i          ( data_slave_w_last_i          ),
-        .data_slave_w_writetoken_i    ( data_slave_w_writetoken_i    ),
-        .data_slave_w_readpointer_o   ( data_slave_w_readpointer_o   ),
+        .data_slave_w_valid_i         ( data_slave_w_valid_i         ),
+        .data_slave_w_ready_o         ( data_slave_w_ready_o         ),
   
         .data_slave_r_data_o          ( data_slave_r_data_o          ),
         .data_slave_r_resp_o          ( data_slave_r_resp_o          ),
         .data_slave_r_last_o          ( data_slave_r_last_o          ),
         .data_slave_r_id_o            ( data_slave_r_id_o            ),
         .data_slave_r_user_o          ( data_slave_r_user_o          ),
-        .data_slave_r_writetoken_o    ( data_slave_r_writetoken_o    ),
-        .data_slave_r_readpointer_i   ( data_slave_r_readpointer_i   ),
+        .data_slave_r_valid_o         ( data_slave_r_valid_o         ),
+        .data_slave_r_ready_i         ( data_slave_r_ready_i         ),
   
         .data_slave_b_resp_o          ( data_slave_b_resp_o          ),
         .data_slave_b_id_o            ( data_slave_b_id_o            ),
         .data_slave_b_user_o          ( data_slave_b_user_o          ),
-        .data_slave_b_writetoken_o    ( data_slave_b_writetoken_o    ),
-        .data_slave_b_readpointer_i   ( data_slave_b_readpointer_i   )
+        .data_slave_b_valid_o         ( data_slave_b_valid_o         ),
+        .data_slave_b_ready_i         ( data_slave_b_ready_i         )
     );
 
 endmodule
