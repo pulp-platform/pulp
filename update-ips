@@ -44,7 +44,7 @@ ipdb = ipstools.IPDatabase(
     verbose=args.verbose
 )
 # updates the IPs from the git repo
-ipdb.update_ips()
+ipdb.update_ips(force_downgrade=False)
 
 # launch generate-ips.py
 ipdb.save_database()

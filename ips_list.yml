@@ -19,14 +19,14 @@
 #
 
 pulp_soc:
-  commit: v1.4.3
+  commit: space_pulp_tmp
   server: https://github.com
-  group:  pulp-platform
+  group:  micprog
 
 pulp_cluster:
-  commit: v1.4
+  commit: space_pulp_tmp
   server: https://github.com
-  group:  pulp-platform
+  group:  micprog
 
 tbtools:
   commit: v0.1

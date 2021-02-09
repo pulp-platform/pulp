@@ -6,3 +6,5 @@
 /sim/ncompile/*
 !/sim/ncompile/build.mk
 /tests/*/
+/pulp-runtime
+/regression_tests
