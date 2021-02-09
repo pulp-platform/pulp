@@ -1,0 +1,6 @@
+overrides:
+  pulp_soc: { path: "ips/pulp_soc" } # Temporary override by Bender using `bender clone` command
+  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.3 }
+  axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.7.2 } # outdated, currently 0.27.0
+  common_verification: { git: "https://github.com/pulp-platform/common_verification.git", version: 0.2.0 }
+  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.21.0 }

@@ -31,17 +31,21 @@ $(foreach file, $(INSTALL_FILES), $(eval $(call declareInstallFile,$(file))))
 
 BRANCH ?= master
 
+ifdef BENDER 
+checkout: bender
+	./bender update
+	$(MAKE) bender-script
+else
 checkout:
 	./update-ips
+endif
 
 # generic clean and build targets for the platform
 clean:
-	cd sim && $(MAKE) clean
+	$(MAKE) -C sim BENDER=$(BENDER) clean
 
 build:
-#	cd sim && $(MAKE) lib build opt
-#	cp -r rtl/tb/* $(VSIM_PATH)
-	cd sim && $(MAKE) all
+	$(MAKE) -C sim BENDER=$(BENDER) all
 
 # sdk specific targets
 install: $(INSTALL_HEADERS)
@@ -136,3 +140,26 @@ test-local-runtime:
 	source pulp-runtime/configs/pulp.sh; \
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
 
+
+# Bender integration
+
+VLOG_ARGS += -suppress 2583 -suppress 13314
+BENDER_BUILD_DIR = sim
+
+.PHONY: bender-script bender-build bender-rm
+bender-script: 
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_BUILD_DIR)/compile.tcl
+	./bender script vsim \
+		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
+		-t rtl -t test \
+		| grep -v "set ROOT" >> $(BENDER_BUILD_DIR)/compile.tcl
+
+bender: 
+ifeq (,$(wildcard ./bender))
+	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
+		| bash -s -- 0.22.0
+	touch bender
+endif
+
+bender-rm:
+	rm -f bender

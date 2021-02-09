@@ -8,3 +8,10 @@
 /tests/*/
 /pulp-runtime
 /regression_tests
+/Bender.lock
+/.bender
+/bender
+/sim/compile.tcl
+/sim/transcript
+/sim/work
+/work

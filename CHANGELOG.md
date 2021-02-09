@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CHANGELOG.md
 - CI support for pulp-runtime to run tests, using bwruntest.py and
   tests/runtime-tests.yaml
+- Bender integration
 
 ### Removed
 - Support for custom debug module
