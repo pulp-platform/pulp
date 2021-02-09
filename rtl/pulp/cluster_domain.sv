@@ -25,6 +25,7 @@
 module cluster_domain
 #(
     //CLUSTER PARAMETERS
+    parameter CORE_TYPE_CL          = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
     parameter NB_CORES              = `NB_CORES,
     parameter NB_HWPE_PORTS         = 9,
     parameter NB_DMAS               = 4,
@@ -39,14 +40,18 @@ module cluster_domain
     parameter SET_ASSOCIATIVE       = 4,
 `ifdef MP_ICACHE
     parameter NB_CACHE_BANKS        = 2,
-`endif
+`else
 
 `ifdef SP_ICACHE
     parameter NB_CACHE_BANKS        = 8,
-`endif
+`else
 
 `ifdef PRIVATE_ICACHE
-    parameter NB_CACHE_BANKS        = 8,
+    parameter NB_CACHE_BANKS        = `NB_CORES,
+`else 
+    parameter NB_CACHE_BANKS        = 0,
+`endif
+`endif
 `endif
 
     parameter CACHE_LINE            = 1,
@@ -252,6 +257,7 @@ module cluster_domain
     pulp_cluster
 `ifndef USE_CLUSTER_NETLIST
     #(
+        .CORE_TYPE_CL                 ( CORE_TYPE_CL                 ),
         .NB_CORES                     ( NB_CORES                     ),
         .NB_HWPE_PORTS                ( NB_HWPE_PORTS                ),
         .NB_DMAS                      ( NB_DMAS                      ),
@@ -297,8 +303,7 @@ module cluster_domain
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
     )
 `endif    
-    cluster_i
-    (
+    cluster_i (
         .clk_i                        ( clk_i                        ),
         .rst_ni                       ( rst_ni                       ),
         .ref_clk_i                    ( ref_clk_i                    ),
