@@ -12,6 +12,9 @@ export IPS_PATH=$(PULP_PATH)/fe/ips
 export RTL_PATH=$(PULP_PATH)/fe/rtl
 export TB_PATH=$(PULP_PATH)/rtl/tb
 
+export AEGIS_ROOT=$(PWD)/aegis
+export AEGIS_FILE_PATH=$(PWD)
+
 define declareInstallFile
 
 $(VSIM_PATH)/$(1): sim/$(1)
@@ -31,13 +34,32 @@ $(foreach file, $(INSTALL_FILES), $(eval $(call declareInstallFile,$(file))))
 
 BRANCH ?= master
 
+.PHONY: checkout scripts clean build
 ifdef BENDER 
 checkout: bender
 	./bender update
-	$(MAKE) bender-script
 else
 checkout:
 	./update-ips
+endif
+	$(MAKE) scripts
+
+scripts: 
+ifdef BENDER
+	# Simulation compile script
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_BUILD_DIR)/compile.tcl
+	./bender script vsim \
+		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
+		-t rtl -t test \
+		| grep -v "set ROOT" >> $(BENDER_BUILD_DIR)/compile.tcl
+	# Aegis scripts
+	mkdir -p scripts
+	./bender script synopsys | cat > scripts/analyze.tcl
+	./bender script flist | cat > scripts/flist.txt
+	./bender script vivado | cat > scripts/analyze_vivado.tcl
+	./bender sources -f | cat > scripts/sources.json
+else
+	./generate-scripts
 endif
 
 # generic clean and build targets for the platform
@@ -146,20 +168,35 @@ test-local-runtime:
 VLOG_ARGS += -suppress 2583 -suppress 13314
 BENDER_BUILD_DIR = sim
 
-.PHONY: bender-script bender-build bender-rm
-bender-script: 
-	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_BUILD_DIR)/compile.tcl
-	./bender script vsim \
-		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
-		-t rtl -t test \
-		| grep -v "set ROOT" >> $(BENDER_BUILD_DIR)/compile.tcl
+.PHONY: bender-rm
+BENDER_VERSION = 0.22.0
 
 bender: 
 ifeq (,$(wildcard ./bender))
 	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
-		| bash -s -- 0.22.0
+		| bash -s -- $(BENDER_VERSION)
 	touch bender
 endif
 
 bender-rm:
 	rm -f bender
+
+.PHONY: aegis-rm aegis-run aegis-publish aegis-test
+
+aegis:
+	git clone git@iis-git.ee.ethz.ch:bslk/aegis.git # -b 87c44f0fc0cd318f015dcea0932a761204a6abc8
+
+aegis-rm:
+	rm -rf aegis
+
+aegis-run: 
+	$(MAKE) -C aegis/freepdk45/synopsys clean
+	$(MAKE) -C aegis/freepdk45/synopsys synth_pulp_cluster.ri5cy
+	$(MAKE) -C aegis/freepdk45/synopsys synth_pulp_cluster.ibex
+
+aegis-publish:
+	rm -f $(AEGIS_ROOT)/frontend/data.json
+	$(MAKE) -C aegis/frontend data.json gtable_pulp_cluster
+
+aegis-test:
+	$(MAKE) -C aegis/freepdk45/synopsys synth_pulp_cluster.ibex_test

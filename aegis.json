@@ -1,0 +1,74 @@
+{
+    "morty" : {
+        "pulp" : {
+            "design" : "pulp",
+            "sources" : "../../scripts/sources.json"
+        }
+    },
+    "verible" : {
+        "pulp" : {
+            "design" : "pulp",
+            "sources" : "../../scripts/flist.txt"
+        }
+    },
+    "freepdk45_synopsys" : {
+        "pulp_cluster.ri5cy" : {
+            "design" : "pulp_cluster",
+            "analyze" : "../../../scripts/analyze.tcl",
+            "params": "CORE_TYPE_CL => 0",
+            "constraints" : "../../../scripts/constraints.tcl",
+            "tck" : 7.35
+        },
+        "pulp_cluster.ibex" : {
+            "design" : "pulp_cluster",
+            "analyze" : "../../../scripts/analyze.tcl",
+            "params": "CORE_TYPE_CL => 1",
+            "constraints" : "../../../scripts/constraints.tcl",
+            "tck" : 4.5
+        }
+    },
+    "gtable" : {
+        "pulp_cluster" : {
+            "gapi_key" : !!! SET APPROPRIATELY !!!
+            "doc_name" : "PULP-aegis",
+            "tables" : {
+                "freepdk45_synopsys.ri5cy" : {
+                    "Date": "_data._date",
+                    "Commit": "_data._commit",
+                    "Branch": "_data._branch",
+
+                    "Comb Area [kGE]": ["area.Combinational area", "x/1877.2"],
+                    "Buf/Inf Area [kGE]": ["area.Buf/Inv area", "x/1877.2"],
+                    "Ncomb Area [kGE]": ["area.Noncombinational area", "x/1877.2"],
+                    "BB Area [kGE]": ["area.Macro/Black Box area", "x/1877.2"],
+                    "Tot Area [kGE]": ["area.Total cell area", "x/1877.2"],
+
+                    "Logic Levels": "qor.Levels of Logic",
+                    "Frequency [MHz]": ["qor.Critical Path Length", "1000/x"],
+                    "Target Freq [MHz]": ["qor.Critical Path Clk Period", "1000/x"],
+
+                    "Violating Paths": ["qor.No of Violating Paths", "x"],
+                    "Longest Path": ["timing.paths[0].elems",  "' <---> '.join(e['point'] for e in x)"]
+                },
+                "freepdk45_synopsys.ibex" : {
+                    "Date": "_data._date",
+                    "Commit": "_data._commit",
+                    "Branch": "_data._branch",
+
+                    "Comb Area [kGE]": ["area.Combinational area", "x/1877.2"],
+                    "Buf/Inf Area [kGE]": ["area.Buf/Inv area", "x/1877.2"],
+                    "Ncomb Area [kGE]": ["area.Noncombinational area", "x/1877.2"],
+                    "BB Area [kGE]": ["area.Macro/Black Box area", "x/1877.2"],
+                    "Tot Area [kGE]": ["area.Total cell area", "x/1877.2"],
+
+                    "Logic Levels": "qor.Levels of Logic",
+                    "Frequency [MHz]": ["qor.Critical Path Length", "1000/x"],
+                    "Target Freq [MHz]": ["qor.Critical Path Clk Period", "1000/x"],
+
+                    "Violating Paths": ["qor.No of Violating Paths", "x"],
+                    "Longest Path": ["timing.paths[0].elems",  "' <---> '.join(e['point'] for e in x)"]
+                }
+            }
+        }
+    }
+}
