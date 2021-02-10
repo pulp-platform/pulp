@@ -110,19 +110,19 @@ module cluster_domain
    input logic                              rst_ni,
    input logic                              ref_clk_i,
      
-   input  logic [DC_SLICE_BUFFER_WIDTH-1:0] ext_events_writetoken_i,
+   input logic [DC_SLICE_BUFFER_WIDTH-1:0]  ext_events_writetoken_i,
    output logic [DC_SLICE_BUFFER_WIDTH-1:0] ext_events_readpointer_o,
-   input  logic            [EVNT_WIDTH-1:0] ext_events_dataasync_i,
+   input logic [EVNT_WIDTH-1:0]             ext_events_dataasync_i,
 
-   input  logic                             dma_pe_evt_ack_i,
+   input logic                              dma_pe_evt_ack_i,
    output logic                             dma_pe_evt_valid_o,
 
-   input  logic                             dma_pe_irq_ack_i,
+   input logic                              dma_pe_irq_ack_i,
    output logic                             dma_pe_irq_valid_o,
 
-   input logic  [NB_CORES-1:0] dbg_irq_valid_i,
+   input logic [NB_CORES-1:0]               dbg_irq_valid_i,
    
-   input  logic                             pf_evt_ack_i,
+   input logic                              pf_evt_ack_i,
    output logic                             pf_evt_valid_o,
    
    output logic                             busy_o,
@@ -130,41 +130,41 @@ module cluster_domain
    // AXI4 SLAVE
    //***************************************
    // WRITE ADDRESS CHANNEL
-   input  logic [7:0]                       data_slave_aw_writetoken_i,
-   input  logic [AXI_ADDR_WIDTH-1:0]        data_slave_aw_addr_i,
-   input  logic [2:0]                       data_slave_aw_prot_i,
-   input  logic [3:0]                       data_slave_aw_region_i,
-   input  logic [7:0]                       data_slave_aw_len_i,
-   input  logic [2:0]                       data_slave_aw_size_i,
-   input  logic [1:0]                       data_slave_aw_burst_i,
-   input  logic                             data_slave_aw_lock_i,
-   input  logic [3:0]                       data_slave_aw_cache_i,
-   input  logic [3:0]                       data_slave_aw_qos_i,
-   input  logic [AXI_ID_IN_WIDTH-1:0]       data_slave_aw_id_i,
-   input  logic [AXI_USER_WIDTH-1:0]        data_slave_aw_user_i,
+   input logic [7:0]                        data_slave_aw_writetoken_i,
+   input logic [AXI_ADDR_WIDTH-1:0]         data_slave_aw_addr_i,
+   input logic [2:0]                        data_slave_aw_prot_i,
+   input logic [3:0]                        data_slave_aw_region_i,
+   input logic [7:0]                        data_slave_aw_len_i,
+   input logic [2:0]                        data_slave_aw_size_i,
+   input logic [1:0]                        data_slave_aw_burst_i,
+   input logic                              data_slave_aw_lock_i,
+   input logic [3:0]                        data_slave_aw_cache_i,
+   input logic [3:0]                        data_slave_aw_qos_i,
+   input logic [AXI_ID_IN_WIDTH-1:0]        data_slave_aw_id_i,
+   input logic [AXI_USER_WIDTH-1:0]         data_slave_aw_user_i,
    output logic [7:0]                       data_slave_aw_readpointer_o,
    
    // READ ADDRESS CHANNEL
-   input  logic [7:0]                       data_slave_ar_writetoken_i,
-   input  logic [AXI_ADDR_WIDTH-1:0]        data_slave_ar_addr_i,
-   input  logic [2:0]                       data_slave_ar_prot_i,
-   input  logic [3:0]                       data_slave_ar_region_i,
-   input  logic [7:0]                       data_slave_ar_len_i,
-   input  logic [2:0]                       data_slave_ar_size_i,
-   input  logic [1:0]                       data_slave_ar_burst_i,
-   input  logic                             data_slave_ar_lock_i,
-   input  logic [3:0]                       data_slave_ar_cache_i,
-   input  logic [3:0]                       data_slave_ar_qos_i,
-   input  logic [AXI_ID_IN_WIDTH-1:0]       data_slave_ar_id_i,
-   input  logic [AXI_USER_WIDTH-1:0]        data_slave_ar_user_i,
+   input logic [7:0]                        data_slave_ar_writetoken_i,
+   input logic [AXI_ADDR_WIDTH-1:0]         data_slave_ar_addr_i,
+   input logic [2:0]                        data_slave_ar_prot_i,
+   input logic [3:0]                        data_slave_ar_region_i,
+   input logic [7:0]                        data_slave_ar_len_i,
+   input logic [2:0]                        data_slave_ar_size_i,
+   input logic [1:0]                        data_slave_ar_burst_i,
+   input logic                              data_slave_ar_lock_i,
+   input logic [3:0]                        data_slave_ar_cache_i,
+   input logic [3:0]                        data_slave_ar_qos_i,
+   input logic [AXI_ID_IN_WIDTH-1:0]        data_slave_ar_id_i,
+   input logic [AXI_USER_WIDTH-1:0]         data_slave_ar_user_i,
    output logic [7:0]                       data_slave_ar_readpointer_o,
    
    // WRITE DATA CHANNEL
-   input  logic [7:0]                       data_slave_w_writetoken_i,
-   input  logic [AXI_DATA_S2C_WIDTH-1:0]    data_slave_w_data_i,
-   input  logic [AXI_STRB_S2C_WIDTH-1:0]    data_slave_w_strb_i,
-   input  logic [AXI_USER_WIDTH-1:0]        data_slave_w_user_i,
-   input  logic                             data_slave_w_last_i,
+   input logic [7:0]                        data_slave_w_writetoken_i,
+   input logic [AXI_DATA_S2C_WIDTH-1:0]     data_slave_w_data_i,
+   input logic [AXI_STRB_S2C_WIDTH-1:0]     data_slave_w_strb_i,
+   input logic [AXI_USER_WIDTH-1:0]         data_slave_w_user_i,
+   input logic                              data_slave_w_last_i,
    output logic [7:0]                       data_slave_w_readpointer_o,
           
    // READ DATA CHANNEL
@@ -174,74 +174,47 @@ module cluster_domain
    output logic                             data_slave_r_last_o,
    output logic [AXI_ID_IN_WIDTH-1:0]       data_slave_r_id_o,
    output logic [AXI_USER_WIDTH-1:0]        data_slave_r_user_o,
-   input  logic [7:0]                       data_slave_r_readpointer_i,
+   input logic [7:0]                        data_slave_r_readpointer_i,
    
    // WRITE RESPONSE CHANNEL
    output logic [7:0]                       data_slave_b_writetoken_o,
    output logic [1:0]                       data_slave_b_resp_o,
    output logic [AXI_ID_IN_WIDTH-1:0]       data_slave_b_id_o,
    output logic [AXI_USER_WIDTH-1:0]        data_slave_b_user_o,
-   input  logic [7:0]                       data_slave_b_readpointer_i,
-   
+   input logic [7:0]                        data_slave_b_readpointer_i,
    // AXI4 MASTER
-   //***************************************
+  //***************************************
+  // WRITE ADDRESS CHANNEL
+ 
+   
    // WRITE ADDRESS CHANNEL
-   output logic [7:0]                       data_master_aw_writetoken_o,
-   output logic [AXI_ADDR_WIDTH-1:0]        data_master_aw_addr_o,
-   output logic [2:0]                       data_master_aw_prot_o,
-   output logic [3:0]                       data_master_aw_region_o,
-   output logic [7:0]                       data_master_aw_len_o,
-   output logic [2:0]                       data_master_aw_size_o,
-   output logic [1:0]                       data_master_aw_burst_o,
-   output logic                             data_master_aw_lock_o,
-   output logic [3:0]                       data_master_aw_cache_o,
-   output logic [3:0]                       data_master_aw_qos_o,
-   output logic [AXI_ID_OUT_WIDTH-1:0]      data_master_aw_id_o,
-   output logic [AXI_USER_WIDTH-1:0]        data_master_aw_user_o,
-   input  logic [7:0]                       data_master_aw_readpointer_i,
-   
-   // READ ADDRESS CHANNEL
-   output logic [7:0]                       data_master_ar_writetoken_o,
-   output logic [AXI_ADDR_WIDTH-1:0]        data_master_ar_addr_o,
-   output logic [2:0]                       data_master_ar_prot_o,
-   output logic [3:0]                       data_master_ar_region_o,
-   output logic [7:0]                       data_master_ar_len_o,
-   output logic [2:0]                       data_master_ar_size_o,
-   output logic [1:0]                       data_master_ar_burst_o,
-   output logic                             data_master_ar_lock_o,
-   output logic [3:0]                       data_master_ar_cache_o,
-   output logic [3:0]                       data_master_ar_qos_o,
-   output logic [AXI_ID_OUT_WIDTH-1:0]      data_master_ar_id_o,
-   output logic [AXI_USER_WIDTH-1:0]        data_master_ar_user_o,
-   input  logic [7:0]                       data_master_ar_readpointer_i,
-   
-   // WRITE DATA CHANNEL
-   output logic [7:0]                       data_master_w_writetoken_o,
-   output logic [AXI_DATA_C2S_WIDTH-1:0]    data_master_w_data_o,
-   output logic [AXI_STRB_C2S_WIDTH-1:0]    data_master_w_strb_o,
-   output logic [AXI_USER_WIDTH-1:0]        data_master_w_user_o,
-   output logic                             data_master_w_last_o,
-   input  logic [7:0]                       data_master_w_readpointer_i,
-   
-   // READ DATA CHANNEL
-   input  logic [7:0]                       data_master_r_writetoken_i,
-   input  logic [AXI_DATA_C2S_WIDTH-1:0]    data_master_r_data_i,
-   input  logic [1:0]                       data_master_r_resp_i,
-   input  logic                             data_master_r_last_i,
-   input  logic [AXI_ID_OUT_WIDTH-1:0]      data_master_r_id_i,
-   input  logic [AXI_USER_WIDTH-1:0]        data_master_r_user_i,
-   output logic [7:0]                       data_master_r_readpointer_o,
-   
-   // WRITE RESPONSE CHANNEL
-   input  logic [7:0]                       data_master_b_writetoken_i,
-   input  logic [1:0]                       data_master_b_resp_i,
-   input  logic [AXI_ID_OUT_WIDTH-1:0]      data_master_b_id_i,
-   input  logic [AXI_USER_WIDTH-1:0]        data_master_b_user_i,
-   output logic [7:0]                       data_master_b_readpointer_o
-   
+  output logic [DC_SLICE_BUFFER_WIDTH-1:0] async_data_master_aw_writetoken_o,
+  output logic [7:0][79:0]                 async_data_master_aw_data_o, 
+  input logic [DC_SLICE_BUFFER_WIDTH-1:0]  async_data_master_aw_readpointer_i,
+                                           
+  // READ ADDRESS CHANNEL                  
+  output logic [DC_SLICE_BUFFER_WIDTH-1:0] async_data_master_ar_writetoken_o,
+  output logic [7:0][73:0]                 async_data_master_ar_data_o,
+  input logic [DC_SLICE_BUFFER_WIDTH-1:0]  async_data_master_ar_readpointer_i,
+                                           
+  // WRITE DATA CHANNEL                    
+  output logic [DC_SLICE_BUFFER_WIDTH-1:0] async_data_master_w_writetoken_o,
+  output logic [7:0][78:0]                 async_data_master_w_data_o,
+  input logic [DC_SLICE_BUFFER_WIDTH-1:0]  async_data_master_w_readpointer_i,
+                                           
+  // READ DATA CHANNEL                     
+  input logic [DC_SLICE_BUFFER_WIDTH-1:0]  async_data_master_r_writetoken_i,
+  input logic [7:0][79:0]                  async_data_master_r_data_i,
+  output logic [DC_SLICE_BUFFER_WIDTH-1:0] async_data_master_r_readpointer_o,
+                                           
+  // WRITE RESPONSE CHANNEL                
+  input logic [DC_SLICE_BUFFER_WIDTH-1:0]  async_data_master_b_writetoken_i,
+  input logic [7:0][14:0]                  async_data_master_b_data_i,
+  output logic [DC_SLICE_BUFFER_WIDTH-1:0] async_data_master_b_readpointer_o
+                                           
 `ifdef PULP_FPGA_EMUL
 `ifdef TRACE_EXECUTION
-   ,
+                                            ,
    output logic [NB_CORES*64-1:0]           instr_trace_cycles_o,
    output logic [NB_CORES*32-1:0]           instr_trace_instr_o,
    output logic [NB_CORES*32-1:0]           instr_trace_pc_o,
@@ -249,7 +222,7 @@ module cluster_domain
 `endif
 `endif
    
-);
+   );
    
     pulp_cluster
 `ifndef USE_CLUSTER_NETLIST
@@ -325,52 +298,22 @@ module cluster_domain
         .eoc_o                        (                              ),
         .busy_o                       ( busy_o                       ),
         .cluster_id_i                 ( 6'b000000                    ),
-        .data_master_aw_addr_o        ( data_master_aw_addr_o        ),
-        .data_master_aw_prot_o        ( data_master_aw_prot_o        ),
-        .data_master_aw_region_o      ( data_master_aw_region_o      ),
-        .data_master_aw_len_o         ( data_master_aw_len_o         ),
-        .data_master_aw_size_o        ( data_master_aw_size_o        ),
-        .data_master_aw_burst_o       ( data_master_aw_burst_o       ),
-        .data_master_aw_lock_o        ( data_master_aw_lock_o        ),
-        .data_master_aw_cache_o       ( data_master_aw_cache_o       ),
-        .data_master_aw_qos_o         ( data_master_aw_qos_o         ),
-        .data_master_aw_id_o          ( data_master_aw_id_o          ),
-        .data_master_aw_user_o        ( data_master_aw_user_o        ),
-        .data_master_aw_writetoken_o  ( data_master_aw_writetoken_o  ),
-        .data_master_aw_readpointer_i ( data_master_aw_readpointer_i ),
-        .data_master_ar_addr_o        ( data_master_ar_addr_o        ),
-        .data_master_ar_prot_o        ( data_master_ar_prot_o        ),
-        .data_master_ar_region_o      ( data_master_ar_region_o      ),
-        .data_master_ar_len_o         ( data_master_ar_len_o         ),
-        .data_master_ar_size_o        ( data_master_ar_size_o        ),
-        .data_master_ar_burst_o       ( data_master_ar_burst_o       ),
-        .data_master_ar_lock_o        ( data_master_ar_lock_o        ),
-        .data_master_ar_cache_o       ( data_master_ar_cache_o       ),
-        .data_master_ar_qos_o         ( data_master_ar_qos_o         ),
-        .data_master_ar_id_o          ( data_master_ar_id_o          ),
-        .data_master_ar_user_o        ( data_master_ar_user_o        ),
-        .data_master_ar_writetoken_o  ( data_master_ar_writetoken_o  ),
-        .data_master_ar_readpointer_i ( data_master_ar_readpointer_i ),
-        .data_master_w_data_o         ( data_master_w_data_o         ),
-        .data_master_w_strb_o         ( data_master_w_strb_o         ),
-        .data_master_w_user_o         ( data_master_w_user_o         ),
-        .data_master_w_last_o         ( data_master_w_last_o         ),
-        .data_master_w_writetoken_o   ( data_master_w_writetoken_o   ),
-        .data_master_w_readpointer_i  ( data_master_w_readpointer_i  ),
-
-        .data_master_r_data_i         ( data_master_r_data_i         ),
-        .data_master_r_resp_i         ( data_master_r_resp_i         ),
-        .data_master_r_last_i         ( data_master_r_last_i         ),
-        .data_master_r_id_i           ( data_master_r_id_i           ),
-        .data_master_r_user_i         ( data_master_r_user_i         ),
-        .data_master_r_writetoken_i   ( data_master_r_writetoken_i   ),
-        .data_master_r_readpointer_o  ( data_master_r_readpointer_o  ),
-
-        .data_master_b_resp_i         ( data_master_b_resp_i         ),
-        .data_master_b_id_i           ( data_master_b_id_i           ),
-        .data_master_b_user_i         ( data_master_b_user_i         ),
-        .data_master_b_writetoken_i   ( data_master_b_writetoken_i   ),
-        .data_master_b_readpointer_o  ( data_master_b_readpointer_o  ),
+     
+        .async_data_master_aw_writetoken_o  ( async_data_master_aw_writetoken_o  ),
+        .async_data_master_aw_readpointer_i ( async_data_master_aw_readpointer_i ),
+        .async_data_master_aw_data_o        ( async_data_master_aw_data_o        ),
+        .async_data_master_ar_writetoken_o  ( async_data_master_ar_writetoken_o  ),
+        .async_data_master_ar_readpointer_i ( async_data_master_ar_readpointer_i ),
+        .async_data_master_ar_data_o        ( async_data_master_ar_data_o        ),
+        .async_data_master_w_data_o         ( async_data_master_w_data_o         ),
+        .async_data_master_w_writetoken_o   ( async_data_master_w_writetoken_o   ),
+        .async_data_master_w_readpointer_i  ( async_data_master_w_readpointer_i  ),
+        .async_data_master_r_writetoken_i   ( async_data_master_r_writetoken_i   ),
+        .async_data_master_r_readpointer_o  ( async_data_master_r_readpointer_o  ),
+        .async_data_master_r_data_i         ( async_data_master_r_data_i        ),
+        .async_data_master_b_writetoken_i   ( async_data_master_b_writetoken_i   ),
+        .async_data_master_b_readpointer_o  ( async_data_master_b_readpointer_o  ),
+        .async_data_master_b_data_i         ( async_data_master_b_data_i        ),
  
         .data_slave_aw_addr_i         ( data_slave_aw_addr_i         ),
         .data_slave_aw_prot_i         ( data_slave_aw_prot_i         ),

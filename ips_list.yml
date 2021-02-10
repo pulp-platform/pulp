@@ -19,12 +19,12 @@
 #
 
 pulp_soc:
-  commit: hyper_merge
+  commit: axi_cluster_update
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: new_axi_cluster
+  commit: cluster_axi_update
   server: https://github.com
   group:  pulp-platform
 
