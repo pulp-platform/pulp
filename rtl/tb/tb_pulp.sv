@@ -16,6 +16,8 @@
  * Robert Balas <balasr@iis.ee.ethz.ch>
  */
 
+`include "pulp_soc_defines.sv"
+
 // timeunit 1ps;
 // timeprecision 1ps;
 
@@ -37,7 +39,8 @@ module tb_pulp;
    // if RISCY is instantiated (CORE_TYPE == 0), RISCY_FPU enables the FPU
    parameter RISCY_FPU            = 1;
 
-   parameter USE_HWPE             = 0;
+   parameter USE_HWPE             = 0; // Use a HWPE in the SoC
+   parameter USE_HWPE_CL          = 0; // Use a HWPE in the cluster
 
    // Choose your Cluster core: 
    // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
@@ -89,7 +92,7 @@ module tb_pulp;
    parameter  I2S_FILENAME_3 = "i2s_buffer_3.hex";
 
    // for PULP, 8 cores
-   parameter NB_CORES = 8;
+   parameter NB_CORES = `NB_CORES;
 
    // SPI standards, do not change
    parameter logic[1:0] SPI_STD     = 2'b00;
@@ -545,7 +548,8 @@ module tb_pulp;
       .CORE_TYPE_FC ( CORE_TYPE_FC ),
       .CORE_TYPE_CL ( CORE_TYPE_CL ),
       .USE_FPU      ( RISCY_FPU    ),
-      .USE_HWPE     ( USE_HWPE     )
+      .USE_HWPE     ( USE_HWPE     ),
+      .USE_HWPE_CL  ( USE_HWPE_CL  )
    )
    i_dut (
       .pad_spim_sdio0     ( w_spi_master_sdio0 ),
