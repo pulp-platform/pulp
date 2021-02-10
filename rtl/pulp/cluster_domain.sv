@@ -43,11 +43,11 @@ module cluster_domain
 `else
 
 `ifdef SP_ICACHE
-    parameter NB_CACHE_BANKS        = 8,
+    parameter NB_CACHE_BANKS        = $clog2(NB_CORES+1)-1,//8,
 `else
 
 `ifdef PRIVATE_ICACHE
-    parameter NB_CACHE_BANKS        = `NB_CORES,
+    parameter NB_CACHE_BANKS        = 2,
 `else 
     parameter NB_CACHE_BANKS        = 0,
 `endif
