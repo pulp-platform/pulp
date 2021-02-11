@@ -4,6 +4,7 @@ pulp:
   ]
   files: [
     ../../ips/pulp_soc/rtl/pulp_soc/pkg_soc_interconnect.sv, #External package dependencies require this workaround for IPApprox.
+    ../../ips/axi/axi/src/axi_pkg.sv,
     jtag_tap_top.sv,
     pad_control.sv,
     pad_frame.sv,
