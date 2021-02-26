@@ -127,27 +127,29 @@ if {[info exists ::env(VOPT_FLOW)]} {
                 $vsim_vopt_args \
                 "
 
-    eval $vsim_cmd
-    eval $vsimcmd_test_path
-    eval $vsimcmd_testname
+  eval $vsim_cmd
+  eval $vsimcmd_test_path
+  eval $vsimcmd_testname
 
-    # Added these variables to avoid dummy warnings in the FLL
-    set StdArithNoWarnings 1
-    set NumericStdNoWarnings 1
+  # Added these variables to avoid dummy warnings in the FLL
+  set StdArithNoWarnings 1
+  set NumericStdNoWarnings 1
 
-    # check exit status in tb and quit the simulation accordingly
-    proc run_and_exit {} {
-        run -all
-	if {[info exists ::env(VSIM_EXIT_SIGNAL)]} {
-	    quit -code [examine -radix decimal sim:$::env(VSIM_EXIT_SIGNAL)]
-	} else {
-	    quit -code [examine -radix decimal sim:/tb_pulp/exit_status]
-	}
+  # check exit status in tb and quit the simulation accordingly
+  proc run_and_exit {} {
+    # add fault injection
+    source $::env(VSIM_PATH)/../fault_injection.tcl
+    run -all
+    if {[info exists ::env(VSIM_EXIT_SIGNAL)]} {
+      quit -code [examine -radix decimal sim:$::env(VSIM_EXIT_SIGNAL)]
+    } else {
+      quit -code [examine -radix decimal sim:/tb_pulp/exit_status]
     }
+  }
 
-    #+ set StdArithNoWarnings 1
-    #+ set NumericStdNoWarnings 1
-    #+ run 1ps
-    #+ set StdArithNoWarnings 0
-    #+ set NumericStdNoWarnings 0
+  #+ set StdArithNoWarnings 1
+  #+ set NumericStdNoWarnings 1
+  #+ run 1ps
+  #+ set StdArithNoWarnings 0
+  #+ set NumericStdNoWarnings 0
 }
