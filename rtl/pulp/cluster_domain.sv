@@ -29,7 +29,7 @@ module cluster_domain
     parameter NB_HWPE_PORTS         = 9,
     parameter NB_DMAS               = 4,
 
-    parameter TCDM_SIZE             = 128*1024,                // in Byte, POWER of 2
+    parameter TCDM_SIZE             = 64*1024,                // in Byte, POWER of 2
     parameter NB_TCDM_BANKS         = 16,                      // POWER of 2
     parameter TCDM_BANK_SIZE        = TCDM_SIZE/NB_TCDM_BANKS, // eg 4096
     parameter TCDM_NUM_ROWS         = TCDM_BANK_SIZE/4,        // --> 4 byte, mem are 32 bit wide

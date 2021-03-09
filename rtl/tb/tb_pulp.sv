@@ -56,7 +56,7 @@ module tb_pulp;
      parameter  PSRAM_MODELS        = 0;
    `endif
 
-   // period of the external reference clock (32.769kHz)STIM_FROM
+   // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
 
    // how L2 is loaded. valid values are "JTAG" or "STANDALONE", the latter works only when USE_S25FS256S_MODEL is 1
