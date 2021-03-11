@@ -44,7 +44,7 @@ module soc_domain #(
 
     input  logic                             mode_select_i,
 
-    input logic                              bootsel_i,
+    input logic[1:0]                         bootsel_i,
 
     input  logic                             fc_fetch_en_valid_i,
     input  logic                             fc_fetch_en_i,
@@ -106,9 +106,21 @@ module soc_domain #(
     output logic                             sdio_cmd_oen_o,
     output logic                       [3:0] sdio_data_o,
     input  logic                       [3:0] sdio_data_i,
-    output logic                       [3:0] sdio_data_oen_o
+    output logic                       [3:0] sdio_data_oen_o,
 
-    ,
+    output logic                    [1:0] hyper_cs_no,
+    output logic                          hyper_ck_o,
+    output logic                          hyper_ck_no,
+    output logic                    [1:0] hyper_rwds_o,
+    input  logic                          hyper_rwds_i,
+    output logic                    [1:0] hyper_rwds_oe_o,
+    input  logic                   [15:0] hyper_dq_i,
+    output logic                   [15:0] hyper_dq_o,
+    output logic                    [1:0] hyper_dq_oe_o,
+    output logic                          hyper_reset_no,
+
+
+
     // CLUSTER
     output logic                             cluster_clk_o,
     output logic                             cluster_rstn_o,

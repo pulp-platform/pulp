@@ -38,15 +38,33 @@ module tb_pulp;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
-   parameter  USE_S25FS256S_MODEL = 0;
-   parameter  USE_24FC1025_MODEL  = 0;
-   parameter  USE_I2S_MODEL       = 0;
+   `ifdef USE_VIPS
+     parameter  USE_S25FS256S_MODEL = 1;
+     parameter  USE_24FC1025_MODEL  = 1;
+     parameter  USE_I2S_MODEL       = 1;
+     parameter  USE_HYPER_MODELS    = 1;
+   `else
+     parameter  USE_S25FS256S_MODEL = 0;
+     parameter  USE_24FC1025_MODEL  = 0;
+     parameter  USE_I2S_MODEL       = 0;
+     parameter  USE_HYPER_MODELS    = 0;
+   `endif
+    //psram model, cannot be tested simultaneously with the hyperram
+   `ifdef USE_PSRAM
+     parameter  PSRAM_MODELS        = 1;
+   `else
+     parameter  PSRAM_MODELS        = 0;
+   `endif
 
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
 
    // how L2 is loaded. valid values are "JTAG" or "STANDALONE", the latter works only when USE_S25FS256S_MODEL is 1
    parameter  LOAD_L2 = "JTAG";
+
+   // STIM_FROM sets where is the image data.
+   // In case any values are not given, the debug module takes over the boot process.
+   parameter  STIM_FROM = "JTAG"; // can be "JTAG" "SPI_FLASH", "HYPER_FLASH", or ""
 
    // enable DPI-based JTAG
    parameter  ENABLE_DPI = 0;
@@ -140,8 +158,20 @@ module tb_pulp;
    wire                  w_i2c0_scl;
    wire                  w_i2c0_sda;
 
+   wire [31:0]           w_gpios;
+
    tri                   w_i2c1_scl;
    tri                   w_i2c1_sda;
+   
+   wire [7:0]            w_hyper_dq0    ;
+   wire [7:0]            w_hyper_dq1    ;
+   wire                  w_hyper_ck     ;
+   wire                  w_hyper_ckn    ;
+   wire                  w_hyper_csn0   ;
+   wire                  w_hyper_csn1   ;
+   wire                  w_hyper_rwds0  ;
+   wire                  w_hyper_rwds1  ;
+   wire                  w_hyper_reset  ;
 
    logic [1:0]           s_padmode_spi_master = SPI_STD;
 
@@ -211,8 +241,8 @@ module tb_pulp;
    wire w_master_i2s_sck;
    wire w_master_i2s_ws ;
 
-   wire w_bootsel;
-   logic s_bootsel;
+   wire[1:0] w_bootsel;
+   logic[1:0] s_bootsel;
 
 
    logic [8:0] jtag_conf_reg, jtag_conf_rego; //22bits but actually only the last 9bits are used
@@ -302,6 +332,8 @@ module tb_pulp;
    pullup sda1_pullup_i (w_i2c1_sda);
    pullup scl1_pullup_i (w_i2c1_scl);
 
+  // pullup hyper_rwds0_pu (w_hyper_rwds0);
+
    always_comb begin
       sim_jtag_enable = 1'b0;
 
@@ -356,7 +388,7 @@ module tb_pulp;
       assign w_uart_tx = w_uart_rx;
    end
 
-   // TODO: this should be set depending on the desired boot mode (JTAG, FLASH)
+
    assign w_bootsel = s_bootsel;
 
    /* JTAG DPI-based verification IP */
@@ -376,13 +408,64 @@ module tb_pulp;
       end
    endgenerate
 
+// Hyperram and hyperflash modules
+   generate
+      if(USE_HYPER_MODELS == 1) begin
+         s27ks0641 #(
+            .TimingModel  ("S27KS0641DPBHI020")
+         ) hyperram_model (
+            .DQ7      ( w_hyper_dq0[7] ),
+            .DQ6      ( w_hyper_dq0[6] ),
+            .DQ5      ( w_hyper_dq0[5] ),
+            .DQ4      ( w_hyper_dq0[4] ),
+            .DQ3      ( w_hyper_dq0[3] ),
+            .DQ2      ( w_hyper_dq0[2] ),
+            .DQ1      ( w_hyper_dq0[1] ),
+            .DQ0      ( w_hyper_dq0[0] ),
+            .RWDS     ( w_hyper_rwds0  ),
+            .CSNeg    ( w_hyper_csn1   ),
+            .CK       ( w_hyper_ck     ),
+            .CKNeg    ( w_hyper_ckn    ),
+            .RESETNeg ( w_hyper_reset  )
+         );
+         s26ks512s #(
+            .TimingModel   ( "S26KS512SDPBHI000"),
+            .mem_file_name ( "./vectors/hyper_stim.slm" )
+         ) hyperflash_model (
+            .DQ7      ( w_hyper_dq0[7] ),
+            .DQ6      ( w_hyper_dq0[6] ),
+            .DQ5      ( w_hyper_dq0[5] ),
+            .DQ4      ( w_hyper_dq0[4] ),
+            .DQ3      ( w_hyper_dq0[3] ),
+            .DQ2      ( w_hyper_dq0[2] ),
+            .DQ1      ( w_hyper_dq0[1] ),
+            .DQ0      ( w_hyper_dq0[0] ),
+            .RWDS     ( w_hyper_rwds0  ),
+            .CSNeg    ( w_hyper_csn0   ),
+            .CK       ( w_hyper_ck     ),
+            .CKNeg    ( w_hyper_ckn    ),
+            .RESETNeg ( w_hyper_reset  )
+         );
+      end
+   endgenerate
+
+   generate
+      if(PSRAM_MODELS == 1) begin
+         psram_model psram_model_i (
+            .xDQ      ( {w_hyper_dq1, w_hyper_dq0} ),
+            .xDQSDM   ( {w_hyper_rwds1, w_hyper_rwds0}       ),
+            .xCEn     ( w_hyper_csn1 ),
+            .xCLK     ( w_hyper_ck   )
+         );
+      end
+   endgenerate
    /* SPI flash model (not open-source, from Spansion) */
    generate
       if(USE_S25FS256S_MODEL == 1) begin
          s25fs256s #(
             .TimingModel   ( "S25FS256SAGMFI000_F_30pF" ),
-            .mem_file_name ( "slm_files/flash_stim.slm" ),
-            .UserPreload   (1)
+            .mem_file_name ( "./vectors/qspi_stim.slm" ),
+            .UserPreload   (0)
          ) i_spi_flash_csn0 (
             .SI       ( w_spi_master_sdio0 ),
             .SO       ( w_spi_master_sdio1 ),
@@ -425,8 +508,8 @@ module tb_pulp;
          .A1    ( 1'b0       ),
          .A2    ( 1'b1       ),
          .WP    ( 1'b0       ),
-         .SDA   ( w_i2c0_sda ),
-         .SCL   ( w_i2c0_scl ),
+         .SDA   ( w_i2c1_sda ),
+         .SCL   ( w_i2c1_scl ),
          .RESET ( 1'b0       )
       );
    end
@@ -533,6 +616,31 @@ module tb_pulp;
     );
 
 
+   // GPIO TEST
+   genvar i;
+   //genvar j;
+   
+   
+   assign w_gpios[16] = w_gpios[0]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[17] = w_gpios[1]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[18] = w_gpios[2]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[19] = w_gpios[3]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[20] = w_gpios[4]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[21] = w_gpios[5]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[22] = w_gpios[6]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[23] = w_gpios[7]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[24] = w_gpios[8]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[25] = w_gpios[9]  ? 1'b1 : 1'b0 ;
+   assign w_gpios[26] = w_gpios[10] ? 1'b1 : 1'b0 ;
+   assign w_gpios[27] = w_gpios[11] ? 1'b1 : 1'b0 ;
+   assign w_gpios[28] = w_gpios[12] ? 1'b1 : 1'b0 ;
+   assign w_gpios[29] = w_gpios[13] ? 1'b1 : 1'b0 ;
+   assign w_gpios[30] = w_gpios[14] ? 1'b1 : 1'b0 ;
+   assign w_gpios[31] = w_gpios[15] ? 1'b1 : 1'b0 ;
+
+
+
+
    // PULP chip (design under test)
    pulp #(
       .CORE_TYPE ( CORE_TYPE ),
@@ -572,13 +680,30 @@ module tb_pulp;
       .pad_i2c0_sda       ( w_i2c0_sda         ),
       .pad_i2c0_scl       ( w_i2c0_scl         ),
 
+      .pad_gpios          ( w_gpios            ),
+
+      .pad_i2c1_sda       ( w_i2c1_sda         ),
+      .pad_i2c1_scl       ( w_i2c1_scl         ),
+
       .pad_i2s0_sck       ( w_i2s0_sck         ),
       .pad_i2s0_ws        ( w_i2s0_ws          ),
       .pad_i2s0_sdi       ( w_i2s0_sdi         ),
       .pad_i2s1_sdi       ( w_i2s1_sdi         ),
 
+      .pad_hyper_dq0     ( w_hyper_dq0         ),
+      .pad_hyper_dq1     ( w_hyper_dq1         ),
+      .pad_hyper_ck      ( w_hyper_ck          ),
+      .pad_hyper_ckn     ( w_hyper_ckn         ),
+      .pad_hyper_csn0    ( w_hyper_csn0        ),
+      .pad_hyper_csn1    ( w_hyper_csn1        ),
+      .pad_hyper_rwds0   ( w_hyper_rwds0       ),
+      .pad_hyper_rwds1   ( w_hyper_rwds1       ),
+      .pad_hyper_reset   ( w_hyper_reset       ),
+
       .pad_reset_n        ( w_rst_n            ),
-      .pad_bootsel        ( w_bootsel          ),
+      .pad_bootsel0       ( w_bootsel[0]       ),
+      .pad_bootsel1       ( w_bootsel[1]       ),
+
 
       .pad_jtag_tck       ( w_tck              ),
       .pad_jtag_tdi       ( w_tdi              ),
@@ -628,7 +753,7 @@ module tb_pulp;
 
          if (ENABLE_OPENOCD == 1) begin
             // Use openocd to interact with the simulation
-            s_bootsel = 1'b0;
+            s_bootsel = 2'b01;
             $display("[TB] %t - Releasing hard reset", $realtime);
             s_rst_n = 1'b1;
 
@@ -641,10 +766,12 @@ module tb_pulp;
             // Use only the testbench to do the loading and running
 
             // determine if we want to load the binary with jtag or from flash
-            if (LOAD_L2 == "STANDALONE")
-               s_bootsel = 1'b1;
+            if (LOAD_L2 == "STANDALONE") begin
+               s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
+            s_rst_n = 1'b1;
+            end
             else if (LOAD_L2 == "JTAG") begin
-               s_bootsel = 1'b0;
+               s_bootsel = 2'b01;
             end
 
             if (LOAD_L2 == "JTAG") begin
@@ -681,9 +808,16 @@ module tb_pulp;
 
                test_mode_if.init(s_tck, s_tms, s_trstn, s_tdi);
 
-               jtag_conf_reg = {USE_FLL ? 1'b0 : 1'b1, 6'b0, LOAD_L2 == "JTAG" ? 2'b11 : 2'b00};
                $display("[TB] %t - Enabling clock out via jtag", $realtime);
 
+               // The boot code installed in the ROM checks the JTAG register value.
+               // If jtag_conf_reg is set to 0, the debug module will take over the boot process
+               // The image file can be loaded also from SPI flash and Hyper flash
+               // even though this is not the stand-alone boot
+
+               jtag_conf_reg = (STIM_FROM == "JTAG")           ? {1'b0, 4'b0, 3'b001, 1'b0}:
+                               (STIM_FROM == "SPI_FLASH")      ? {1'b0, 4'b0, 3'b111, 1'b0}:
+                               (STIM_FROM == "HYPER_FLASH")    ? {1'b0, 4'b0, 3'b101, 1'b0}: '0;
                test_mode_if.set_confreg(jtag_conf_reg, jtag_conf_rego,
                    s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
@@ -750,12 +884,13 @@ module tb_pulp;
 
                $display("[TB] %t - Loading L2", $realtime);
                if (USE_PULP_BUS_ACCESS) begin
-                  // use pulp tap to load binary, put debug module in bypass
+                  // use pulp tap to load binary 
                   pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
                end else begin
                   // use debug module to load binary
                   debug_mode_if.load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+
                end
 
                // configure for debug module dmi access again

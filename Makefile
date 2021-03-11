@@ -42,7 +42,7 @@ clean:
 build:
 #	cd sim && $(MAKE) lib build opt
 #	cp -r rtl/tb/* $(VSIM_PATH)
-	cd sim && $(MAKE) all
+	cd sim && $(MAKE) clean all
 
 # sdk specific targets
 install: $(INSTALL_HEADERS)
@@ -101,36 +101,55 @@ test-checkout-gitlab:
 
 
 # gitlab and local test runs
+test-fast-regressions:
+	mkdir -p regression_tests/riscv_tests_soc
+	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml simple-regression-tests.yaml
+
 test-local-regressions: 
 	mkdir -p regression_tests/riscv_tests_soc
 	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml regression-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml regression-tests.yaml
 
 git-ci-ml-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-ml-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
 
 git-ci-riscv-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-riscv-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
 
 git-ci-s-bare-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-sbare-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
 
 git-ci-p-bare-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-pbare-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
+
+git-ci-periphs-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-periph-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-periph-runtime.xml periph-tests.yaml
+
+git-ci-psram:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-psram-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-psram-runtime.xml psram-test.yaml
 
 test-local-runtime: 
 	source setup/vsim.sh; \

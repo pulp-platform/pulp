@@ -36,7 +36,7 @@ module safe_domain
         input  logic [127:0]     pad_mux_i            ,
         input  logic [383:0]     pad_cfg_i            ,
 
-        output logic [47:0][5:0] pad_cfg_o            ,
+        output logic [72:0][5:0] pad_cfg_o            ,
 
         // GPIOS
         input  logic [31:0]      gpio_out_i           ,
@@ -94,6 +94,19 @@ module safe_domain
         input  logic [3:0]       timer2_i             ,
         input  logic [3:0]       timer3_i             ,
 
+
+        // HYPERBUS
+        input  logic  [1:0]       hyper_cs_ni        ,
+        input  logic              hyper_ck_i         ,
+        input  logic              hyper_ck_ni        ,
+        input  logic  [1:0]       hyper_rwds_i       ,
+        output logic              hyper_rwds_o       ,
+        input  logic  [1:0]       hyper_rwds_oe_i    ,
+        output logic  [15:0]      hyper_dq_o         ,
+        input  logic  [15:0]      hyper_dq_i         ,
+        input  logic  [1:0]       hyper_dq_oe_o      ,
+        input  logic              hyper_reset_no     ,  
+
         //**********************************************************
         //*** PAD FRAME SIGNALS ************************************
         //**********************************************************
@@ -131,7 +144,20 @@ module safe_domain
         output logic             out_i2s0_ws_o        ,
         output logic             out_i2s0_sdi_o       ,
         output logic             out_i2s1_sdi_o       ,
+        
+        output logic[31:0]       out_gpios_o          ,
+        output logic             out_i2c1_sda_o       ,
+        output logic             out_i2c1_scl_o       ,
 
+        output logic             out_hyper_cs0n_o     ,
+        output logic             out_hyper_cs1n_o     ,
+        output logic             out_hyper_ck_o       ,
+        output logic             out_hyper_ckn_o      ,
+        output logic             out_hyper_rwds0_o    ,
+        output logic             out_hyper_rwds1_o    ,
+        output logic  [7:0]      out_hyper_dq0_o      ,
+        output logic  [7:0]      out_hyper_dq1_o      ,
+        output logic             out_hyper_resetn_o   ,
 
         // PAD INPUTS
         input logic              in_spim_sdio0_i      ,
@@ -166,6 +192,21 @@ module safe_domain
         input logic              in_i2s0_ws_i         ,
         input logic              in_i2s0_sdi_i        ,
         input logic              in_i2s1_sdi_i        ,
+        
+        input logic [31:0]       in_gpios_i           ,
+        input logic              in_i2c1_sda_i        ,
+        input logic              in_i2c1_scl_i        ,
+
+
+        input logic              in_hyper_cs0n_i     ,
+        input logic              in_hyper_cs1n_i     ,
+        input logic              in_hyper_ck_i       ,
+        input logic              in_hyper_ckn_i      ,
+        input logic              in_hyper_rwds0_i    ,
+        input logic              in_hyper_rwds1_i    ,
+        input logic  [7:0]       in_hyper_dq0_i      ,
+        input logic  [7:0]       in_hyper_dq1_i      ,
+        input logic              in_hyper_resetn_i   ,
 
         // OUTPUT ENABLE
         output logic             oe_spim_sdio0_o      ,
@@ -199,7 +240,23 @@ module safe_domain
         output logic             oe_i2s0_sck_o        ,
         output logic             oe_i2s0_ws_o         ,
         output logic             oe_i2s0_sdi_o        ,
-        output logic             oe_i2s1_sdi_o
+        output logic             oe_i2s1_sdi_o        ,
+         
+        output logic [31:0]      oe_gpios_o           ,
+        output logic             oe_i2c1_sda_o        ,
+        output logic             oe_i2c1_scl_o        ,
+
+
+        output logic             oe_hyper_cs0n_o      ,
+        output logic             oe_hyper_cs1n_o      ,
+        output logic             oe_hyper_ck_o        ,
+        output logic             oe_hyper_ckn_o       ,
+        output logic             oe_hyper_rwds0_o     ,
+        output logic             oe_hyper_rwds1_o     ,
+        output logic             oe_hyper_dq0_o       ,
+        output logic             oe_hyper_dq1_o       ,
+        output logic             oe_hyper_resetn_o    
+
     );
 
     logic        s_test_clk;
@@ -224,7 +281,7 @@ module safe_domain
         //********************************************************************//
         //*** PERIPHERALS SIGNALS ********************************************//
         //********************************************************************//
-        .pad_mux_i             ( pad_mux_i             ),
+        //.pad_mux_i             ( pad_mux_i             ),
         .pad_cfg_i             ( pad_cfg_i             ),
         .pad_cfg_o             ( pad_cfg_o             ),
 
@@ -276,6 +333,17 @@ module safe_domain
         .timer2_i              ( timer2_i              ),
         .timer3_i              ( timer3_i              ),
 
+        .hyper_cs_ni           ( hyper_cs_ni           ),
+        .hyper_ck_i            ( hyper_ck_i            ),
+        .hyper_ck_ni           ( hyper_ck_ni           ),
+        .hyper_rwds_i          ( hyper_rwds_i          ),
+        .hyper_rwds_o          ( hyper_rwds_o          ),
+        .hyper_rwds_oe_i       ( hyper_rwds_oe_i       ),
+        .hyper_dq_o            ( hyper_dq_o            ),
+        .hyper_dq_i            ( hyper_dq_i            ),
+        .hyper_dq_oe_o         ( hyper_dq_oe_o         ),
+        .hyper_reset_no        ( hyper_reset_no        ),
+
         .out_spim_sdio0_o      ( out_spim_sdio0_o      ),
         .out_spim_sdio1_o      ( out_spim_sdio1_o      ),
         .out_spim_sdio2_o      ( out_spim_sdio2_o      ),
@@ -308,6 +376,20 @@ module safe_domain
         .out_i2s0_ws_o         ( out_i2s0_ws_o         ),
         .out_i2s0_sdi_o        ( out_i2s0_sdi_o        ),
         .out_i2s1_sdi_o        ( out_i2s1_sdi_o        ),
+        
+        .out_gpios_o           ( out_gpios_o           ), 
+        .out_i2c1_sda_o        ( out_i2c1_sda_o        ),
+        .out_i2c1_scl_o        ( out_i2c1_scl_o        ),
+
+        .out_hyper_cs0n_o      ( out_hyper_cs0n_o      ),
+        .out_hyper_cs1n_o      ( out_hyper_cs1n_o      ),
+        .out_hyper_ck_o        ( out_hyper_ck_o        ),
+        .out_hyper_ckn_o       ( out_hyper_ckn_o       ),
+        .out_hyper_rwds0_o     ( out_hyper_rwds0_o     ),
+        .out_hyper_rwds1_o     ( out_hyper_rwds1_o     ),
+        .out_hyper_dq0_o       ( out_hyper_dq0_o       ),
+        .out_hyper_dq1_o       ( out_hyper_dq1_o       ),
+        .out_hyper_resetn_o    ( out_hyper_resetn_o    ),
 
         .in_spim_sdio0_i       ( in_spim_sdio0_i       ),
         .in_spim_sdio1_i       ( in_spim_sdio1_i       ),
@@ -341,6 +423,21 @@ module safe_domain
         .in_i2s0_ws_i          ( in_i2s0_ws_i          ),
         .in_i2s0_sdi_i         ( in_i2s0_sdi_i         ),
         .in_i2s1_sdi_i         ( in_i2s1_sdi_i         ),
+        
+        .in_gpios_i            ( in_gpios_i            ),
+        .in_i2c1_sda_i         ( in_i2c1_sda_i         ),
+        .in_i2c1_scl_i         ( in_i2c1_scl_i         ),
+
+        .in_hyper_cs0n_i       ( in_hyper_cs0n_i       ),
+        .in_hyper_cs1n_i       ( in_hyper_cs1n_i       ),
+        .in_hyper_ck_i         ( in_hyper_ck_i         ),
+        .in_hyper_ckn_i        ( in_hyper_ckn_i        ),
+        .in_hyper_rwds0_i      ( in_hyper_rwds0_i      ),
+        .in_hyper_rwds1_i      ( in_hyper_rwds1_i      ),
+        .in_hyper_dq0_i        ( in_hyper_dq0_i        ),
+        .in_hyper_dq1_i        ( in_hyper_dq1_i        ),
+        .in_hyper_resetn_i     ( in_hyper_resetn_i     ),
+
 
         .oe_spim_sdio0_o       ( oe_spim_sdio0_o       ),
         .oe_spim_sdio1_o       ( oe_spim_sdio1_o       ),
@@ -374,7 +471,22 @@ module safe_domain
         .oe_i2s0_ws_o          ( oe_i2s0_ws_o          ),
         .oe_i2s0_sdi_o         ( oe_i2s0_sdi_o         ),
         .oe_i2s1_sdi_o         ( oe_i2s1_sdi_o         ),
+        
+        .oe_gpios_o            ( oe_gpios_o            ),
+        .oe_i2c1_scl_o         ( oe_i2c1_scl_o         ),
+        .oe_i2c1_sda_o         ( oe_i2c1_sda_o         ),
 
+
+        .oe_hyper_cs0n_o       ( oe_hyper_cs0n_o       ),
+        .oe_hyper_cs1n_o       ( oe_hyper_cs1n_o       ),
+        .oe_hyper_ck_o         ( oe_hyper_ck_o         ),
+        .oe_hyper_ckn_o        ( oe_hyper_ckn_o        ),
+        .oe_hyper_rwds0_o      ( oe_hyper_rwds0_o      ),
+        .oe_hyper_rwds1_o      ( oe_hyper_rwds1_o      ),
+        .oe_hyper_dq0_o        ( oe_hyper_dq0_o        ),
+        .oe_hyper_dq1_o        ( oe_hyper_dq1_o        ),
+        .oe_hyper_resetn_o     ( oe_hyper_resetn_o     ),
+        
         .*
     );
 
