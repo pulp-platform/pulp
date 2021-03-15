@@ -963,7 +963,7 @@ module tb_pulp;
        always_ff @(negedge clk_fc)
          begin
       
-            if( req_fc==1'b1 & addr_fc==32'h10000000 & wdata_fc==32'hABBA_ABBA)
+            if( req_fc==1'b1 & addr_fc==32'h1A1040A0 & wdata_fc[31]==1'b1)
               -> stop_sim_event;
             
           end
@@ -973,9 +973,13 @@ module tb_pulp;
             @(stop_sim_event);
 
             if (LOAD_L2=="STANDALONE") begin
-             exit_status = `EXIT_SUCCESS;
-             $display("[TB] %t - Received status core: 0x%h", $realtime, jtag_data[0][30:0]);
-             $stop;
+               if (wdata_fc[30:0] == '0)
+                  exit_status = `EXIT_SUCCESS;
+               else
+                  exit_status = `EXIT_FAIL;
+               $display("[TB] %t - Received status core: 0x%h", $realtime, wdata_fc[30:0]);
+
+               $stop;
             end
        end
 
