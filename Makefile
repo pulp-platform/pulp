@@ -151,6 +151,12 @@ git-ci-psram:
 	touch regression_tests/simplified-psram-runtime.xml; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-psram-runtime.xml psram-test.yaml
 
+git-boot:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/boot-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o boot-runtime.xml hello-test.yaml
+
 test-local-runtime: 
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
