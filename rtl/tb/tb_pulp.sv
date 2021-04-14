@@ -767,8 +767,24 @@ module tb_pulp;
 
             // determine if we want to load the binary with jtag or from flash
             if (LOAD_L2 == "STANDALONE") begin
+               // jtag reset needed anyway
+               jtag_pkg::jtag_reset(s_tck, s_tms, s_trstn, s_tdi);
+               jtag_pkg::jtag_softreset(s_tck, s_tms, s_trstn, s_tdi);
+               #5us;
+               
                s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
+            
+               if (STIM_FROM == "HYPER_FLASH") begin
+                   $display("[TB] %t - HyperFlash boot: Setting bootsel to 2'b10", $realtime);
+               end else if (STIM_FROM == "SPI_FLASH") begin
+                   $display("[TB] %t - QSPI boot: Setting bootsel to 2'b00", $realtime);
+               end
+
+            $display("[TB] %t - Releasing hard reset", $realtime);
             s_rst_n = 1'b1;
+            debug_mode_if.init_dmi_access(s_tck, s_tms, s_trstn, s_tdi);
+            debug_mode_if.set_dmactive(1'b1, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+            #10us;   
             end
             else if (LOAD_L2 == "JTAG") begin
                s_bootsel = 2'b01;
@@ -942,47 +958,6 @@ module tb_pulp;
 
          end
       end
-
-
-       event stop_sim_event;
-     
-       logic        clk_fc ;
-       logic        req_fc;
-       logic        gnt_fc;
-       logic [31:0] wdata_fc;
-       logic        wen_fc;
-       logic [31:0] addr_fc;
-       
-       assign clk_fc      =   i_dut.soc_domain_i.pulp_soc_i.fc_subsystem_i.FC_CORE.lFC_CORE.clk_i;
-       assign req_fc      =   i_dut.soc_domain_i.pulp_soc_i.fc_subsystem_i.FC_CORE.lFC_CORE.data_req_o;
-       assign gnt_fc      =   i_dut.soc_domain_i.pulp_soc_i.fc_subsystem_i.FC_CORE.lFC_CORE.data_gnt_i;
-       assign wdata_fc    =   i_dut.soc_domain_i.pulp_soc_i.fc_subsystem_i.FC_CORE.lFC_CORE.data_wdata_o;
-       assign we_fc       =   i_dut.soc_domain_i.pulp_soc_i.fc_subsystem_i.FC_CORE.lFC_CORE.data_we_o;
-       assign addr_fc     =   i_dut.soc_domain_i.pulp_soc_i.fc_subsystem_i.FC_CORE.lFC_CORE.data_addr_o;
-       
-       always_ff @(negedge clk_fc)
-         begin
-      
-            if( req_fc==1'b1 & addr_fc==32'h1A1040A0 & wdata_fc[31]==1'b1)
-              -> stop_sim_event;
-            
-          end
-       
-       initial
-         begin
-            @(stop_sim_event);
-
-            if (LOAD_L2=="STANDALONE") begin
-               if (wdata_fc[30:0] == '0)
-                  exit_status = `EXIT_SUCCESS;
-               else
-                  exit_status = `EXIT_FAIL;
-               $display("[TB] %t - Received status core: 0x%h", $realtime, wdata_fc[30:0]);
-
-               $stop;
-            end
-       end
-
 
 
    
