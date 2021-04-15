@@ -465,7 +465,7 @@ module tb_pulp;
          s25fs256s #(
             .TimingModel   ( "S25FS256SAGMFI000_F_30pF" ),
             .mem_file_name ( "./vectors/qspi_stim.slm" ),
-            .UserPreload   (0)
+            .UserPreload   ( ( LOAD_L2 == "STANDALONE" ) ? 1 : 0 )
          ) i_spi_flash_csn0 (
             .SI       ( w_spi_master_sdio0 ),
             .SO       ( w_spi_master_sdio1 ),
@@ -767,8 +767,24 @@ module tb_pulp;
 
             // determine if we want to load the binary with jtag or from flash
             if (LOAD_L2 == "STANDALONE") begin
+               // jtag reset needed anyway
+               jtag_pkg::jtag_reset(s_tck, s_tms, s_trstn, s_tdi);
+               jtag_pkg::jtag_softreset(s_tck, s_tms, s_trstn, s_tdi);
+               #5us;
+               
                s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
+            
+               if (STIM_FROM == "HYPER_FLASH") begin
+                   $display("[TB] %t - HyperFlash boot: Setting bootsel to 2'b10", $realtime);
+               end else if (STIM_FROM == "SPI_FLASH") begin
+                   $display("[TB] %t - QSPI boot: Setting bootsel to 2'b00", $realtime);
+               end
+
+            $display("[TB] %t - Releasing hard reset", $realtime);
             s_rst_n = 1'b1;
+            debug_mode_if.init_dmi_access(s_tck, s_tms, s_trstn, s_tdi);
+            debug_mode_if.set_dmactive(1'b1, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+            #10us;   
             end
             else if (LOAD_L2 == "JTAG") begin
                s_bootsel = 2'b01;
@@ -944,6 +960,7 @@ module tb_pulp;
       end
 
 
+   
    `ifndef USE_NETLIST
       /* File System access */
       logic r_stdout_pready;
