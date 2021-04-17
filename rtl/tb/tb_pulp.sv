@@ -729,6 +729,7 @@ module tb_pulp;
          logic [6:0]  dm_addr;
          logic        error;
          int         num_err;
+         int         rd_cnt;
          automatic logic [9:0]  FC_CORE_ID = {5'd31, 5'd0};
 
          int entry_point;
@@ -736,6 +737,7 @@ module tb_pulp;
 
          error   = 1'b0;
          num_err = 0;
+         rd_cnt = 0;
 
          // read entry point from commandline
          if ($value$plusargs("ENTRY_POINT=%h", entry_point))
@@ -943,8 +945,11 @@ module tb_pulp;
 
             jtag_data[0] = 0;
             while(jtag_data[0][31] == 0) begin
+               if (rd_cnt % 10 == 0) begin
+                  debug_mode_if.clear_sbcserrors(s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+               end
                debug_mode_if.readMem(32'h1A1040A0, jtag_data[0], s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-
+               rd_cnt++;
                #50us;
             end
 
