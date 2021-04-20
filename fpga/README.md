@@ -31,7 +31,7 @@ Choose the platfom.
 
 ### VIVADO IPs
 
-Before synthesizing the Design you should implement the Vivado-related ips. 
+Before synthesizing the Design you should implement the Vivado-related ips. The Xilinx's clock ip will generate the frequency set in the `./fpga-settings.mk` file, then please change the constraint accordingly in the `./pulpemu/tcl/constraints.xdc` file.
 To do this run the following Makefile command:
 
 ```Shell

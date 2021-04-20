@@ -35,13 +35,6 @@ source tcl/rtl_src_files.tcl
 source tcl/ips_add_files.tcl
 source tcl/rtl_add_files.tcl
 
-# detect target clock
-if [info exists ::env(FC_CLK_PERIOD_NS)] {
-    set FC_CLK_PERIOD_NS $::env(FC_CLK_PERIOD_NS)
-} else {
-    set FC_CLK_PERIOD_NS 10.000
-}
-set CLK_HALFPERIOD_NS [expr ${FC_CLK_PERIOD_NS} / 2.0]
 
 # add memory cuts + other FPGA IPs
 read_ip $FPGA_IPS/xilinx_interleaved_ram/ip/xilinx_interleaved_ram.xci
