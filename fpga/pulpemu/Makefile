@@ -30,17 +30,14 @@ gui-impl:
 bootgen_zynq_mp:
 	cp ${PROJECT}.runs/impl_1/${PROJECT}.bit board/${BOARD}/${PROJECT}.bit
 	bootgen -image board/${BOARD}/output.bif -arch zynqmp -o board/${BOARD}/BOOT.bin -w on
-	cp board/${BOARD}/BOOT.bin "board/${BOARD}/`./board/get-bitstream-name.sh`"
 
 bootgen_zynq:
 	cp ${PROJECT}.runs/impl_1/${PROJECT}.bit board/${BOARD}/${PROJECT}.bit
 	bootgen -image board/${BOARD}/output.bif -arch zynq -o board/${BOARD}/BOOT.bin -w on
-	cp board/${BOARD}/BOOT.bin "board/${BOARD}/`./board/get-bitstream-name.sh`"
 
 bootgen_vcu:
 	cp ${PROJECT}.runs/impl_1/${PROJECT}.bit board/${BOARD}/${PROJECT}.bit
 	vivado-2018.2 vivado -mode tcl -source board/${BOARD}/bit_to_mcs.tcl
-	cp board/${BOARD}/${PROJECT}.mcs "board/${BOARD}/`./board/get-bitstream-name.sh`"
 
 program_fpga_vcu:
 	vivado-2018.2 vivado -mode tcl -source board/${BOARD}/program_fpga.tcl

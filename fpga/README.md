@@ -1,6 +1,6 @@
 # FPGA
 
-PULP has been implemented on FPGA for various Xilinx FPGA boards. The module that will be emulated in the PL is pulpemu, that can be found in `tl/pulpemu/pulpemu.sv`. The other files you want to check are `fpga/pulpemu/tcl/fmc_board_*.xdc` that map the pulp I/Os to the FPGA PINs.
+PULP has been implemented on FPGA for various Xilinx FPGA boards. The module that will be emulated in the PL is pulpemu and can be found in `rtl/pulpemu/pulpemu.sv`. The other files you want to check are `fpga/pulpemu/tcl/fmc_board_*.xdc` that map the pulpemu I/Os to the FPGA PINs.
 
 ### CurrentlySupported Boards
 
@@ -31,8 +31,10 @@ Choose the platfom.
 
 ### VIVADO IPs
 
-Before synthesizing the Design you should implement the Vivado-related ips. 
-To do this run the following Makefile command:
+Before synthesizing the Design you should implement the Vivado-related ips.
+In the `./fpga-settings.mk` file you can set the frequencies that the Xilinx's clock ip will generate. Reasonable clock frequencies if you do not want to struggle with the bitstream generation are between 6.25MHz and 25MHz, but stricter timing constraints can be met.
+Then please change the constraint accordingly in the `./pulpemu/tcl/constraints.xdc` file.
+To generate the ips, run the following Makefile command:
 
 ```Shell
 make ips
@@ -49,7 +51,6 @@ To do this run the following Makefile command:
 ```Shell
 make synth-pulpcluster
 ```
-
 
 ### TOP LEVEL (PULP) SYNTHESIS AND IMPLEMENTATION
 
@@ -80,6 +81,48 @@ Program device
 Be sure you are loading ".bit" file to the fpga board.
 
 ### Compiling Applications for the FPGA Target
+
+#### Pulp-sdk
+
+```Shell
+git clone https://github.com/pulp-platform/pulp-sdk.git -b sup_fpga
+
+```
+Change the target frequency in the file `rules/fpga/<name-of-the-board>.mk` accordingly to the peripheral domain frequency you set for your bitstream.
+
+```Shell
+cd pulp-sdk
+
+source configs/pulp-open.sh
+```
+To compile your code do the following:
+
+```Shell
+cd <test folder>
+make clean all platform=fpga
+```
+This will activate the uart for the screen, with baudrate 115200. The default board is zcu102, you can change it with `fpga=zcu118` for example.
+
+#### pulp-runtime
+
+If you would like to use pulp-runtime instead, do the following:
+```Shell
+git clone https://github.com/pulp-platform/pulp-runtime.git -b pulp-fpga
+```
+in `pulp-runtime/configs/fpgas/pulp/*` modify `export PULPRT_CONFIG_CFLAGS='-DARCHI_FPGA_FREQUENCY=<target freq>'` accordingly to your target frequency. Then
+
+```
+source pulp-runtime/configs/fpgas/pulp/<target board>
+export the PULP_RISCV_GCC_TOOLCHAIN as usual
+```
+To compile your application just do:
+
+```Shell
+make clean all io=uart
+```
+The default UART baudrate is 115200.
+
+#### Pulp-sdk v1
 To run or debug applications for the FPGA you need to use a recent version of
 the PULP-SDK (tag 2019.11.05 is fully stable for FPGA). Configure the SDK for the FPGA
 platform by running the following commands within the SDK's root directory:
@@ -87,13 +130,6 @@ platform by running the following commands within the SDK's root directory:
 ```Shell
 source configs/pulp.sh
 source configs/fpgas/pulp/genesys2.sh
-```
-
-If you like to use pulp-runtime instead, do the following:
-```Shell
-git clone https://github.com/pulp-platform/pulp-runtime.git -b pulp-fpga
-source pulp-runtime/configs/fpgas/pulp/* target board
-export the PULP_RISCV_GCC_TOOLCHAIN as usual
 ```
 
 In order for the SDK to be able to configure clock dividers (e.g. the ones for
@@ -135,6 +171,7 @@ This command builds the ELF binary with UART as the default io peripheral.
 The binary will be stored at `build/pulp/[app_name]/[app_name]`.
 
 ### GDB and OpenOCD
+
 In order to execute our application on the FPGA we need to load the binary into
 PULPissimo's L2 memory. To do so we can use OpenOCD in conjunction with GDB to
 communicate with the internal RISC-V debug module.
