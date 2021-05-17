@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: cluster_v2
+  commit: clusterv2
   server: https://github.com
   group:  pulp-platform
 
