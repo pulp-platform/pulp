@@ -3,6 +3,8 @@ pulp:
     ../includes,
   ]
   files: [
+    ../../ips/pulp_soc/rtl/pulp_soc/pkg_soc_interconnect.sv,
+    ../../ips/axi/axi/src/axi_pkg.sv,
     jtag_tap_top.sv,
     pad_control.sv,
     pad_frame.sv,

@@ -899,8 +899,33 @@ package jtag_pkg;
          assert(sbcs.sbaccess8 == 1'b0)
              else $error("sbaccess8 is signaled as supported");
 
-      endtask
+      endtask // test_read_sbcs
 
+      
+      task clear_sbcserrors(
+                            ref logic s_tck,
+                            ref logic s_tms,
+                            ref logic s_trstn,
+                            ref logic s_tdi,
+                            ref logic s_tdo
+                            );
+
+         // writing to the error flags has "clear bit" behavior:
+         // if they are 1 and we write a 0, they will stay 1
+         // all other status/write combinations will leave them cleared, so reading SBCS
+         // and writing the same value back will always clear the error flags
+         dm::sbcs_t sbcs;
+
+         this.read_debug_reg(dm::SBCS, sbcs,
+                             s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+
+         if (sbcs.sbbusyerror || (|sbcs.sberror)) begin
+           this.write_debug_reg(dm::SBCS, sbcs,
+                                s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         end
+      endtask // clear_sbcserrors
+
+      
       task test_read_abstractcs(
          ref logic s_tck,
          ref logic s_tms,
