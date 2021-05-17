@@ -1171,7 +1171,7 @@ cluster_domain#(
   // CORE PARAMETERS
         .ROM_BOOT_ADDR       (32'h1A000000),
         .BOOT_ADDR           (32'h1C000000),
-        .INSTR_RDATA_WIDTH   (128),
+        .INSTR_RDATA_WIDTH   (32),
         .CLUST_FPU           (`CLUST_FPU),
         .CLUST_FP_DIVSQRT    (`CLUST_FP_DIVSQRT),
         .CLUST_SHARED_FP     (`CLUST_SHARED_FP),

@@ -60,7 +60,7 @@ module cluster_domain
     //CORE PARAMETERS
     parameter ROM_BOOT_ADDR         = 32'h1A000000,
     parameter BOOT_ADDR             = 32'h1C000000,
-    parameter INSTR_RDATA_WIDTH     = 128,
+    parameter INSTR_RDATA_WIDTH     = 32,
 
     parameter CLUST_FPU               = `CLUST_FPU,
     parameter CLUST_FP_DIVSQRT        = `CLUST_FP_DIVSQRT,
