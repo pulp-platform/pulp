@@ -80,9 +80,8 @@ see `ips/hwpe-stream/doc` and https://arxiv.org/abs/1612.05974.
 ## Getting Started
 
 ### Prerequisites
-To be able to use the PULP platform, you need to have installed 
-the PULP toolchain. The instructions can be found here:
-https://github.com/pulp-platform/pulp-riscv-gnu-toolchain.
+To be able to use the PULP platform, you need the PULP toolchain.
+The instructions to get it can be found here: https://github.com/pulp-platform/pulp-riscv-gnu-toolchain.
 
 
 ### Building the RTL simulation platform
@@ -107,16 +106,21 @@ details on how to plug in some models of real SPI, I2C, I2S peripherals.
 Finally, you can download and run the tests; for that you can checkout the
 following repositories:
 
-Runtime tests: https://github.com/pulp-platform/regression_tests
+- Runtime tests: https://github.com/pulp-platform/regression_tests
+
+- Pulp runtime:  https://github.com/pulp-platform/pulp-runtime
 
 Now you can change directory to your favourite test e.g.: for an hello world
 test, run
+
 ```
 git clone https://github.com/pulp-platform/regression_tests.git
 
 git clone https://github.com/pulp-platform/pulp-runtime.git
 
 source pulp-runtime/configs/pulp.sh
+
+export PATH=*path to riscv gcc toolchain*/bin:$PATH
 
 export PULP_RISCV_GCC_TOOLCHAIN= *path to riscv gcc toolchain*
 
