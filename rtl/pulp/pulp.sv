@@ -1184,8 +1184,8 @@ cluster_domain#(
         .AXI_USER_WIDTH      (AXI_USER_WIDTH),
         .AXI_ID_IN_WIDTH     (AXI_SOC_CLUSTER_ID_WIDTH),
         .AXI_ID_OUT_WIDTH    (AXI_CLUSTER_SOC_ID_WIDTH),
-        .DC_SLICE_BUFFER_WIDTH(8),
-        .LOG_DEPTH           (3),
+        .DC_SLICE_BUFFER_WIDTH(BUFFER_WIDTH),
+        .LOG_DEPTH           (LOG_DEPTH),
   // AXI CLUSTER TO SOC CDC
         .C2S_AW_WIDTH        (AXI_CLUSTER_SOC_AW_WIDTH),
         .C2S_W_WIDTH         (AXI_CLUSTER_SOC_W_WIDTH),
