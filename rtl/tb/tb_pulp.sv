@@ -946,17 +946,8 @@ module tb_pulp;
 
             jtag_data[0] = 0;
             while(jtag_data[0][31] == 0) begin
-               // every 10th loop iteration, we clear the debug module's SBA unit CSR to make
-               // sure there's no error blocking our reads. Sometimes we read the DM
-               // while it is waiting for a reading request is pending. In that case,
-               // the testbench raises an error flag and blocks the DM indifinetely. By clearing the
-               // error we ensure we not block the DM.
-               if (rd_cnt % 10 == 0) begin
-                  debug_mode_if.clear_sbcserrors(s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-               end
-               debug_mode_if.readMem(32'h1A1040A0, jtag_data[0], s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-
-               rd_cnt++;
+               // use the error-checking readMem function to avoid getting stuck
+               debug_mode_if.readMemNoErrors(32'h1A1040A0, jtag_data[0], s_tck, s_tms, s_trstn, s_tdi, s_tdo);
                #50us;
             end
 

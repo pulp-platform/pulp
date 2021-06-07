@@ -901,7 +901,40 @@ package jtag_pkg;
 
       endtask // test_read_sbcs
 
-      
+      task readMemNoErrors(
+                           input logic [31:0]  addr_i,
+                           output logic [31:0] data_o,
+                           ref logic           s_tck,
+                           ref logic           s_tms,
+                           ref logic           s_trstn,
+                           ref logic           s_tdi,
+                           ref logic           s_tdo
+                           );
+         // this task attempts to read an address, then checks the SBCS register
+         // for errors. If error flags are present, they are cleared and the
+         // read is repeated until it can be executed without raising errors.
+         logic [31:0]                           data;
+         dm::sbcs_t                             sbcs;
+
+         // Attempt a read from addr_i
+         this.readMem(addr_i, data, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         // Get the SBCS register's contents
+         this.read_debug_reg(dm::SBCS, sbcs,
+                             s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         // repeat while there are errors stored in SBCS
+         while (sbcs.sbbusyerror || (|sbcs.sberror)) begin
+            this.write_debug_reg(dm::SBCS, sbcs,
+                                 s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+            this.readMem(addr_i, data, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+            this.read_debug_reg(dm::SBCS, sbcs,
+                                s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         end
+         // return result of error-free read
+         data_o = data;
+
+      endtask // readMemNoErrors
+
+
       task clear_sbcserrors(
                             ref logic s_tck,
                             ref logic s_tms,
@@ -925,7 +958,7 @@ package jtag_pkg;
          end
       endtask // clear_sbcserrors
 
-      
+
       task test_read_abstractcs(
          ref logic s_tck,
          ref logic s_tms,
