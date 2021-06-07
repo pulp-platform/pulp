@@ -80,47 +80,54 @@ see `ips/hwpe-stream/doc` and https://arxiv.org/abs/1612.05974.
 ## Getting Started
 
 ### Prerequisites
-To be able to use the PULP platform, you need to have installed 
-development kit for PULP. The instructions can be found here:
-https://github.com/pulp-platform/pulp-sdk/blob/master/README.md
-The recommended flow to build the SDK is described in section *SDK build with
-independent dependencies build*.
+To be able to use the PULP platform, you need the PULP toolchain.
+The instructions to get it can be found here: https://github.com/pulp-platform/pulp-riscv-gnu-toolchain.
 
-Please note that you have to set up an account in GitHub and upload your SSH
-public key to install the SDK. You can find detailed instructions on how to do
-that here: https://help.github.com/articles/connecting-to-github-with-ssh/
 
 ### Building the RTL simulation platform
 To build the RTL simulation platform, start by getting the latest version of the
 IPs composing the PULP system:
 ```
-./update-ips
-```
-This will download all the required IPs, solve dependencies and generate the
-scripts by calling `./generate-scripts`. 
-
-After having access to the SDK, you can build the simulation platform by doing
-the following:
-```
 source setup/vsim.sh
-cd sim/
-make clean lib build opt
+
+./update-ips
+
+./generate-scripts
+
+cd sim
+
+make all
 ```
 This command builds a version of the simulation platform with no dependencies on
 external models for peripherals. See below (Proprietary verification IPs) for
 details on how to plug in some models of real SPI, I2C, I2S peripherals.
 
-### Downloading and running tests
+### Downloading and running simple C regression tests
 Finally, you can download and run the tests; for that you can checkout the
 following repositories:
 
-Runtime tests: https://github.com/pulp-platform/pulp-rt-examples
+- Runtime tests: https://github.com/pulp-platform/regression_tests
+
+- Pulp runtime:  https://github.com/pulp-platform/pulp-runtime
 
 Now you can change directory to your favourite test e.g.: for an hello world
 test, run
+
 ```
-cd pulp-rt-examples/hello
-make clean all run
+git clone https://github.com/pulp-platform/regression_tests.git
+
+git clone https://github.com/pulp-platform/pulp-runtime.git
+
+source pulp-runtime/configs/pulp.sh
+
+export PATH=*path to riscv gcc toolchain*/bin:$PATH
+
+export PULP_RISCV_GCC_TOOLCHAIN= *path to riscv gcc toolchain*
+
+cd regression_tests/hello
+
+mae clean all run gui=1
+
 ```
 The open-source simulation platform relies on JTAG to emulate preloading of the
 PULP L2 memory. If you want to simulate a more realistic scenario (e.g.
@@ -152,6 +159,10 @@ initial boot and to start to autonomously fetch the program from the SPI flash.
 To do this, the `LOAD_L2` parameter of the testbench has to be switched from
 `JTAG` to `STANDALONE`.
 
+## PULP-SDK
+
+If you are a software developer, you can find the PULP-SDK here: https://github.com/pulp-platform/pulp-sdk.
+
 ## PULP platform structure
 After being fully setup as explained in the Getting Started section, this root
 repository is structured as follows:
@@ -160,7 +171,7 @@ repository is structured as follows:
   e.g. SPI flash and camera.
 - `rtl` could also contain other material (e.g. global includes, top-level
   files)
-- `ips` contains all IPs downloaded by `update-ips` script. Most of the actual
+ `ips` contains all IPs downloaded by `update-ips` script. Most of the actual
   logic of the platform is located in these IPs.
 - `sim` contains the ModelSim/QuestaSim simulation platform.
 - `pulp-sdk` contains the PULP software development kit; `pulp-sdk/tests`

@@ -19,12 +19,12 @@
 #
 
 pulp_soc:
-  commit: v1.4.4
+  commit: clusterv2
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: v1.4
+  commit: v2.0.0
   server: https://github.com
   group:  pulp-platform
 
