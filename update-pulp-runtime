@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+if [ ! -e pulp-runtime ]; then
+    git clone https://github.com/mattsini1/pulp-runtime.git -b master
+    pushd pulp-runtime
+else
+   pushd pulp-runtime
+   git checkout master
+   git pull
+fi
+
+source ./configs/pulp.sh
+popd
