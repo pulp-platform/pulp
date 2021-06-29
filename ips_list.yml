@@ -19,8 +19,8 @@
 #
 
 pulp_soc: 
-  commit: fpu_integration
+  commit: 8c2a88697b9f9bfb7070d49bd48531cd9441244a
   group:  pulp-platform
 pulp_cluster:
-  commit: fpu_integration
+  commit: f58da7d9fcadc1b8a5f51e1e08445180f47b4bd3
   group:  pulp-platform
