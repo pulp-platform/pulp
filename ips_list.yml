@@ -19,12 +19,12 @@
 #
 
 pulp_soc:
-  commit: clusterv2
+  commit: cv32e40p_integration
   server: https://github.com
   group:  pulp-platform
 
 pulp_cluster:
-  commit: v2.0.0
+  commit: cv32_integration
   server: https://github.com
   group:  pulp-platform
 
