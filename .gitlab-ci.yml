@@ -14,7 +14,7 @@
 
 
 variables:
-  PATH: "/home/gitlabci/bin:/usr/lib64/qt-3.3/bin:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/local/condor/bin:/usr/sepp/bin:/usr/local/anaconda3/bin:/var/lib/snapd/snap/bin"
+  PATH: "/usr/pack/riscv-1.0-kgf/pulp-gcc-2.2.0/bin:/home/gitlabci/bin:/usr/lib64/qt-3.3/bin:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/local/condor/bin:/usr/sepp/bin:/usr/local/anaconda3/bin:/var/lib/snapd/snap/bin"
 before_script:
   - pwd
   - echo "$PATH"
@@ -43,7 +43,7 @@ fetch_std:
     - cp -r regression_tests/hello/* regression_tests/hellohyper/
     - source setup/vsim.sh
     - echo "Fetching IPs"
-    - ./update-ips 
+    - ./update-ips
     - echo "Fetching vips"
     - ./rtl/vip/get-vips.sh --yes --gitlab
   artifacts:
@@ -60,15 +60,14 @@ b&t_rtl_std:
   stage: build_and_test
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts 
+    - ./generate-scripts
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
     - echo "Source and exports"
-    - source pulp-runtime/configs/pulp.sh; 
-    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
-    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
+    - source pulp-runtime/configs/pulp_cv32e40p.sh;
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/riscv-1.0-kgf/pulp-gcc-2.2.0
   script:
     - echo "Running software test"
     - make test-fast-regressions
@@ -89,15 +88,14 @@ b&t_rtl_vip:
   stage: build_and_test_vips
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose 
+    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
     - echo "Source and exports"
-    - source pulp-runtime/configs/pulp.sh; 
-    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
-    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
+    - source pulp-runtime/configs/pulp_cv32e40p.sh;
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/riscv-1.0-kgf/pulp-gcc-2.2.0
   script:
     - echo "Running software test"
     - make git-ci-periphs-regs
@@ -112,47 +110,45 @@ b&t_rtl_vip:
     reports:
       junit: regression_tests/simplified-periph-runtime.xml
 
-b&t_rtl_boot:
-  stage: build_and_test_boot
-  before_script:
-    - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose 
-    - echo "Compiling RTL model and DPI libraries"
-    - make build
-    - echo "Fetching Runtime"
-    - git clone  https://github.com/pulp-platform/pulp-runtime.git -b boot_code_update
-    - echo "Source and exports"
-    - source pulp-runtime/configs/pulp.sh; 
-    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
-    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
-  script:
-    - echo "Running software test"
-    - make git-boot
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
-    paths:
-      - regression_tests/*
-      - ips/*
-      - sim/*
-      - ipstools/*
-      - rtl/*
-    reports:
-      junit: regression_tests/boot-runtime.xml
+#b&t_rtl_boot:
+#  stage: build_and_test_boot
+#  before_script:
+#    - echo "Generate scripts with DPI and VIP support"
+#    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose
+#    - echo "Compiling RTL model and DPI libraries"
+#    - make build
+#    - echo "Fetching Runtime"
+#    - git clone  https://github.com/pulp-platform/pulp-runtime.git -b boot_code_update
+#    - echo "Source and exports"
+#    - source pulp-runtime/configs/pulp_cv32e40p.sh;
+#    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/riscv-1.0-kgf/pulp-gcc-2.2.0
+#  script:
+#    - echo "Running software test"
+#    - make git-boot
+#  artifacts:
+#    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+#    paths:
+#      - regression_tests/*
+#      - ips/*
+#      - sim/*
+#      - ipstools/*
+#      - rtl/*
+#    reports:
+#      junit: regression_tests/boot-runtime.xml
 
 
 b&t_rtl_psram:
   stage: build_and_test_psram
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --psram-vip 
+    - ./generate-scripts --psram-vip
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
     - make pulp-runtime
     - echo "Source and exports"
-    - source pulp-runtime/configs/pulp.sh; 
-    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
-    - export PATH=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/bin/:$PATH
+    - source pulp-runtime/configs/pulp_cv32e40p.sh;
+    - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/riscv-1.0-kgf/pulp-gcc-2.2.0
   script:
     - echo "Running software test"
     - make git-ci-psram
@@ -166,4 +162,3 @@ b&t_rtl_psram:
       - rtl/*
     reports:
       junit: regression_tests/simplified-psram-runtime.xml
-
