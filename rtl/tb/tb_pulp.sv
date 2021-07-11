@@ -36,6 +36,9 @@ module tb_pulp;
    // if RISCY is instantiated (CORE_TYPE == 0), RISCY_FPU enables the FPU
    parameter RISCY_FPU            = 1;
 
+   // Decide whether to use x registers (USE_ZFINX = 1) or f registers (USE_ZFINX = 0) for FP operations
+   parameter USE_ZFINX            = 0;
+
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
    `ifdef USE_VIPS
@@ -162,7 +165,7 @@ module tb_pulp;
 
    tri                   w_i2c1_scl;
    tri                   w_i2c1_sda;
-   
+
    wire [7:0]            w_hyper_dq0    ;
    wire [7:0]            w_hyper_dq1    ;
    wire                  w_hyper_ck     ;
@@ -619,8 +622,8 @@ module tb_pulp;
    // GPIO TEST
    genvar i;
    //genvar j;
-   
-   
+
+
    assign w_gpios[16] = w_gpios[0]  ? 1'b1 : 1'b0 ;
    assign w_gpios[17] = w_gpios[1]  ? 1'b1 : 1'b0 ;
    assign w_gpios[18] = w_gpios[2]  ? 1'b1 : 1'b0 ;
@@ -644,7 +647,8 @@ module tb_pulp;
    // PULP chip (design under test)
    pulp #(
       .CORE_TYPE ( CORE_TYPE ),
-      .USE_FPU   ( RISCY_FPU )
+      .USE_FPU   ( RISCY_FPU ),
+      .USE_ZFINX ( USE_ZFINX )
    )
    i_dut (
       .pad_spim_sdio0     ( w_spi_master_sdio0 ),
@@ -730,7 +734,7 @@ module tb_pulp;
          logic        error;
          int         num_err;
          int         rd_cnt;
-         
+
          automatic logic [9:0]  FC_CORE_ID = {5'd31, 5'd0};
 
          int entry_point;
@@ -739,7 +743,7 @@ module tb_pulp;
          error   = 1'b0;
          num_err = 0;
          rd_cnt=0;
-         
+
          // read entry point from commandline
          if ($value$plusargs("ENTRY_POINT=%h", entry_point))
              begin_l2_instr = entry_point;
@@ -774,9 +778,9 @@ module tb_pulp;
                jtag_pkg::jtag_reset(s_tck, s_tms, s_trstn, s_tdi);
                jtag_pkg::jtag_softreset(s_tck, s_tms, s_trstn, s_tdi);
                #5us;
-               
+
                s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
-            
+
                if (STIM_FROM == "HYPER_FLASH") begin
                    $display("[TB] %t - HyperFlash boot: Setting bootsel to 2'b10", $realtime);
                end else if (STIM_FROM == "SPI_FLASH") begin
@@ -787,7 +791,7 @@ module tb_pulp;
             s_rst_n = 1'b1;
             debug_mode_if.init_dmi_access(s_tck, s_tms, s_trstn, s_tdi);
             debug_mode_if.set_dmactive(1'b1, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-            #10us;   
+            #10us;
             end
             else if (LOAD_L2 == "JTAG") begin
                s_bootsel = 2'b01;
@@ -903,7 +907,7 @@ module tb_pulp;
 
                $display("[TB] %t - Loading L2", $realtime);
                if (USE_PULP_BUS_ACCESS) begin
-                  // use pulp tap to load binary 
+                  // use pulp tap to load binary
                   pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
                end else begin
@@ -963,7 +967,7 @@ module tb_pulp;
       end
 
 
-   
+
    `ifndef USE_NETLIST
       /* File System access */
       logic r_stdout_pready;

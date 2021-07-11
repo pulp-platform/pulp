@@ -14,6 +14,7 @@ module soc_domain #(
     parameter CORE_TYPE            = 0,
     parameter USE_FPU              = 1,
     parameter USE_HWPE             = 1,
+    parameter USE_ZFINX            = 1,
     parameter NB_CL_CORES          = 8,
     parameter AXI_ADDR_WIDTH       = 32,
     parameter AXI_DATA_IN_WIDTH    = 64,
@@ -24,12 +25,12 @@ module soc_domain #(
     parameter AXI_USER_WIDTH       = 6,
     parameter AXI_STRB_IN_WIDTH    = AXI_DATA_IN_WIDTH/8,
     parameter AXI_STRB_OUT_WIDTH   = AXI_DATA_OUT_WIDTH/8,
-    parameter C2S_AW_WIDTH         = 1, 
+    parameter C2S_AW_WIDTH         = 1,
     parameter C2S_W_WIDTH          = 1,
     parameter C2S_B_WIDTH          = 1,
     parameter C2S_AR_WIDTH         = 1,
     parameter C2S_R_WIDTH          = 1,
-    parameter S2C_AW_WIDTH         = 1, 
+    parameter S2C_AW_WIDTH         = 1,
     parameter S2C_W_WIDTH          = 1,
     parameter S2C_B_WIDTH          = 1,
     parameter S2C_AR_WIDTH         = 1,
@@ -158,53 +159,53 @@ module soc_domain #(
     output logic [LOG_DEPTH:0]                        async_cluster_events_wptr_o,
     output logic [2**LOG_DEPTH-1:0][EVNT_WIDTH-1:0]   async_cluster_events_data_o,
     input logic [LOG_DEPTH:0]                         async_cluster_events_rptr_i,
-  
+
     // AXI4 SLAVE
     input logic [LOG_DEPTH:0]                         async_data_slave_aw_wptr_i,
-    input logic [2**LOG_DEPTH-1:0][C2S_AW_WIDTH-1:0]  async_data_slave_aw_data_i, 
+    input logic [2**LOG_DEPTH-1:0][C2S_AW_WIDTH-1:0]  async_data_slave_aw_data_i,
     output logic [LOG_DEPTH:0]                        async_data_slave_aw_rptr_o,
-                                             
-    // READ ADDRESS CHANNEL                  
+
+    // READ ADDRESS CHANNEL
     input logic [LOG_DEPTH:0]                         async_data_slave_ar_wptr_i,
     input logic [2**LOG_DEPTH-1:0][C2S_AR_WIDTH-1:0]  async_data_slave_ar_data_i,
     output logic [LOG_DEPTH:0]                        async_data_slave_ar_rptr_o,
-                                             
-    // WRITE DATA CHANNEL                    
+
+    // WRITE DATA CHANNEL
     input logic [LOG_DEPTH:0]                         async_data_slave_w_wptr_i,
     input logic [2**LOG_DEPTH-1:0][C2S_W_WIDTH-1:0]   async_data_slave_w_data_i,
     output logic [LOG_DEPTH:0]                        async_data_slave_w_rptr_o,
-                                                     
-    // READ DATA CHANNEL                             
+
+    // READ DATA CHANNEL
     output logic [LOG_DEPTH:0]                        async_data_slave_r_wptr_o,
     output logic [2**LOG_DEPTH-1:0][C2S_R_WIDTH-1:0]  async_data_slave_r_data_o,
     input logic [LOG_DEPTH:0]                         async_data_slave_r_rptr_i,
-                                                     
-    // WRITE RESPONSE CHANNEL                        
+
+    // WRITE RESPONSE CHANNEL
     output logic [LOG_DEPTH:0]                        async_data_slave_b_wptr_o,
     output logic [2**LOG_DEPTH-1:0][C2S_B_WIDTH-1:0]  async_data_slave_b_data_o,
     input logic [LOG_DEPTH:0]                         async_data_slave_b_rptr_i,
 
     // AXI4 MASTER
     output logic [LOG_DEPTH:0]                        async_data_master_aw_wptr_o,
-    output logic [2**LOG_DEPTH-1:0][S2C_AW_WIDTH-1:0] async_data_master_aw_data_o, 
+    output logic [2**LOG_DEPTH-1:0][S2C_AW_WIDTH-1:0] async_data_master_aw_data_o,
     input logic [LOG_DEPTH:0]                         async_data_master_aw_rptr_i,
-                                             
-    // READ ADDRESS CHANNEL                  
+
+    // READ ADDRESS CHANNEL
     output logic [LOG_DEPTH:0]                        async_data_master_ar_wptr_o,
     output logic [2**LOG_DEPTH-1:0][S2C_AR_WIDTH-1:0] async_data_master_ar_data_o,
     input logic [LOG_DEPTH:0]                         async_data_master_ar_rptr_i,
-                                             
-    // WRITE DATA CHANNEL                    
+
+    // WRITE DATA CHANNEL
     output logic [LOG_DEPTH:0]                        async_data_master_w_wptr_o,
     output logic [2**LOG_DEPTH-1:0][S2C_W_WIDTH-1:0]  async_data_master_w_data_o,
     input logic [LOG_DEPTH:0]                         async_data_master_w_rptr_i,
-                                                     
-    // READ DATA CHANNEL                             
+
+    // READ DATA CHANNEL
     input logic [LOG_DEPTH:0]                         async_data_master_r_wptr_i,
     input logic [2**LOG_DEPTH-1:0][S2C_R_WIDTH-1:0]   async_data_master_r_data_i,
     output logic [LOG_DEPTH:0]                        async_data_master_r_rptr_o,
-                                                     
-    // WRITE RESPONSE CHANNEL                        
+
+    // WRITE RESPONSE CHANNEL
     input logic [LOG_DEPTH:0]                         async_data_master_b_wptr_i,
     input logic [2**LOG_DEPTH-1:0][S2C_B_WIDTH-1:0]   async_data_master_b_data_i,
     output logic [LOG_DEPTH:0]                        async_data_master_b_rptr_o    );
@@ -213,6 +214,7 @@ module soc_domain #(
         .CORE_TYPE               ( CORE_TYPE          ),
         .USE_FPU                 ( USE_FPU            ),
         .USE_HWPE                ( USE_HWPE           ),
+        .USE_ZFINX               ( USE_ZFINX          ),
         .NB_CORES                ( NB_CL_CORES        ),
         .AXI_ADDR_WIDTH          ( AXI_ADDR_WIDTH     ),
         .AXI_DATA_IN_WIDTH       ( AXI_DATA_IN_WIDTH  ),

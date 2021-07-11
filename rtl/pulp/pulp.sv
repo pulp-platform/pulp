@@ -15,6 +15,7 @@ module pulp
 #(
   parameter CORE_TYPE   = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
   parameter USE_FPU     = 1,
+  parameter USE_ZFINX   = 1,
   parameter USE_HWPE    = 1
 )
 (
@@ -57,10 +58,10 @@ module pulp
    inout  wire        pad_i2s0_sdi,
    inout  wire        pad_i2s1_sdi,
 
-   
+
    inout  wire [31:0] pad_gpios,
    inout  wire        pad_i2c1_sda,
-   inout  wire        pad_i2c1_scl,     
+   inout  wire        pad_i2c1_scl,
 
    inout wire [7:0]   pad_hyper_dq0    ,
    inout wire [7:0]   pad_hyper_dq1    ,
@@ -95,24 +96,25 @@ module pulp
   localparam AXI_CLUSTER_SOC_STRB_WIDTH = AXI_CLUSTER_SOC_DATA_WIDTH/8;
   localparam AXI_SOC_CLUSTER_STRB_WIDTH = AXI_SOC_CLUSTER_DATA_WIDTH/8;
 
-  localparam AXI_CLUSTER_SOC_AW_WIDTH   = AXI_CLUSTER_SOC_ID_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1;  
-  localparam AXI_CLUSTER_SOC_W_WIDTH    = AXI_USER_WIDTH+AXI_CLUSTER_SOC_STRB_WIDTH+AXI_CLUSTER_SOC_DATA_WIDTH+1;   
+  localparam AXI_CLUSTER_SOC_AW_WIDTH   = AXI_CLUSTER_SOC_ID_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1;
+  localparam AXI_CLUSTER_SOC_W_WIDTH    = AXI_USER_WIDTH+AXI_CLUSTER_SOC_STRB_WIDTH+AXI_CLUSTER_SOC_DATA_WIDTH+1;
   localparam AXI_CLUSTER_SOC_R_WIDTH    = AXI_CLUSTER_SOC_ID_WIDTH+AXI_CLUSTER_SOC_DATA_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::resp_t)+1;
-  localparam AXI_CLUSTER_SOC_B_WIDTH    = AXI_USER_WIDTH+AXI_CLUSTER_SOC_ID_WIDTH+$bits(axi_pkg::resp_t);   
+  localparam AXI_CLUSTER_SOC_B_WIDTH    = AXI_USER_WIDTH+AXI_CLUSTER_SOC_ID_WIDTH+$bits(axi_pkg::resp_t);
   localparam AXI_CLUSTER_SOC_AR_WIDTH   = AXI_CLUSTER_SOC_ID_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+1;
 
-  localparam AXI_SOC_CLUSTER_AW_WIDTH   = AXI_SOC_CLUSTER_ID_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1;  
-  localparam AXI_SOC_CLUSTER_W_WIDTH    = AXI_USER_WIDTH+AXI_SOC_CLUSTER_STRB_WIDTH+AXI_SOC_CLUSTER_DATA_WIDTH+1;   
+  localparam AXI_SOC_CLUSTER_AW_WIDTH   = AXI_SOC_CLUSTER_ID_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1;
+  localparam AXI_SOC_CLUSTER_W_WIDTH    = AXI_USER_WIDTH+AXI_SOC_CLUSTER_STRB_WIDTH+AXI_SOC_CLUSTER_DATA_WIDTH+1;
   localparam AXI_SOC_CLUSTER_R_WIDTH    = AXI_SOC_CLUSTER_ID_WIDTH+AXI_SOC_CLUSTER_DATA_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::resp_t)+1;
-  localparam AXI_SOC_CLUSTER_B_WIDTH    = AXI_USER_WIDTH+AXI_SOC_CLUSTER_ID_WIDTH+$bits(axi_pkg::resp_t);   
+  localparam AXI_SOC_CLUSTER_B_WIDTH    = AXI_USER_WIDTH+AXI_SOC_CLUSTER_ID_WIDTH+$bits(axi_pkg::resp_t);
   localparam AXI_SOC_CLUSTER_AR_WIDTH   = AXI_SOC_CLUSTER_ID_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+1;
 
   localparam BUFFER_WIDTH               = 8;
   localparam EVENT_WIDTH                = 8;
   localparam LOG_DEPTH                  = 3;
-   
+
   localparam CVP_ADDR_WIDTH             = 32;
   localparam CVP_DATA_WIDTH             = 32;
+
 
   //***********************************************************
   //********** PAD FRAME TO PAD CONTROL SIGNALS ***************
@@ -152,7 +154,7 @@ module pulp
   logic s_out_i2s0_ws    ;
   logic s_out_i2s0_sdi   ;
   logic s_out_i2s1_sdi   ;
-  
+
   logic[31:0] s_out_gpios;
   logic s_out_i2c1_sda   ;
   logic s_out_i2c1_scl   ;
@@ -200,7 +202,7 @@ module pulp
   logic s_in_i2s0_ws     ;
   logic s_in_i2s0_sdi    ;
   logic s_in_i2s1_sdi    ;
-  
+
   logic[31:0] s_in_gpios ;
   logic s_in_i2c1_sda    ;
   logic s_in_i2c1_scl    ;
@@ -248,7 +250,7 @@ module pulp
   logic s_oe_i2s0_ws     ;
   logic s_oe_i2s0_sdi    ;
   logic s_oe_i2s1_sdi    ;
-  
+
   logic[31:0] s_oe_gpios ;
   logic s_oe_i2c1_sda    ;
   logic s_oe_i2c1_scl    ;
@@ -406,7 +408,7 @@ module pulp
   logic  [`NB_CORES-1:0]             s_dbg_irq_valid;
 
   logic                        s_rstn_por;
-  
+
 
   logic                        s_dma_pe_irq_ack;
   logic                        s_dma_pe_irq_valid;
@@ -444,7 +446,7 @@ module pulp
   logic                        s_cluster_irq;
   logic                        s_cluster_rtc;
   logic                        s_cluster_fetch_enable;
-  logic [63:0]                 s_cluster_boot_addr; 
+  logic [63:0]                 s_cluster_boot_addr;
   logic                        s_cluster_test_en;
   logic                        s_cluster_pow;
   logic                        s_cluster_byp;
@@ -464,7 +466,7 @@ module pulp
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_aw_wptr;
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_aw_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_CLUSTER_SOC_AW_WIDTH-1:0] s_cluster_soc_bus_aw_data;
-          
+
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_ar_wptr;
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_ar_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_CLUSTER_SOC_AR_WIDTH-1:0] s_cluster_soc_bus_ar_data;
@@ -476,16 +478,16 @@ module pulp
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_r_wptr;
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_r_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_CLUSTER_SOC_R_WIDTH-1:0]  s_cluster_soc_bus_r_data;
-  
+
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_b_wptr;
   logic [LOG_DEPTH:0]                                    s_cluster_soc_bus_b_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_CLUSTER_SOC_B_WIDTH-1:0]  s_cluster_soc_bus_b_data;
-  
+
   // SOC TO CLUSTER AXI BUS
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_aw_wptr;
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_aw_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_SOC_CLUSTER_AW_WIDTH-1:0] s_soc_cluster_bus_aw_data;
-          
+
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_ar_wptr;
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_ar_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_SOC_CLUSTER_AR_WIDTH-1:0] s_soc_cluster_bus_ar_data;
@@ -497,11 +499,11 @@ module pulp
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_r_wptr;
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_r_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_SOC_CLUSTER_R_WIDTH-1:0]  s_soc_cluster_bus_r_data;
-  
+
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_b_wptr;
   logic [LOG_DEPTH:0]                                    s_soc_cluster_bus_b_rptr;
   logic [2**LOG_DEPTH-1:0][AXI_SOC_CLUSTER_B_WIDTH-1:0]  s_soc_cluster_bus_b_data;
-  
+
 
   logic[1:0]                        s_bootsel;
 
@@ -555,7 +557,7 @@ module pulp
         .oe_i2c0_scl_i         ( s_oe_i2c0_scl          ),
         .oe_uart_rx_i          ( s_oe_uart_rx           ),
         .oe_uart_tx_i          ( s_oe_uart_tx           ),
-        
+
         .oe_gpios_i            ( s_oe_gpios             ),
         .oe_i2c1_sda_i         ( s_oe_i2c1_sda          ),
         .oe_i2c1_scl_i         ( s_oe_i2c1_scl          ),
@@ -569,7 +571,7 @@ module pulp
         .oe_hyper_dq0_i        ( s_oe_hyper_dq0         ),
         .oe_hyper_dq1_i        ( s_oe_hyper_dq1         ),
         .oe_hyper_resetn_i     ( s_oe_hyper_reset       ),
- 
+
         .out_spim_sdio0_i      ( s_out_spim_sdio0       ),
         .out_spim_sdio1_i      ( s_out_spim_sdio1       ),
         .out_spim_sdio2_i      ( s_out_spim_sdio2       ),
@@ -602,7 +604,7 @@ module pulp
         .out_i2c0_scl_i        ( s_out_i2c0_scl         ),
         .out_uart_rx_i         ( s_out_uart_rx          ),
         .out_uart_tx_i         ( s_out_uart_tx          ),
-        
+
         .out_gpios_i           ( s_out_gpios            ),
         .out_i2c1_sda_i        ( s_out_i2c1_sda         ),
         .out_i2c1_scl_i        ( s_out_i2c1_scl         ),
@@ -650,7 +652,7 @@ module pulp
         .in_i2c0_scl_o         ( s_in_i2c0_scl          ),
         .in_uart_rx_o          ( s_in_uart_rx           ),
         .in_uart_tx_o          ( s_in_uart_tx           ),
-        
+
         .in_gpios_o            ( s_in_gpios             ),
         .in_i2c1_sda_o         ( s_in_i2c1_sda          ),
         .in_i2c1_scl_o         ( s_in_i2c1_scl          ),
@@ -665,7 +667,7 @@ module pulp
         .in_hyper_dq1_o        ( s_in_hyper_dq1         ),
         .in_hyper_resetn_o     ( s_in_hyper_reset       ),
 
- 
+
 
         .bootsel_o             ( s_bootsel              ),
 
@@ -702,7 +704,7 @@ module pulp
         .pad_i2c0_scl          ( pad_i2c0_scl           ),
         .pad_uart_rx           ( pad_uart_rx            ),
         .pad_uart_tx           ( pad_uart_tx            ),
-        
+
         .pad_gpios             ( pad_gpios              ),
         .pad_i2c1_sda          ( pad_i2c1_sda           ),
         .pad_i2c1_scl          ( pad_i2c1_scl           ),
@@ -847,7 +849,7 @@ module pulp
         .out_i2s0_ws_o              ( s_out_i2s0_ws               ),
         .out_i2s0_sdi_o             ( s_out_i2s0_sdi              ),
         .out_i2s1_sdi_o             ( s_out_i2s1_sdi              ),
-        
+
         .out_gpios_o                ( s_out_gpios                 ),
         .out_i2c1_sda_o             ( s_out_i2c1_sda              ),
         .out_i2c1_scl_o             ( s_out_i2c1_scl              ),
@@ -897,7 +899,7 @@ module pulp
         .in_i2s0_ws_i               ( s_in_i2s0_ws                ),
         .in_i2s0_sdi_i              ( s_in_i2s0_sdi               ),
         .in_i2s1_sdi_i              ( s_in_i2s1_sdi               ),
-        
+
         .in_gpios_i                 ( s_in_gpios                  ),
         .in_i2c1_sda_i              ( s_in_i2c1_sda               ),
         .in_i2c1_scl_i              ( s_in_i2c1_scl               ),
@@ -948,11 +950,11 @@ module pulp
         .oe_i2s0_ws_o               ( s_oe_i2s0_ws                ),
         .oe_i2s0_sdi_o              ( s_oe_i2s0_sdi               ),
         .oe_i2s1_sdi_o              ( s_oe_i2s1_sdi               ),
-        
+
         .oe_gpios_o                 ( s_oe_gpios                  ),
         .oe_i2c1_sda_o              ( s_oe_i2c1_sda               ),
         .oe_i2c1_scl_o              ( s_oe_i2c1_scl               ),
-     
+
         .oe_hyper_cs0n_o            ( s_oe_hyper_csn0             ),
         .oe_hyper_cs1n_o            ( s_oe_hyper_csn1             ),
         .oe_hyper_ck_o              ( s_oe_hyper_ck               ),
@@ -971,6 +973,7 @@ module pulp
       .CORE_TYPE          ( CORE_TYPE                  ),
       .USE_FPU            ( USE_FPU                    ),
       .USE_HWPE           ( USE_HWPE                   ),
+      .USE_ZFINX          ( USE_ZFINX                  ),
       .AXI_ADDR_WIDTH     ( AXI_ADDR_WIDTH             ),
       .AXI_DATA_IN_WIDTH  ( AXI_CLUSTER_SOC_DATA_WIDTH ),
       .AXI_DATA_OUT_WIDTH ( AXI_SOC_CLUSTER_DATA_WIDTH ),
@@ -1104,7 +1107,7 @@ module pulp
         .async_data_slave_aw_wptr_i   ( s_cluster_soc_bus_aw_wptr        ),
         .async_data_slave_aw_rptr_o   ( s_cluster_soc_bus_aw_rptr        ),
         .async_data_slave_aw_data_i   ( s_cluster_soc_bus_aw_data        ),
-                   
+
         .async_data_slave_ar_wptr_i   ( s_cluster_soc_bus_ar_wptr        ),
         .async_data_slave_ar_rptr_o   ( s_cluster_soc_bus_ar_rptr        ),
         .async_data_slave_ar_data_i   ( s_cluster_soc_bus_ar_data        ),
@@ -1124,23 +1127,23 @@ module pulp
         .async_data_master_aw_wptr_o  ( s_soc_cluster_bus_aw_wptr        ),
         .async_data_master_aw_rptr_i  ( s_soc_cluster_bus_aw_rptr        ),
         .async_data_master_aw_data_o  ( s_soc_cluster_bus_aw_data        ),
-                                     
+
         .async_data_master_ar_wptr_o  ( s_soc_cluster_bus_ar_wptr        ),
         .async_data_master_ar_rptr_i  ( s_soc_cluster_bus_ar_rptr        ),
         .async_data_master_ar_data_o  ( s_soc_cluster_bus_ar_data        ),
-                                     
+
         .async_data_master_w_wptr_o   ( s_soc_cluster_bus_w_wptr         ),
         .async_data_master_w_data_o   ( s_soc_cluster_bus_w_data         ),
         .async_data_master_w_rptr_i   ( s_soc_cluster_bus_w_rptr         ),
-                                     
+
         .async_data_master_r_wptr_i   ( s_soc_cluster_bus_r_wptr         ),
         .async_data_master_r_rptr_o   ( s_soc_cluster_bus_r_rptr         ),
         .async_data_master_r_data_i   ( s_soc_cluster_bus_r_data         ),
-                                     
+
         .async_data_master_b_wptr_i   ( s_soc_cluster_bus_b_wptr         ),
         .async_data_master_b_rptr_o   ( s_soc_cluster_bus_b_rptr         ),
         .async_data_master_b_data_i   ( s_soc_cluster_bus_b_data         ),
-                   
+
         .cluster_clk_o                ( s_cluster_clk                    ),
         .cluster_rstn_o               ( s_cluster_rstn                   ),
 
@@ -1176,6 +1179,7 @@ cluster_domain#(
         .CLUST_FP_DIVSQRT    (`CLUST_FP_DIVSQRT),
         .CLUST_SHARED_FP     (`CLUST_SHARED_FP),
         .CLUST_SHARED_FP_DIVSQRT(`CLUST_SHARED_FP_DIVSQRT),
+        .USE_ZFINX           (USE_ZFINX),
 
   // AXI ADDR WIDTH
         .AXI_ADDR_WIDTH      (AXI_ADDR_WIDTH),
@@ -1197,7 +1201,7 @@ cluster_domain#(
         .S2C_W_WIDTH         (AXI_SOC_CLUSTER_W_WIDTH),
         .S2C_B_WIDTH         (AXI_SOC_CLUSTER_B_WIDTH),
         .S2C_AR_WIDTH        (AXI_SOC_CLUSTER_AR_WIDTH),
-        .S2C_R_WIDTH         (AXI_SOC_CLUSTER_R_WIDTH), 
+        .S2C_R_WIDTH         (AXI_SOC_CLUSTER_R_WIDTH),
   // CLUSTER MAIN PARAMETERS
         .DATA_WIDTH          (32),
         .ADDR_WIDTH          (32),
@@ -1227,25 +1231,25 @@ cluster_domain#(
 
         .pf_evt_ack_i                 ( s_pf_evt_ack                     ),
         .pf_evt_valid_o               ( s_pf_evt_valid                   ),
-        
+
         .busy_o                       ( s_cluster_busy                   ),
 
         .async_data_master_aw_wptr_o  ( s_cluster_soc_bus_aw_wptr        ),
         .async_data_master_aw_rptr_i  ( s_cluster_soc_bus_aw_rptr        ),
         .async_data_master_aw_data_o  ( s_cluster_soc_bus_aw_data        ),
-        
+
         .async_data_master_ar_wptr_o  ( s_cluster_soc_bus_ar_wptr        ),
         .async_data_master_ar_rptr_i  ( s_cluster_soc_bus_ar_rptr        ),
         .async_data_master_ar_data_o  ( s_cluster_soc_bus_ar_data        ),
-        
+
         .async_data_master_w_wptr_o   ( s_cluster_soc_bus_w_wptr         ),
         .async_data_master_w_rptr_i   ( s_cluster_soc_bus_w_rptr         ),
         .async_data_master_w_data_o   ( s_cluster_soc_bus_w_data         ),
-                                                                       
+
         .async_data_master_r_wptr_i   ( s_cluster_soc_bus_r_wptr         ),
         .async_data_master_r_rptr_o   ( s_cluster_soc_bus_r_rptr         ),
         .async_data_master_r_data_i   ( s_cluster_soc_bus_r_data         ),
-                                                                       
+
         .async_data_master_b_wptr_i   ( s_cluster_soc_bus_b_wptr         ),
         .async_data_master_b_rptr_o   ( s_cluster_soc_bus_b_rptr         ),
         .async_data_master_b_data_i   ( s_cluster_soc_bus_b_data         ),
@@ -1254,22 +1258,21 @@ cluster_domain#(
         .async_data_slave_aw_wptr_i  ( s_soc_cluster_bus_aw_wptr        ),
         .async_data_slave_aw_rptr_o  ( s_soc_cluster_bus_aw_rptr        ),
         .async_data_slave_aw_data_i  ( s_soc_cluster_bus_aw_data        ),
-        
+
         .async_data_slave_ar_wptr_i  ( s_soc_cluster_bus_ar_wptr        ),
         .async_data_slave_ar_rptr_o  ( s_soc_cluster_bus_ar_rptr        ),
         .async_data_slave_ar_data_i  ( s_soc_cluster_bus_ar_data        ),
-        
+
         .async_data_slave_w_wptr_i   ( s_soc_cluster_bus_w_wptr         ),
         .async_data_slave_w_rptr_o   ( s_soc_cluster_bus_w_rptr         ),
         .async_data_slave_w_data_i   ( s_soc_cluster_bus_w_data         ),
-                                                                       
+
         .async_data_slave_r_wptr_o   ( s_soc_cluster_bus_r_wptr         ),
         .async_data_slave_r_rptr_i   ( s_soc_cluster_bus_r_rptr         ),
         .async_data_slave_r_data_o   ( s_soc_cluster_bus_r_data         ),
-                                                                       
+
         .async_data_slave_b_wptr_o   ( s_soc_cluster_bus_b_wptr         ),
         .async_data_slave_b_rptr_i   ( s_soc_cluster_bus_b_rptr         ),
         .async_data_slave_b_data_o   ( s_soc_cluster_bus_b_data         )
     );
 endmodule
-

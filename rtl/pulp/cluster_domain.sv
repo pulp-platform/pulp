@@ -1,4 +1,3 @@
-  
 // Copyright 2018 ETH Zurich and University of Bologna.
 // Copyright and related rights are licensed under the Solderpad Hardware
 // License, Version 0.51 (the "License"); you may not use this file except in
@@ -56,7 +55,7 @@ module cluster_domain
     parameter MULTICAST_FEATURE     = "DISABLED",
     parameter SHARED_ICACHE         = "ENABLED",
     parameter DIRECT_MAPPED_FEATURE = "DISABLED",
-    
+
     //CORE PARAMETERS
     parameter ROM_BOOT_ADDR         = 32'h1A000000,
     parameter BOOT_ADDR             = 32'h1C000000,
@@ -66,6 +65,7 @@ module cluster_domain
     parameter CLUST_FP_DIVSQRT        = `CLUST_FP_DIVSQRT,
     parameter CLUST_SHARED_FP         = `CLUST_SHARED_FP,
     parameter CLUST_SHARED_FP_DIVSQRT = `CLUST_SHARED_FP_DIVSQRT,
+    parameter USE_ZFINX               = 1,
 
     // AXI PARAMETERS
     parameter AXI_ADDR_WIDTH        = 32,
@@ -79,13 +79,13 @@ module cluster_domain
     parameter DC_SLICE_BUFFER_WIDTH = 8,
     parameter LOG_DEPTH             = 3,
     // AXI CLUSTER TO SOC PARAMETERS
-    parameter C2S_AW_WIDTH          = 1, 
+    parameter C2S_AW_WIDTH          = 1,
     parameter C2S_W_WIDTH           = 1,
     parameter C2S_B_WIDTH           = 1,
     parameter C2S_AR_WIDTH          = 1,
     parameter C2S_R_WIDTH           = 1,
     // AXI SOC TO CLUSTER PARAMETERS
-    parameter S2C_AW_WIDTH          = 1, 
+    parameter S2C_AW_WIDTH          = 1,
     parameter S2C_W_WIDTH           = 1,
     parameter S2C_B_WIDTH           = 1,
     parameter S2C_AR_WIDTH          = 1,
@@ -115,11 +115,11 @@ module cluster_domain
 `endif
 )
 (
-  
+
    input logic                                       clk_i,
    input logic                                       rst_ni,
    input logic                                       ref_clk_i,
-    
+
 
    input logic                                       dma_pe_evt_ack_i,
    output logic                                      dma_pe_evt_valid_o,
@@ -128,70 +128,70 @@ module cluster_domain
    output logic                                      dma_pe_irq_valid_o,
 
    input logic [NB_CORES-1:0]                        dbg_irq_valid_i,
-   
+
    input logic                                       pf_evt_ack_i,
    output logic                                      pf_evt_valid_o,
-   
+
    output logic                                      busy_o,
 
    input logic [LOG_DEPTH:0]                         async_cluster_events_wptr_i,
    output logic [LOG_DEPTH:0]                        async_cluster_events_rptr_o,
    input logic [2**LOG_DEPTH-1:0][EVNT_WIDTH-1:0]    async_cluster_events_data_i,
- 
+
    // AXI4 SLAVE
    //***************************************
    // WRITE ADDRESS CHANNEL
    input logic [LOG_DEPTH:0]                         async_data_slave_aw_wptr_i,
-   input logic [2**LOG_DEPTH-1:0][S2C_AW_WIDTH-1:0]  async_data_slave_aw_data_i, 
+   input logic [2**LOG_DEPTH-1:0][S2C_AW_WIDTH-1:0]  async_data_slave_aw_data_i,
    output logic [LOG_DEPTH:0]                        async_data_slave_aw_rptr_o,
-                                           
-  // READ ADDRESS CHANNEL                  
+
+  // READ ADDRESS CHANNEL
    input logic [LOG_DEPTH:0]                         async_data_slave_ar_wptr_i,
    input logic [2**LOG_DEPTH-1:0][S2C_AR_WIDTH-1:0]  async_data_slave_ar_data_i,
    output logic [LOG_DEPTH:0]                        async_data_slave_ar_rptr_o,
-                                           
-  // WRITE DATA CHANNEL                    
+
+  // WRITE DATA CHANNEL
    input logic [LOG_DEPTH:0]                         async_data_slave_w_wptr_i,
    input logic [2**LOG_DEPTH-1:0][S2C_W_WIDTH-1:0]   async_data_slave_w_data_i,
    output logic [LOG_DEPTH:0]                        async_data_slave_w_rptr_o,
-                                                   
-  // READ DATA CHANNEL                             
+
+  // READ DATA CHANNEL
    output logic [LOG_DEPTH:0]                        async_data_slave_r_wptr_o,
    output logic [2**LOG_DEPTH-1:0][S2C_R_WIDTH-1:0]  async_data_slave_r_data_o,
    input logic [LOG_DEPTH:0]                         async_data_slave_r_rptr_i,
-                                                   
-  // WRITE RESPONSE CHANNEL                        
+
+  // WRITE RESPONSE CHANNEL
    output logic [LOG_DEPTH:0]                        async_data_slave_b_wptr_o,
    output logic [2**LOG_DEPTH-1:0][S2C_B_WIDTH-1:0]  async_data_slave_b_data_o,
    input logic [LOG_DEPTH:0]                         async_data_slave_b_rptr_i,
-  
+
   // AXI4 MASTER
   //***************************************
   // WRITE ADDRESS CHANNEL
    output logic [LOG_DEPTH:0]                        async_data_master_aw_wptr_o,
-   output logic [2**LOG_DEPTH-1:0][C2S_AW_WIDTH-1:0] async_data_master_aw_data_o, 
+   output logic [2**LOG_DEPTH-1:0][C2S_AW_WIDTH-1:0] async_data_master_aw_data_o,
    input logic [LOG_DEPTH:0]                         async_data_master_aw_rptr_i,
-                                           
-  // READ ADDRESS CHANNEL                  
+
+  // READ ADDRESS CHANNEL
    output logic [LOG_DEPTH:0]                        async_data_master_ar_wptr_o,
    output logic [2**LOG_DEPTH-1:0][C2S_AR_WIDTH-1:0] async_data_master_ar_data_o,
    input logic [LOG_DEPTH:0]                         async_data_master_ar_rptr_i,
-                                           
-  // WRITE DATA CHANNEL                    
+
+  // WRITE DATA CHANNEL
    output logic [LOG_DEPTH:0]                        async_data_master_w_wptr_o,
    output logic [2**LOG_DEPTH-1:0][C2S_W_WIDTH-1:0]  async_data_master_w_data_o,
    input logic [LOG_DEPTH:0]                         async_data_master_w_rptr_i,
-                                                   
-  // READ DATA CHANNEL                             
+
+  // READ DATA CHANNEL
    input logic [LOG_DEPTH:0]                         async_data_master_r_wptr_i,
    input logic [2**LOG_DEPTH-1:0][C2S_R_WIDTH-1:0]   async_data_master_r_data_i,
    output logic [LOG_DEPTH:0]                        async_data_master_r_rptr_o,
-                                                   
-  // WRITE RESPONSE CHANNEL                        
+
+  // WRITE RESPONSE CHANNEL
    input logic [LOG_DEPTH:0]                         async_data_master_b_wptr_i,
    input logic [2**LOG_DEPTH-1:0][C2S_B_WIDTH-1:0]   async_data_master_b_data_i,
    output logic [LOG_DEPTH:0]                        async_data_master_b_rptr_o
-                                                     
+
                                                      `ifdef PULP_FPGA_EMUL
                                                      `ifdef TRACE_EXECUTION
                                                      ,
@@ -201,9 +201,9 @@ module cluster_domain
    output logic [NB_CORES-1:0]                       instr_trace_valid_o
                                                      `endif
                                                      `endif
-   
+
    );
-   
+
     pulp_cluster
 `ifndef USE_CLUSTER_NETLIST
     #(
@@ -231,6 +231,7 @@ module cluster_domain
         .CLUST_FP_DIVSQRT             ( CLUST_FP_DIVSQRT             ),
         .CLUST_SHARED_FP              ( CLUST_SHARED_FP              ),
         .CLUST_SHARED_FP_DIVSQRT      ( CLUST_SHARED_FP_DIVSQRT      ),
+        .USE_ZFINX                    ( USE_ZFINX                    ),
         .AXI_ADDR_WIDTH               ( AXI_ADDR_WIDTH               ),
         .AXI_DATA_C2S_WIDTH           ( AXI_DATA_C2S_WIDTH           ),
         .AXI_DATA_S2C_WIDTH           ( AXI_DATA_S2C_WIDTH           ),
@@ -262,7 +263,7 @@ module cluster_domain
         .EVNT_WIDTH                   ( EVNT_WIDTH                   ),
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
     )
-`endif    
+`endif
     cluster_i
     (
         .clk_i                        ( clk_i                        ),
@@ -270,9 +271,9 @@ module cluster_domain
         .ref_clk_i                    ( ref_clk_i                    ),
 
         .pmu_mem_pwdn_i               ( 1'b0                         ),
-        
+
         .base_addr_i                  ( '0                           ),
-        
+
         .dma_pe_evt_ack_i             ( dma_pe_evt_ack_i             ),
         .dma_pe_evt_valid_o           ( dma_pe_evt_valid_o           ),
         .dma_pe_irq_ack_i             ( dma_pe_irq_ack_i             ),
