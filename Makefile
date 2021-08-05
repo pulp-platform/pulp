@@ -36,7 +36,6 @@ checkout:
 
 # generic clean and build targets for the platform
 clean:
-	rm -rf $(VSIM_PATH)
 	cd sim && $(MAKE) clean
 
 build:
