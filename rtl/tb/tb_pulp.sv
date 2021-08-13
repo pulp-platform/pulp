@@ -39,9 +39,13 @@ module tb_pulp;
    // if RISCY is instantiated (CORE_TYPE == 0), RISCY_FPU enables the FPU
    parameter RISCY_FPU            = 1;
 
+   parameter USE_HWPE             = 0; // HWPE in SoC
+
    // Choose your Cluster core: 
    // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
    parameter CORE_TYPE_CL         = 0;
+
+   parameter USE_HWPE_CL          = 0; // HWPE in Cluster
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
@@ -652,7 +656,9 @@ module tb_pulp;
    pulp #(
       .CORE_TYPE_FC ( CORE_TYPE_FC ),
       .CORE_TYPE_CL ( CORE_TYPE_CL ),
-      .USE_FPU      ( RISCY_FPU    )
+      .USE_FPU      ( RISCY_FPU    ),
+      .USE_HWPE     ( USE_HWPE     ),
+      .USE_HWPE_CL  ( USE_HWPE_CL  )
    )
    i_dut (
       .pad_spim_sdio0     ( w_spi_master_sdio0 ),
