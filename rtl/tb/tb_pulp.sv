@@ -16,6 +16,8 @@
  * Robert Balas <balasr@iis.ee.ethz.ch>
  */
 
+ `include "pulp_soc_defines.sv"
+
 // timeunit 1ps;
 // timeprecision 1ps;
 
@@ -31,10 +33,15 @@ module tb_pulp;
 
    /* simulation platform parameters */
 
-   // Choose your core: 0 for RISCY, 1 for ZERORISCY
-   parameter CORE_TYPE            = 0;
+   // Choose your Fabric Controller core: 
+   // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
+   parameter CORE_TYPE_FC         = 0;
    // if RISCY is instantiated (CORE_TYPE == 0), RISCY_FPU enables the FPU
    parameter RISCY_FPU            = 1;
+
+   // Choose your Cluster core: 
+   // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
+   parameter CORE_TYPE_CL         = 0;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
@@ -100,7 +107,7 @@ module tb_pulp;
    parameter  I2S_FILENAME_3 = "i2s_buffer_3.hex";
 
    // for PULP, 8 cores
-   parameter NB_CORES = 8;
+   parameter NB_CORES = `NB_CORES;
 
    // SPI standards, do not change
    parameter logic[1:0] SPI_STD     = 2'b00;
@@ -643,8 +650,9 @@ module tb_pulp;
 
    // PULP chip (design under test)
    pulp #(
-      .CORE_TYPE ( CORE_TYPE ),
-      .USE_FPU   ( RISCY_FPU )
+      .CORE_TYPE_FC ( CORE_TYPE_FC ),
+      .CORE_TYPE_CL ( CORE_TYPE_CL ),
+      .USE_FPU      ( RISCY_FPU    )
    )
    i_dut (
       .pad_spim_sdio0     ( w_spi_master_sdio0 ),

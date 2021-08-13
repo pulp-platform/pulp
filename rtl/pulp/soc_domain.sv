@@ -156,7 +156,7 @@ module soc_domain #(
 
     // EVENT BUS
     output logic [LOG_DEPTH:0]                        async_cluster_events_wptr_o,
-    output logic [2**LOG_DEPTH-1:0][EVNT_WIDTH-1:0]   async_cluster_events_data_o,
+    output logic [EVNT_WIDTH-1:0][2**LOG_DEPTH-1:0]   async_cluster_events_data_o,
     input logic [LOG_DEPTH:0]                         async_cluster_events_rptr_i,
   
     // AXI4 SLAVE
