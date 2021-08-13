@@ -19,7 +19,7 @@
 #
 
 pulp_soc:
-  commit: clusterv2
+  commit: v3.0.0
   server: https://github.com
   group:  pulp-platform
 
@@ -29,6 +29,6 @@ pulp_cluster:
   group:  pulp-platform
 
 tbtools:
-  commit: v0.1
+  commit: v0.2.1
   server: https://github.com
   group:  pulp-platform

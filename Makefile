@@ -31,17 +31,75 @@ $(foreach file, $(INSTALL_FILES), $(eval $(call declareInstallFile,$(file))))
 
 BRANCH ?= master
 
+VLOG_ARGS += -suppress 2583 -suppress 13314
+BENDER_SIM_BUILD_DIR = sim
+BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
+BENDER_OPTIONAL = -t 24fc1025_vip -t psram_vip -t i2s_vip
+
+.PHONY: checkout
+ifdef BENDER
+checkout: bender
+	./bender update
+	touch Bender.lock
+
+Bender.lock: bender
+	./bender update
+	touch Bender.lock
+
+else
 checkout:
 	./update-ips
+endif
+	$(MAKE) scripts
 
 # generic clean and build targets for the platform
+.PHONY: clean
 clean:
-	cd sim && $(MAKE) clean
+	$(MAKE) -C sim BENDER=$(BENDER) clean
 
+
+.PHONY: scripts
+## Generate scripts for all tools
+ifdef BENDER
+scripts: scripts-bender-vsim # scripts-bender-fpga
+
+scripts-bender-vsim: | Bender.lock
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	./bender script vsim \
+		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
+		-t rtl -t test $(BENDER_OPTIONAL)\
+		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
+
+# scripts-bender-fpga: | Bender.lock
+# 	mkdir -p fpga/pulp/tcl/generated
+# 	./bender script vivado -t fpga -t xilinx > $(BENDER_FPGA_SCRIPTS_DIR)/compile.tcl
+
+$(BENDER_SIM_BUILD_DIR)/compile.tcl: Bender.lock
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	./bender script vsim \
+		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
+		-t rtl -t test \
+		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
+
+else
+scripts:
+	./generate-scripts
+endif
+
+.PHONY: build
+## Build the RTL model for vsim
+ifdef BENDER
+build: $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	@test -f Bender.lock || { echo "ERROR: Bender.lock file does not exist. Did you run make checkout in bender mode?"; exit 1; }
+	@test -f $(BENDER_SIM_BUILD_DIR)/compile.tcl || { echo "ERROR: sim/compile.tcl file does not exist. Did you run make scripts in bender mode?"; exit 1; }
+	$(MAKE) -C sim BENDER=bender all
+
+else
 build:
-#	cd sim && $(MAKE) lib build opt
-#	cp -r rtl/tb/* $(VSIM_PATH)
-	cd sim && $(MAKE) clean all
+	@[ "$$(ls -A ips/)" ] || { echo "ERROR: ips/ is an empty directory. Did you run ./update-ips?"; exit 1; }
+	$(MAKE) -C sim all
+	cp -r rtl/tb/* $(VSIM_PATH)
+endif
 
 # sdk specific targets
 install: $(INSTALL_HEADERS)
@@ -90,7 +148,7 @@ sdk-gitlab:
 
 # simplified runtime for PULP that doesn't need the sdk
 pulp-runtime:
-	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.4
+	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.11
 
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
@@ -161,3 +219,13 @@ test-local-runtime:
 	source pulp-runtime/configs/pulp.sh; \
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
 
+bender:
+ifeq (,$(wildcard ./bender))
+	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
+		| bash -s -- 0.22.0
+	touch bender
+endif
+
+.PHONY: bender-rm
+bender-rm:
+	rm -f bender
