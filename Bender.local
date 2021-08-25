@@ -1,3 +1,0 @@
-overrides:
-  fpu_interco: { git: "https://github.com/micprog/fpu_interco.git", rev: "fe4838d6bc954facead5e9b91dd5aa954df91922" } # Merge needed for cv32e40p
-  hci: { git: "https://github.com/pulp-platform/hci.git", rev: "8fb848e8f6722c1c21b44533535f430960c31b0b" } # Proper version tags needed
