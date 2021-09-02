@@ -1,3 +1,17 @@
+## Citing
+If you are using PULP in your academic work you can cite us:
+```
+@ARTICLE{8715500,
+  author={Pullini, Antonio and Rossi, Davide and Loi, Igor and Tagliavini, Giuseppe and Benini, Luca},
+  journal={IEEE Journal of Solid-State Circuits}, 
+  title={Mr.Wolf: An Energy-Precision Scalable Parallel Ultra Low Power SoC for IoT Edge Processing}, 
+  year={2019},
+  volume={54},
+  number={7},
+  pages={1970-1981},
+  doi={10.1109/JSSC.2019.2912307}}
+```
+
 # PULP
 
 PULP (Parallel Ultra-Low-Power) is an open-source multi-core computing platform 
@@ -242,3 +256,4 @@ ModelSim/QuestaSim.
 ## Support & Questions
 For support on any issue related to this platform or any of the IPs, please add
 an issue to our tracker on https://github.com/pulp-platform/pulpissimo/issues
+
