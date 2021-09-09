@@ -2,6 +2,8 @@
 
 PULP has been implemented on FPGA for various Xilinx FPGA boards. The module that will be emulated in the PL is pulpemu and can be found in `rtl/pulpemu/pulpemu.sv`. The other files you want to check are `fpga/pulpemu/tcl/fmc_board_*.xdc` that map the pulpemu I/Os to the FPGA PINs.
 
+The FPGA port currently only supports the IPApproX dependency tool. Support for Bender will be available in a future update.
+
 ### CurrentlySupported Boards
 
 * Xilinx ZCU102

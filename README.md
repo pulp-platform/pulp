@@ -90,17 +90,17 @@ IPs composing the PULP system:
 ```
 source setup/vsim.sh
 
-./update-ips
+make checkout
 
-./generate-scripts
+make scripts
 
-cd sim
-
-make all
+make build
 ```
 This command builds a version of the simulation platform with no dependencies on
 external models for peripherals. See below (Proprietary verification IPs) for
 details on how to plug in some models of real SPI, I2C, I2S peripherals.
+
+Default is for this procedure to use the IPApproX tool to gather IPs. If you would like to use the newer bender tool, please set the `BENDER` environment variable, e.g. by running `export BENDER=1`.
 
 ### Downloading and running simple C regression tests
 Finally, you can download and run the tests; for that you can checkout the
