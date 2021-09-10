@@ -56,7 +56,7 @@ module tb_pulp;
      parameter  USE_S25FS256S_MODEL = 1;
      parameter  USE_24FC1025_MODEL  = 1;
      parameter  USE_I2S_MODEL       = 1;
-     parameter  USE_HYPER_MODELS    = 1
+     parameter  USE_HYPER_MODELS    = 1;
 `else
      parameter  USE_S25FS256S_MODEL = 0;
      parameter  USE_24FC1025_MODEL  = 0;
@@ -64,9 +64,10 @@ module tb_pulp;
      parameter  USE_HYPER_MODELS    = 0;
 `endif
     //psram model, cannot be tested simultaneously with the hyperram
+`ifdef TARGET_USE_PSRAM
+`define USE_PSRAM
+`endif
 `ifdef USE_PSRAM
-     parameter  PSRAM_MODELS        = 1;
-`elsif TARGET_USE_PSRAM
      parameter  PSRAM_MODELS        = 1;
 `else
      parameter  PSRAM_MODELS        = 0;
