@@ -10,9 +10,12 @@ package:
     - "Francesco Conti <f.conti@unibo.it>"
 
 dependencies:
-  pulp_soc: { git: "https://github.com/pulp-platform/pulp_soc.git", version: 3.0.0 }
-  pulp_cluster: { git: "https://github.com/micprog/pulp_cluster.git", rev: "fix_bender" }
-  tbtools: { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
+  common_cells:       { git: "https://github.com/pulp-platform/common_cells.git", version: 1.22.1 }
+  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.5 }
+  jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", rev: "v0.1" }
+  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", version: 3.0.0 }
+  pulp_cluster:       { git: "https://github.com/micprog/pulp_cluster.git", rev: "fix_bender" }
+  tbtools:            { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
 
 export_include_dirs:
   - rtl/includes
@@ -30,31 +33,25 @@ sources:
       - rtl/vip/camera/cam_vip.sv
 
   # S25FS256_model (SPI Flash)
-  - target: any(test,simulation)
+  - target: all(any(test,simulation), flash_vip)
     defines:
       SPEEDSIM: ~
     files:
       - rtl/vip/spi_flash/S25fs256s/model/s25fs256s.v
 
   # 24FC1025 model (I2C flash)
-  - target: all(any(test,simulation), 24fc1025_vip)
+  - target: all(any(test,simulation), i2c_vip)
     defines:
       SPEEDSIM: ~
     files:
       - rtl/vip/i2c_eeprom/24FC1025.v
 
-  # hyperflash model
-  - target: all(any(test,simulation), hyperflash_vip)
+  # hyper models
+  - target: all(any(test,simulation), hyper_vip)
     defines:
       SPEEDSIM: ~
     files:
       - rtl/vip/hyperflash_model/s26ks512s.v
-
-  # hyperram model
-  - target: all(any(test, simulation), hyperram_vip)
-    defines:
-      SPEEDSIM: ~
-    files:
       - rtl/vip/hyperram_model/s27ks0641.v
 
   # psram model

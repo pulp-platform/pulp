@@ -43,7 +43,7 @@ fetch_std:
     - cp -r regression_tests/hello/* regression_tests/hellohyper/
     - source setup/vsim.sh
     - echo "Fetching IPs"
-    - ./update-ips 
+    - make checkout
     - echo "Fetching vips"
     - ./rtl/vip/get-vips.sh --yes --gitlab
   artifacts:
@@ -60,7 +60,7 @@ b&t_rtl_std:
   stage: build_and_test
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts 
+    - make scripts
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
@@ -89,7 +89,7 @@ b&t_rtl_vip:
   stage: build_and_test_vips
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose 
+    - make scripts-vips
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
@@ -116,7 +116,7 @@ b&t_rtl_boot:
   stage: build_and_test_boot
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose 
+    - make scripts-vips
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
@@ -144,7 +144,7 @@ b&t_rtl_psram:
   stage: build_and_test_psram
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - ./generate-scripts --psram-vip 
+    - make scripts-psram
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
