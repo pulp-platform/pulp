@@ -18,6 +18,7 @@ variables:
 before_script:
   - pwd
   - echo "$PATH"
+  - export BENDER=1
 
 # after_script:
 #   - echo "stage finished"
@@ -49,17 +50,18 @@ fetch_std:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - ips/*
+      - .bender/*
+      - bender
+      - Bender.lock
       - sim/*
-      - ipstools/*
-      - .cached_ipdb.json
       - rtl/vip/*
       - regression_tests/*
 
 b&t_rtl_std:
   stage: build_and_test
   before_script:
-    - echo "Generate scripts with DPI and VIP support"
+    - export BENDER=1
+    - echo "Generate scripts without DPI and VIP support"
     - make scripts
     - echo "Compiling RTL model and DPI libraries"
     - make build
@@ -75,11 +77,12 @@ b&t_rtl_std:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
+      - .bender/*
+      - bender
+      - Bender.lock
       - regression_tests/*
       - tests/*
-      - ips/*
       - sim/*
-      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/simplified-runtime.xml
@@ -88,6 +91,7 @@ b&t_rtl_std:
 b&t_rtl_vip:
   stage: build_and_test_vips
   before_script:
+    - export BENDER=1
     - echo "Generate scripts with DPI and VIP support"
     - make scripts-vips
     - echo "Compiling RTL model and DPI libraries"
@@ -104,10 +108,11 @@ b&t_rtl_vip:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
+      - .bender/*
+      - bender
+      - Bender.lock
       - regression_tests/*
-      - ips/*
       - sim/*
-      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/simplified-periph-runtime.xml
@@ -115,6 +120,7 @@ b&t_rtl_vip:
 b&t_rtl_boot:
   stage: build_and_test_boot
   before_script:
+    - export BENDER=1
     - echo "Generate scripts with DPI and VIP support"
     - make scripts-vips
     - echo "Compiling RTL model and DPI libraries"
@@ -131,10 +137,11 @@ b&t_rtl_boot:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
+      - .bender/*
+      - bender
+      - Bender.lock
       - regression_tests/*
-      - ips/*
       - sim/*
-      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/boot-runtime.xml
@@ -143,6 +150,7 @@ b&t_rtl_boot:
 b&t_rtl_psram:
   stage: build_and_test_psram
   before_script:
+    - export BENDER=1
     - echo "Generate scripts with DPI and VIP support"
     - make scripts-psram
     - echo "Compiling RTL model and DPI libraries"
@@ -159,10 +167,11 @@ b&t_rtl_psram:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
+      - .bender/*
+      - bender
+      - Bender.lock
       - regression_tests/*
-      - ips/*
       - sim/*
-      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/simplified-psram-runtime.xml
