@@ -34,10 +34,9 @@ BRANCH ?= master
 VLOG_ARGS += -suppress 2583 -suppress 13314
 BENDER_SIM_BUILD_DIR = sim
 BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
-BENDER_OPTIONAL = -t 24fc1025_vip -t psram_vip -t i2s_vip
 
 .PHONY: checkout
-ifdef BENDER
+ifndef IPAPPROX
 checkout: bender
 	./bender update
 	touch Bender.lock
@@ -55,19 +54,19 @@ endif
 # generic clean and build targets for the platform
 .PHONY: clean
 clean:
-	$(MAKE) -C sim BENDER=$(BENDER) clean
+	$(MAKE) -C sim IPAPPROX=$(IPAPPROX) clean
 
 
 .PHONY: scripts
 ## Generate scripts for all tools
-ifdef BENDER
+ifndef IPAPPROX
 scripts: scripts-bender-vsim # scripts-bender-fpga
 
 scripts-bender-vsim: | Bender.lock
 	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
 	./bender script vsim \
 		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
-		-t rtl -t test $(BENDER_OPTIONAL)\
+		-t rtl -t test \
 		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
 
 # scripts-bender-fpga: | Bender.lock
@@ -101,14 +100,14 @@ scripts:
 endif
 
 scripts-vips:
-ifdef BENDER
+ifndef IPAPPROX
 	$(MAKE) scripts-bender-vsim-vips
 else
 	./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose
 endif
 
 scripts-psram:
-ifdef BENDER
+ifndef IPAPPROX
 	$(MAKE) scripts-bender-vsim-psram
 else
 	./generate-scripts --psram-vip
@@ -116,16 +115,16 @@ endif
 
 .PHONY: build
 ## Build the RTL model for vsim
-ifdef BENDER
+ifndef IPAPPROX
 build: $(BENDER_SIM_BUILD_DIR)/compile.tcl
 	@test -f Bender.lock || { echo "ERROR: Bender.lock file does not exist. Did you run make checkout in bender mode?"; exit 1; }
 	@test -f $(BENDER_SIM_BUILD_DIR)/compile.tcl || { echo "ERROR: sim/compile.tcl file does not exist. Did you run make scripts in bender mode?"; exit 1; }
-	$(MAKE) -C sim BENDER=bender all
-
+	$(MAKE) -C sim all
+	cp -r rtl/tb/* $(VSIM_PATH)
 else
 build:
 	@[ "$$(ls -A ips/)" ] || { echo "ERROR: ips/ is an empty directory. Did you run ./update-ips?"; exit 1; }
-	$(MAKE) -C sim all
+	$(MAKE) -C sim IPAPPROX=$(IPAPPROX) all
 	cp -r rtl/tb/* $(VSIM_PATH)
 endif
 

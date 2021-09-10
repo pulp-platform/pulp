@@ -70,12 +70,12 @@ PULP supports I/O on interfaces such as:
 PULP also supports integration of hardware accelerators (Hardware
 Processing Engines) that share memory with the RI5CY core and are programmed on
 the memory map. An example accelerator, performing multiply-accumulate on a
-vector of fixed-point values, can be found in `ips/hwpe-mac-engine` (after
+vector of fixed-point values, can be found in `hwpe-mac-engine` (after
 updating the IPs: see below in the Getting Started section).
-The `ips/hwpe-stream` and `ips/hwpe-ctrl` folders contain the IPs necessary to
+The `hwpe-stream` and `hwpe-ctrl` folders contain the IPs necessary to
 plug streaming accelerators into a PULP system on the data and control plane.
 For further information on how to design and integrate such accelerators,
-see `ips/hwpe-stream/doc` and https://arxiv.org/abs/1612.05974.
+see `hwpe-stream/doc` and https://arxiv.org/abs/1612.05974.
 
 ## Getting Started
 
@@ -100,7 +100,16 @@ This command builds a version of the simulation platform with no dependencies on
 external models for peripherals. See below (Proprietary verification IPs) for
 details on how to plug in some models of real SPI, I2C, I2S peripherals.
 
-Default is for this procedure to use the IPApproX tool to gather IPs. If you would like to use the newer bender tool, please set the `BENDER` environment variable, e.g. by running `export BENDER=1`.
+The easiest way to work on an individual IP is to clone it using bender with the following command:
+```
+./bender clone $IP
+./bender update
+```
+This will checkout the IP to the `working_dir` directory. For more information see the bender documentation.
+
+Default is for this procedure to use bender to gather IPs. If you would like to 
+use the legacy IPApproX tool, please set the `IPAPPROX` environment variable, 
+e.g. by running `export IPAPPROX=1`.
 
 ### Downloading and running simple C regression tests
 Finally, you can download and run the tests; for that you can checkout the
@@ -172,18 +181,19 @@ repository is structured as follows:
 - `rtl` could also contain other material (e.g. global includes, top-level
   files)
  `ips` contains all IPs downloaded by `update-ips` script. Most of the actual
-  logic of the platform is located in these IPs.
+  logic of the platform is located in these IPs. (this is no longer used)
 - `sim` contains the ModelSim/QuestaSim simulation platform.
 - `pulp-sdk` contains the PULP software development kit; `pulp-sdk/tests`
   contains all tests released with the SDK.
 - `ipstools` contains the utils to download and manage the IPs and their
-  dependencies.
+  dependencies. (this is no longer used)
 - `ips_list.yml` contains the list of IPs required directly by the platform.
   Notice that each of them could in turn depend on other IPs, so you will
   typically find many more IPs in the `ips` directory than are listed in
-  this file.
+  this file. (this is no longer used)
 - `rtl_list.yml` contains the list of places where local RTL sources are found
-  (e.g. `rtl/tb`, `rtl/vip`).
+  (e.g. `rtl/tb`, `rtl/vip`). (this is no longer used)
+- `Bender.yml` contains all dependency and source file information for the bender tool.
 
 ## Requirements
 The RTL platform has the following requirements:
@@ -198,9 +208,8 @@ The RTL platform has the following requirements:
 ## Repository organization
 The PULP platforms is highly hierarchical and the Git repositories for the various 
 IPs follow the hierarchy structure to keep maximum flexibility.
-Most of the complexity of the IP updating system are hidden behind the
-`update-ips` and `generate-scripts` Python scripts; however, a few details are
-important to know:
+Most of the complexity of the IP updating system are hidden behind the bender tool; 
+however, a few details are important to know:
 - Do not assume that the `master` branch of an arbitrary IP is stable; many
   internal IPs could include unstable changes at a certain point of their
   history. Conversely, in top-level platforms (`pulpissimo`, `pulp`) we always
@@ -210,14 +219,12 @@ important to know:
   possible for everyone to clone them without first uploading an SSH key to
   GitHub. However, for development it is often easier to use SSH instead,
   particularly if you want to push changes back.
-  To enable this, just replace `https://github.com` with `git@github.com` in the
-  `ipstools_cfg.py` configuration file in the root of this repository.
 
 The tools used to collect IPs and create scripts for simulation have many
 features that are not necessarily intended for the end user, but can be useful
 for developers; if you want more information, e.g. to integrate your own
 repository into the flow, you can find documentation at
-https://github.com/pulp-platform/IPApproX/blob/master/README.md
+https://github.com/pulp-platform/bender/blob/master/README.md
 
 ## External contributions
 The supported way to provide external contributions is by forking one of our
@@ -225,9 +232,9 @@ repositories, applying your patch and submitting a pull request where you
 describe your changes in detail, along with motivations.
 The pull request will be evaluated and checked with our regression test suite
 for possible integration.
-If you want to replace our version of an IP with your GitHub fork, just add
-`group: YOUR_GITHUB_NAMESPACE` to its entry in `ips_list.yml` or
-`ips/pulp_soc/ips_list.yml`.
+If you want to replace our version of an IP with your GitHub fork, just add it 
+to the corresponding Bender.yml file, or use an override in a Bender.local in 
+the top repository.
 While we are quite relaxed in terms of coding style, please try to follow these
 recommendations:
 https://github.com/pulp-platform/ariane/blob/master/CONTRIBUTING.md
@@ -236,8 +243,7 @@ https://github.com/pulp-platform/ariane/blob/master/CONTRIBUTING.md
 The current version of the PULP platform does not include yet an FPGA port
 or example scripts for ASIC synthesis; both things may be deployed in the
 future.
-The `ipstools` includes only partial support for simulation flows different from
-ModelSim/QuestaSim.
+Simulation flows different from ModelSim/QuestaSim have only have limited testing.
 
 ## Support & Questions
 For support on any issue related to this platform or any of the IPs, please add

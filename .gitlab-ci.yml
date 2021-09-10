@@ -18,7 +18,6 @@ variables:
 before_script:
   - pwd
   - echo "$PATH"
-  - export BENDER=1
 
 # after_script:
 #   - echo "stage finished"
@@ -60,7 +59,6 @@ fetch_std:
 b&t_rtl_std:
   stage: build_and_test
   before_script:
-    - export BENDER=1
     - echo "Generate scripts without DPI and VIP support"
     - make scripts
     - echo "Compiling RTL model and DPI libraries"
@@ -91,7 +89,6 @@ b&t_rtl_std:
 b&t_rtl_vip:
   stage: build_and_test_vips
   before_script:
-    - export BENDER=1
     - echo "Generate scripts with DPI and VIP support"
     - make scripts-vips
     - echo "Compiling RTL model and DPI libraries"
@@ -120,7 +117,6 @@ b&t_rtl_vip:
 b&t_rtl_boot:
   stage: build_and_test_boot
   before_script:
-    - export BENDER=1
     - echo "Generate scripts with DPI and VIP support"
     - make scripts-vips
     - echo "Compiling RTL model and DPI libraries"
@@ -150,7 +146,6 @@ b&t_rtl_boot:
 b&t_rtl_psram:
   stage: build_and_test_psram
   before_script:
-    - export BENDER=1
     - echo "Generate scripts with DPI and VIP support"
     - make scripts-psram
     - echo "Compiling RTL model and DPI libraries"
