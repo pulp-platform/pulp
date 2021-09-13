@@ -100,16 +100,26 @@ This command builds a version of the simulation platform with no dependencies on
 external models for peripherals. See below (Proprietary verification IPs) for
 details on how to plug in some models of real SPI, I2C, I2S peripherals.
 
+Default dependency management is done using bender to gather IPs. If you would like to 
+use the legacy IPApproX tool, set the `IPAPPROX` environment variable, 
+e.g. by running `export IPAPPROX=1`, and continue at your own risk.
+
+#### Working on IPs
 The easiest way to work on an individual IP is to clone it using bender with the following command:
 ```
 ./bender clone $IP
 ./bender update
 ```
-This will checkout the IP to the `working_dir` directory. For more information see the bender documentation.
+This will checkout the IP to the `working_dir` directory, where it can be modified and the changes committed and pushed.
+The correct link will be set through an override in the `Bender.local` file, forcing the bender tool to use this version of the dependency.
+To build the platform, make sure to start at the `make scripts` step above after calling `./bender update`. 
 
-Default is for this procedure to use bender to gather IPs. If you would like to 
-use the legacy IPApproX tool, please set the `IPAPPROX` environment variable, 
-e.g. by running `export IPAPPROX=1`.
+Once the changes are complete, please ensure the `Bender.yml` files in the packages calling the IP dependency are accordingly updated with the new version.
+The `bender parents` command can assist in determining which dependencies' `Bender.yml` files need updating.
+Please note that when modifying dependency versions, the `./bender update` command needs to be called to re-resolve the correct versions.
+Once the update is complete, the corresponding line from Bender.local can be removed to revert to normal dependency resolution, no longer using the version in `working_dir` (be sure to call `./bender update`). 
+For more information check out the [bender documentation](https://github.com/pulp-platform/bender).
+
 
 ### Downloading and running simple C regression tests
 Finally, you can download and run the tests; for that you can checkout the
@@ -180,19 +190,9 @@ repository is structured as follows:
   e.g. SPI flash and camera.
 - `rtl` could also contain other material (e.g. global includes, top-level
   files)
- `ips` contains all IPs downloaded by `update-ips` script. Most of the actual
-  logic of the platform is located in these IPs. (this is no longer used)
 - `sim` contains the ModelSim/QuestaSim simulation platform.
 - `pulp-sdk` contains the PULP software development kit; `pulp-sdk/tests`
   contains all tests released with the SDK.
-- `ipstools` contains the utils to download and manage the IPs and their
-  dependencies. (this is no longer used)
-- `ips_list.yml` contains the list of IPs required directly by the platform.
-  Notice that each of them could in turn depend on other IPs, so you will
-  typically find many more IPs in the `ips` directory than are listed in
-  this file. (this is no longer used)
-- `rtl_list.yml` contains the list of places where local RTL sources are found
-  (e.g. `rtl/tb`, `rtl/vip`). (this is no longer used)
 - `Bender.yml` contains all dependency and source file information for the bender tool.
 
 ## Requirements
