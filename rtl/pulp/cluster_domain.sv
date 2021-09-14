@@ -302,7 +302,10 @@ module cluster_domain
         .LOG_CLUSTER                  ( LOG_CLUSTER                  ),
         .PE_ROUTING_LSB               ( PE_ROUTING_LSB               ),
         .EVNT_WIDTH                   ( EVNT_WIDTH                   ),
-        .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           )
+        .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           ),
+        .ECC_SRAM (1),
+        .ECC_INTC (0),
+        .TCLS (1)
     )
 `endif    
     cluster_i (

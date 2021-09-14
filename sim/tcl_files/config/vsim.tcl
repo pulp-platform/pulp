@@ -137,8 +137,10 @@ if {[info exists ::env(VOPT_FLOW)]} {
 
   # check exit status in tb and quit the simulation accordingly
   proc run_and_exit {} {
-    # add fault injection
-    source $::env(VSIM_PATH)/../fault_injection.tcl
+    if {[info exists ::env(INJECT_FAULT)]} {
+      # add fault injection
+      source $::env(VSIM_PATH)/../fault_injection.tcl
+    }
     run -all
     if {[info exists ::env(VSIM_EXIT_SIGNAL)]} {
       quit -code [examine -radix decimal sim:$::env(VSIM_EXIT_SIGNAL)]

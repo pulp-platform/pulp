@@ -1,12 +1,13 @@
 overrides:
+  hci: {git: "https://github.com/pulp-platform/hci.git", version: "1.0.8" }
+  register_interface: { git: "https://github.com/pulp-platform/register_interface.git", version: "0.3.1" }
   riscv:               { git: "https://github.com/micprog/cv32e40p.git", rev: "pulpissimo-v3.4.0-dev" }
   hier-icache:         { git: "https://github.com/micprog/hier-icache.git", rev: "non-pow2" }
   icache-intc:         { git: "https://github.com/micprog/icache-intc.git", rev: "non_pow2" }
   icache_mp_128_pf:    { git: "https://github.com/micprog/icache_mp_128_pf.git", rev: "055dc3dcdea0321b2b6b1fcd3f3099911f62d107" }
   scm:                 { git: "https://github.com/micprog/scm.git", rev: "synthesis" }
-  pulp_cluster:    { path: "ips/pulp_cluster" } # Temporary override by Bender using `bender clone` command
-  pulp_soc:        { path: "ips/pulp_soc" } # Temporary override by Bender using `bender clone` command
   tech_cells_generic:  { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.3 }
-  axi:                 { git: "https://github.com/pulp-platform/axi.git", version: 0.7.2 } # outdated, currently 0.27.0
+  axi:                 { git: "https://github.com/pulp-platform/axi.git", version: 0.27.0 } # outdated, currently 0.27.0
   common_verification: { git: "https://github.com/pulp-platform/common_verification.git", version: 0.2.0 }
   common_cells:        { git: "https://github.com/pulp-platform/common_cells.git", version: 1.21.0 }
+  cluster_interconnect: { git: "https://github.com/pulp-platform/cluster_interconnect.git", version: 1.1.1 }
