@@ -451,24 +451,46 @@ module tb_pulp;
             .CKNeg    ( w_hyper_ckn    ),
             .RESETNeg ( w_hyper_reset  )
          );
-         s26ks512s #(
-            .TimingModel   ( "S26KS512SDPBHI000"),
-            .mem_file_name ( "./vectors/hyper_stim.slm" )
-         ) hyperflash_model (
-            .DQ7      ( w_hyper_dq0[7] ),
-            .DQ6      ( w_hyper_dq0[6] ),
-            .DQ5      ( w_hyper_dq0[5] ),
-            .DQ4      ( w_hyper_dq0[4] ),
-            .DQ3      ( w_hyper_dq0[3] ),
-            .DQ2      ( w_hyper_dq0[2] ),
-            .DQ1      ( w_hyper_dq0[1] ),
-            .DQ0      ( w_hyper_dq0[0] ),
-            .RWDS     ( w_hyper_rwds0  ),
-            .CSNeg    ( w_hyper_csn0   ),
-            .CK       ( w_hyper_ck     ),
-            .CKNeg    ( w_hyper_ckn    ),
-            .RESETNeg ( w_hyper_reset  )
-         );
+
+         if (STIM_FROM == "HYPER_FLASH") begin
+            s26ks512s #(
+               .TimingModel   ( "S26KS512SDPBHI000"),
+               .mem_file_name ( "./vectors/hyper_stim.slm" )
+            ) hyperflash_model (
+               .DQ7      ( w_hyper_dq0[7] ),
+               .DQ6      ( w_hyper_dq0[6] ),
+               .DQ5      ( w_hyper_dq0[5] ),
+               .DQ4      ( w_hyper_dq0[4] ),
+               .DQ3      ( w_hyper_dq0[3] ),
+               .DQ2      ( w_hyper_dq0[2] ),
+               .DQ1      ( w_hyper_dq0[1] ),
+               .DQ0      ( w_hyper_dq0[0] ),
+               .RWDS     ( w_hyper_rwds0  ),
+               .CSNeg    ( w_hyper_csn0   ),
+               .CK       ( w_hyper_ck     ),
+               .CKNeg    ( w_hyper_ckn    ),
+               .RESETNeg ( w_hyper_reset  )
+            );
+         end else begin
+            s26ks512s #(
+               .TimingModel   ( "S26KS512SDPBHI000")
+            ) hyperflash_model (
+               .DQ7      ( w_hyper_dq0[7] ),
+               .DQ6      ( w_hyper_dq0[6] ),
+               .DQ5      ( w_hyper_dq0[5] ),
+               .DQ4      ( w_hyper_dq0[4] ),
+               .DQ3      ( w_hyper_dq0[3] ),
+               .DQ2      ( w_hyper_dq0[2] ),
+               .DQ1      ( w_hyper_dq0[1] ),
+               .DQ0      ( w_hyper_dq0[0] ),
+               .RWDS     ( w_hyper_rwds0  ),
+               .CSNeg    ( w_hyper_csn0   ),
+               .CK       ( w_hyper_ck     ),
+               .CKNeg    ( w_hyper_ckn    ),
+               .RESETNeg ( w_hyper_reset  )
+            );
+
+         end
       end
    endgenerate
 
