@@ -59,7 +59,7 @@ sources:
     defines:
       SPEEDSIM: ~
     files:
-      - rtl/vip/psram_model/*.vp_modelsim
+      - rtl/vip/psram_model/psram_fake.v # Workaround for unsupported *.vp_modelsim filetype in bender
 
   # i2s model
   - target: all(any(test,simulation), i2s_vip)

@@ -50,9 +50,11 @@ module tb_pulp;
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
 `ifdef TARGET_USE_VIPS
-`define USE_VIPS
-`endif
-`ifdef USE_VIPS
+     parameter  USE_S25FS256S_MODEL = 1;
+     parameter  USE_24FC1025_MODEL  = 1;
+     parameter  USE_I2S_MODEL       = 1;
+     parameter  USE_HYPER_MODELS    = 1;
+`elsif USE_VIPS
      parameter  USE_S25FS256S_MODEL = 1;
      parameter  USE_24FC1025_MODEL  = 1;
      parameter  USE_I2S_MODEL       = 1;
@@ -64,13 +66,18 @@ module tb_pulp;
      parameter  USE_HYPER_MODELS    = 0;
 `endif
     //psram model, cannot be tested simultaneously with the hyperram
-`ifdef TARGET_USE_PSRAM
-`define USE_PSRAM
-`endif
-`ifdef USE_PSRAM
+`ifdef TARGET_PSRAM_VIP
+     parameter  PSRAM_MODELS        = 1;
+`elsif USE_PSRAM
      parameter  PSRAM_MODELS        = 1;
 `else
      parameter  PSRAM_MODELS        = 0;
+`endif
+
+`ifndef USE_DPI
+`ifdef TARGET_RT_DPI
+`define USE_DPI        1
+`endif
 `endif
 
    // period of the external reference clock (32.769kHz)
@@ -264,9 +271,6 @@ module tb_pulp;
 
    logic [8:0] jtag_conf_reg, jtag_conf_rego; //22bits but actually only the last 9bits are used
 
-`ifdef TARGET_RT_DPI
-`define USE_DPI
-`endif
 `ifdef USE_DPI
    generate
       if (CONFIG_FILE != "NONE") begin

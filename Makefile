@@ -93,6 +93,7 @@ scripts-bender-vsim-psram: | Bender.lock
 		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
 		-t rtl -t test -t psram_vip \
 		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	sed -i 's/psram_fake.v/*.vp_modelsim/g' $(BENDER_SIM_BUILD_DIR)/compile.tcl # Workaround for unsupported file type in bender
 
 else
 scripts:
