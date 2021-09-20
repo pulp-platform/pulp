@@ -96,6 +96,8 @@ make scripts
 
 make build
 ```
+**NOTE:** An error might occur running the scripts (*Failed to spawn child process.Too many open files (os error 24).*) while a fix is WIP a workaround is to increase the number of processes avilable to your machine by setting for example ulimit to 4096 (ulimit -n 4096).
+
 This command builds a version of the simulation platform with no dependencies on
 external models for peripherals. See below (Proprietary verification IPs) for
 details on how to plug in some models of real SPI, I2C, I2S peripherals.
