@@ -39,5 +39,5 @@ ipdb.generate_vivado_inc_dirs("fpga/pulp_cluster/tcl/rtl_inc_dirs.tcl", domain='
 ipdb.generate_vivado_inc_dirs("fpga/pulpemu/tcl/ips_inc_dirs.tcl", domain='soc')
 ipdb.generate_vivado_inc_dirs("fpga/pulpemu/tcl/rtl_inc_dirs.tcl", domain='soc', source='rtl')
 
-print(tcolors.OK + "Generated sim scripts for IPs!" + tcolors.ENDC)
+print tcolors.OK + "Generated sim scripts for IPs!" + tcolors.ENDC
 

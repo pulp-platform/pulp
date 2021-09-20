@@ -43,24 +43,24 @@ fetch_std:
     - cp -r regression_tests/hello/* regression_tests/hellohyper/
     - source setup/vsim.sh
     - echo "Fetching IPs"
-    - make checkout
+    - ./update-ips 
     - echo "Fetching vips"
     - ./rtl/vip/get-vips.sh --yes --gitlab
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - .bender/*
-      - bender
-      - Bender.lock
+      - ips/*
       - sim/*
+      - ipstools/*
+      - .cached_ipdb.json
       - rtl/vip/*
       - regression_tests/*
 
 b&t_rtl_std:
   stage: build_and_test
   before_script:
-    - echo "Generate scripts without DPI and VIP support"
-    - make scripts
+    - echo "Generate scripts with DPI and VIP support"
+    - ./generate-scripts 
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
@@ -75,12 +75,11 @@ b&t_rtl_std:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - .bender/*
-      - bender
-      - Bender.lock
       - regression_tests/*
       - tests/*
+      - ips/*
       - sim/*
+      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/simplified-runtime.xml
@@ -90,7 +89,7 @@ b&t_rtl_vip:
   stage: build_and_test_vips
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - make scripts-vips
+    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose 
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
@@ -105,11 +104,10 @@ b&t_rtl_vip:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - .bender/*
-      - bender
-      - Bender.lock
       - regression_tests/*
+      - ips/*
       - sim/*
+      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/simplified-periph-runtime.xml
@@ -118,7 +116,7 @@ b&t_rtl_boot:
   stage: build_and_test_boot
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - make scripts-vips
+    - ./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose 
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
@@ -133,11 +131,10 @@ b&t_rtl_boot:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - .bender/*
-      - bender
-      - Bender.lock
       - regression_tests/*
+      - ips/*
       - sim/*
+      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/boot-runtime.xml
@@ -147,7 +144,7 @@ b&t_rtl_psram:
   stage: build_and_test_psram
   before_script:
     - echo "Generate scripts with DPI and VIP support"
-    - make scripts-psram
+    - ./generate-scripts --psram-vip 
     - echo "Compiling RTL model and DPI libraries"
     - make build
     - echo "Fetching Runtime"
@@ -162,11 +159,10 @@ b&t_rtl_psram:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - .bender/*
-      - bender
-      - Bender.lock
       - regression_tests/*
+      - ips/*
       - sim/*
+      - ipstools/*
       - rtl/*
     reports:
       junit: regression_tests/simplified-psram-runtime.xml

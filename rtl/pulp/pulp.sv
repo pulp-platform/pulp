@@ -13,11 +13,9 @@
 
 module pulp
 #(
-  parameter CORE_TYPE_FC = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
-  parameter CORE_TYPE_CL = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
-  parameter USE_FPU      = 1,
-  parameter USE_HWPE     = 1,
-  parameter USE_HWPE_CL  = 1
+  parameter CORE_TYPE   = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
+  parameter USE_FPU     = 1,
+  parameter USE_HWPE    = 1
 )
 (
 
@@ -970,7 +968,7 @@ module pulp
 
    // SOC DOMAIN
    soc_domain #(
-      .CORE_TYPE          ( CORE_TYPE_FC               ),
+      .CORE_TYPE          ( CORE_TYPE                  ),
       .USE_FPU            ( USE_FPU                    ),
       .USE_HWPE           ( USE_HWPE                   ),
       .AXI_ADDR_WIDTH     ( AXI_ADDR_WIDTH             ),
@@ -1155,8 +1153,6 @@ module pulp
 
 cluster_domain#(
   //CLUSTER PARAMETERS
-        .CORE_TYPE_CL        ( CORE_TYPE_CL ),
-        .USE_HWPE_CL         ( USE_HWPE_CL ),
         .NB_CORES            (`NB_CORES),
         .NB_HWPE_PORTS       (4),
         .NB_DMAS             (4),

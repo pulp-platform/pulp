@@ -124,11 +124,9 @@ module pulpemu
       );
 
    pulp
-     #(.CORE_TYPE_FC(CORE_TYPE),
-       .CORE_TYPE_CL(CORE_TYPE),
+     #(.CORE_TYPE(CORE_TYPE),
        .USE_FPU(USE_FPU),
-       .USE_HWPE(USE_HWPE),
-       .USE_HWPE_CL(USE_HWPE)
+       .USE_HWPE(USE_HWPE)
        ) i_pulp
        (
 

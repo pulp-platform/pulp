@@ -84,12 +84,12 @@ PULP supports I/O on interfaces such as:
 PULP also supports integration of hardware accelerators (Hardware
 Processing Engines) that share memory with the RI5CY core and are programmed on
 the memory map. An example accelerator, performing multiply-accumulate on a
-vector of fixed-point values, can be found in `hwpe-mac-engine` (after
+vector of fixed-point values, can be found in `ips/hwpe-mac-engine` (after
 updating the IPs: see below in the Getting Started section).
-The `hwpe-stream` and `hwpe-ctrl` folders contain the IPs necessary to
+The `ips/hwpe-stream` and `ips/hwpe-ctrl` folders contain the IPs necessary to
 plug streaming accelerators into a PULP system on the data and control plane.
 For further information on how to design and integrate such accelerators,
-see `hwpe-stream/doc` and https://arxiv.org/abs/1612.05974.
+see `ips/hwpe-stream/doc` and https://arxiv.org/abs/1612.05974.
 
 ## Getting Started
 
@@ -104,38 +104,17 @@ IPs composing the PULP system:
 ```
 source setup/vsim.sh
 
-make checkout
+./update-ips
 
-make scripts
+./generate-scripts
 
-make build
+cd sim
+
+make all
 ```
-**NOTE:** An error might occur running the scripts (*Failed to spawn child process.Too many open files (os error 24).*) while a fix is WIP a workaround is to increase the number of processes avilable to your machine by setting for example ulimit to 4096 (ulimit -n 4096).
-
 This command builds a version of the simulation platform with no dependencies on
 external models for peripherals. See below (Proprietary verification IPs) for
 details on how to plug in some models of real SPI, I2C, I2S peripherals.
-
-Default dependency management is done using bender to gather IPs. If you would like to 
-use the legacy IPApproX tool, set the `IPAPPROX` environment variable, 
-e.g. by running `export IPAPPROX=1`, and continue at your own risk.
-
-#### Working on IPs
-The easiest way to work on an individual IP is to clone it using bender with the following command:
-```
-./bender clone $IP
-./bender update
-```
-This will checkout the IP to the `working_dir` directory, where it can be modified and the changes committed and pushed.
-The correct link will be set through an override in the `Bender.local` file, forcing the bender tool to use this version of the dependency.
-To build the platform, make sure to start at the `make scripts` step above after calling `./bender update`. 
-
-Once the changes are complete, please ensure the `Bender.yml` files in the packages calling the IP dependency are accordingly updated with the new version.
-The `bender parents` command can assist in determining which dependencies' `Bender.yml` files need updating.
-Please note that when modifying dependency versions, the `./bender update` command needs to be called to re-resolve the correct versions.
-Once the update is complete, the corresponding line from Bender.local can be removed to revert to normal dependency resolution, no longer using the version in `working_dir` (be sure to call `./bender update`). 
-For more information check out the [bender documentation](https://github.com/pulp-platform/bender).
-
 
 ### Downloading and running simple C regression tests
 Finally, you can download and run the tests; for that you can checkout the
@@ -206,10 +185,19 @@ repository is structured as follows:
   e.g. SPI flash and camera.
 - `rtl` could also contain other material (e.g. global includes, top-level
   files)
+ `ips` contains all IPs downloaded by `update-ips` script. Most of the actual
+  logic of the platform is located in these IPs.
 - `sim` contains the ModelSim/QuestaSim simulation platform.
 - `pulp-sdk` contains the PULP software development kit; `pulp-sdk/tests`
   contains all tests released with the SDK.
-- `Bender.yml` contains all dependency and source file information for the bender tool.
+- `ipstools` contains the utils to download and manage the IPs and their
+  dependencies.
+- `ips_list.yml` contains the list of IPs required directly by the platform.
+  Notice that each of them could in turn depend on other IPs, so you will
+  typically find many more IPs in the `ips` directory than are listed in
+  this file.
+- `rtl_list.yml` contains the list of places where local RTL sources are found
+  (e.g. `rtl/tb`, `rtl/vip`).
 
 ## Requirements
 The RTL platform has the following requirements:
@@ -224,8 +212,9 @@ The RTL platform has the following requirements:
 ## Repository organization
 The PULP platforms is highly hierarchical and the Git repositories for the various 
 IPs follow the hierarchy structure to keep maximum flexibility.
-Most of the complexity of the IP updating system are hidden behind the bender tool; 
-however, a few details are important to know:
+Most of the complexity of the IP updating system are hidden behind the
+`update-ips` and `generate-scripts` Python scripts; however, a few details are
+important to know:
 - Do not assume that the `master` branch of an arbitrary IP is stable; many
   internal IPs could include unstable changes at a certain point of their
   history. Conversely, in top-level platforms (`pulpissimo`, `pulp`) we always
@@ -235,12 +224,14 @@ however, a few details are important to know:
   possible for everyone to clone them without first uploading an SSH key to
   GitHub. However, for development it is often easier to use SSH instead,
   particularly if you want to push changes back.
+  To enable this, just replace `https://github.com` with `git@github.com` in the
+  `ipstools_cfg.py` configuration file in the root of this repository.
 
 The tools used to collect IPs and create scripts for simulation have many
 features that are not necessarily intended for the end user, but can be useful
 for developers; if you want more information, e.g. to integrate your own
 repository into the flow, you can find documentation at
-https://github.com/pulp-platform/bender/blob/master/README.md
+https://github.com/pulp-platform/IPApproX/blob/master/README.md
 
 ## External contributions
 The supported way to provide external contributions is by forking one of our
@@ -248,9 +239,9 @@ repositories, applying your patch and submitting a pull request where you
 describe your changes in detail, along with motivations.
 The pull request will be evaluated and checked with our regression test suite
 for possible integration.
-If you want to replace our version of an IP with your GitHub fork, just add it 
-to the corresponding Bender.yml file, or use an override in a Bender.local in 
-the top repository.
+If you want to replace our version of an IP with your GitHub fork, just add
+`group: YOUR_GITHUB_NAMESPACE` to its entry in `ips_list.yml` or
+`ips/pulp_soc/ips_list.yml`.
 While we are quite relaxed in terms of coding style, please try to follow these
 recommendations:
 https://github.com/pulp-platform/ariane/blob/master/CONTRIBUTING.md
@@ -259,7 +250,8 @@ https://github.com/pulp-platform/ariane/blob/master/CONTRIBUTING.md
 The current version of the PULP platform does not include yet an FPGA port
 or example scripts for ASIC synthesis; both things may be deployed in the
 future.
-Simulation flows different from ModelSim/QuestaSim have only have limited testing.
+The `ipstools` includes only partial support for simulation flows different from
+ModelSim/QuestaSim.
 
 ## Support & Questions
 For support on any issue related to this platform or any of the IPs, please add
