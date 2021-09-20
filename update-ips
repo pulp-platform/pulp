@@ -56,5 +56,5 @@ ipdb.update_ips()
 ipdb.save_database()
 
 # pass arguments and call generate script
-execute("./generate-scripts " + (' '.join(sys.argv[1:])))
+# execute("./generate-scripts " + (' '.join(sys.argv[1:])))
 

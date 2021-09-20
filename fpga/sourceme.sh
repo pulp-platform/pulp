@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export VIVADO_HOME=/opt/xilinx/Vivado/2018.2
+export VIVADO_HOME=${XILINX_VIVADO:-'/opt/xilinx/Vivado/2018.2'}
 source $VIVADO_HOME/settings64.sh
 
 #VIVADO SETTINGS
@@ -8,7 +8,11 @@ source $VIVADO_HOME/settings64.sh
 # either "vcu118" or "zcu102"
 
 if [ -z "$BOARD"  ]; then
-    read -p "Which board you want to use:  1-zcu102 2-vcu118: " BOARD
+    if [ -n "$BASH_VERSION" ]; then
+        read -p "Which board you want to use:  1-zcu102 2-vcu118: " BOARD
+    elif [ -n "$ZSH_VERSION" ]; then
+        vared -p "Which board you want to use:  1-zcu102 2-vcu118: " -c BOARD
+    fi
 
     if [ "$BOARD" = "1" ]; then
         export BOARD="zcu102"

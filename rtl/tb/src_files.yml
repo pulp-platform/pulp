@@ -1,4 +1,7 @@
 tb:
+  incdirs: [
+    ../includes,
+  ]
   targets: [
     rtl
   ]
