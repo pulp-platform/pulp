@@ -25,8 +25,6 @@
 module cluster_domain
 #(
     //CLUSTER PARAMETERS
-    parameter CORE_TYPE_CL          = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
-    parameter USE_HWPE_CL           = 1,
     parameter NB_CORES              = `NB_CORES,
     parameter NB_HWPE_PORTS         = 9,
     parameter NB_DMAS               = 4,
@@ -48,7 +46,7 @@ module cluster_domain
 `endif
 
 `ifdef PRIVATE_ICACHE
-    parameter NB_CACHE_BANKS        = `NB_CORES,
+    parameter NB_CACHE_BANKS        = 8,
 `endif
 
     parameter CACHE_LINE            = 1,
@@ -138,7 +136,7 @@ module cluster_domain
 
    input logic [LOG_DEPTH:0]                         async_cluster_events_wptr_i,
    output logic [LOG_DEPTH:0]                        async_cluster_events_rptr_o,
-   input logic [EVNT_WIDTH-1:0][2**LOG_DEPTH-1:0]    async_cluster_events_data_i,
+   input logic [2**LOG_DEPTH-1:0][EVNT_WIDTH-1:0]    async_cluster_events_data_i,
  
    // AXI4 SLAVE
    //***************************************
@@ -209,7 +207,6 @@ module cluster_domain
     pulp_cluster
 `ifndef USE_CLUSTER_NETLIST
     #(
-        .CORE_TYPE_CL                 ( CORE_TYPE_CL                 ),
         .NB_CORES                     ( NB_CORES                     ),
         .NB_HWPE_PORTS                ( NB_HWPE_PORTS                ),
         .NB_DMAS                      ( NB_DMAS                      ),
@@ -217,7 +214,6 @@ module cluster_domain
         .NB_TCDM_BANKS                ( NB_TCDM_BANKS                ),
         .TCDM_BANK_SIZE               ( TCDM_BANK_SIZE               ),
         .TCDM_NUM_ROWS                ( TCDM_NUM_ROWS                ),
-        .HWPE_PRESENT                 ( USE_HWPE_CL                  ),
         .SET_ASSOCIATIVE              ( SET_ASSOCIATIVE              ),
         .NB_CACHE_BANKS               ( NB_CACHE_BANKS               ),
         .CACHE_LINE                   ( CACHE_LINE                   ),

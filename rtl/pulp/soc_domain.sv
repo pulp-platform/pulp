@@ -156,7 +156,7 @@ module soc_domain #(
 
     // EVENT BUS
     output logic [LOG_DEPTH:0]                        async_cluster_events_wptr_o,
-    output logic [EVNT_WIDTH-1:0][2**LOG_DEPTH-1:0]   async_cluster_events_data_o,
+    output logic [2**LOG_DEPTH-1:0][EVNT_WIDTH-1:0]   async_cluster_events_data_o,
     input logic [LOG_DEPTH:0]                         async_cluster_events_rptr_i,
   
     // AXI4 SLAVE
@@ -220,9 +220,9 @@ module soc_domain #(
         .AXI_ID_IN_WIDTH         ( AXI_ID_IN_WIDTH    ),
         .AXI_USER_WIDTH          ( AXI_USER_WIDTH     ),
         .EVNT_WIDTH              ( EVNT_WIDTH         ),
-        .NGPIO                   ( 32                 ),
+        .NGPIO                   ( 43                 ),
         .NPAD                    ( 64                 ),
-        .NBIT_PADCFG             ( 6                  ),
+        .NBIT_PADCFG             ( 4                  ),
         .NBIT_PADMUX             ( 2                  ),
         .N_UART                  ( N_UART             ),
         .N_SPI                   ( N_SPI              ),

@@ -25,6 +25,8 @@ if {[info exists ::env(VSIM_RUNNER_FLAGS)]} {
 quietly set VSIM_TB_PATH $VSIM_SCRIPTS_PATH/../tb
 #######################################
 #######################################
+quietly source $VSIM_SCRIPTS_PATH/tcl_files/config/vsim_ips.tcl
+
 quietly source $VSIM_SCRIPTS_PATH/tcl_files/config/vsim_sdvt.tcl
 quietly source $VSIM_SCRIPTS_PATH/tcl_files/config/vsim_custom.tcl
 

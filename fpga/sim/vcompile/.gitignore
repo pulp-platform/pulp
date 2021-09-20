@@ -1,4 +1,2 @@
 vcompile_ips.csh
 ips/
-ips.mk
-rtl.mk
