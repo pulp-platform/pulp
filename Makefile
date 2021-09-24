@@ -176,7 +176,7 @@ sdk-gitlab:
 
 # simplified runtime for PULP that doesn't need the sdk
 pulp-runtime:
-	git clone https://github.com/pulp-platform/pulp-runtime.git -b udma_i2c_update
+	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.13
 
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
