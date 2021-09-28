@@ -55,6 +55,8 @@ add_files -norecurse ../pulp_cluster/pulp_cluster.edf \
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1
 
+auto_detect_xpm
+
 # add constraints
 add_files -fileset constrs_1 -norecurse tcl/constraints.xdc
 set_property target_constrs_file tcl/constraints.xdc [current_fileset -constrset]
