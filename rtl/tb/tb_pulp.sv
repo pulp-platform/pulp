@@ -16,6 +16,8 @@
  * Robert Balas <balasr@iis.ee.ethz.ch>
  */
 
+ `include "pulp_soc_defines.sv"
+
 // timeunit 1ps;
 // timeprecision 1ps;
 
@@ -31,30 +33,45 @@ module tb_pulp;
 
    /* simulation platform parameters */
 
-   // Choose your core: 0 for RISCY, 1 for ZERORISCY
-   parameter CORE_TYPE            = 0;
+   // Choose your Fabric Controller core: 
+   // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
+   parameter CORE_TYPE_FC         = 0;
    // if RISCY is instantiated (CORE_TYPE == 0), RISCY_FPU enables the FPU
    parameter RISCY_FPU            = 1;
 
+   parameter USE_HWPE             = 0; // HWPE in SoC
+
+   // Choose your Cluster core: 
+   // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
+   parameter CORE_TYPE_CL         = 0;
+
+   parameter USE_HWPE_CL          = 0; // HWPE in Cluster
+
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
-   `ifdef USE_VIPS
+`ifdef TARGET_USE_VIPS
+`define USE_VIPS
+`endif
+`ifdef USE_VIPS
      parameter  USE_S25FS256S_MODEL = 1;
      parameter  USE_24FC1025_MODEL  = 1;
      parameter  USE_I2S_MODEL       = 1;
      parameter  USE_HYPER_MODELS    = 1;
-   `else
+`else
      parameter  USE_S25FS256S_MODEL = 0;
      parameter  USE_24FC1025_MODEL  = 0;
      parameter  USE_I2S_MODEL       = 0;
      parameter  USE_HYPER_MODELS    = 0;
-   `endif
+`endif
     //psram model, cannot be tested simultaneously with the hyperram
-   `ifdef USE_PSRAM
+`ifdef TARGET_USE_PSRAM
+`define USE_PSRAM
+`endif
+`ifdef USE_PSRAM
      parameter  PSRAM_MODELS        = 1;
-   `else
+`else
      parameter  PSRAM_MODELS        = 0;
-   `endif
+`endif
 
    // period of the external reference clock (32.769kHz)
    parameter  REF_CLK_PERIOD = 30517ns;
@@ -100,7 +117,7 @@ module tb_pulp;
    parameter  I2S_FILENAME_3 = "i2s_buffer_3.hex";
 
    // for PULP, 8 cores
-   parameter NB_CORES = 8;
+   parameter NB_CORES = `NB_CORES;
 
    // SPI standards, do not change
    parameter logic[1:0] SPI_STD     = 2'b00;
@@ -247,8 +264,10 @@ module tb_pulp;
 
    logic [8:0] jtag_conf_reg, jtag_conf_rego; //22bits but actually only the last 9bits are used
 
-
-   `ifdef USE_DPI
+`ifdef TARGET_RT_DPI
+`define USE_DPI
+`endif
+`ifdef USE_DPI
    generate
       if (CONFIG_FILE != "NONE") begin
 
@@ -322,7 +341,7 @@ module tb_pulp;
       end
 
    endgenerate
-   `endif
+`endif
 
 
 
@@ -643,8 +662,11 @@ module tb_pulp;
 
    // PULP chip (design under test)
    pulp #(
-      .CORE_TYPE ( CORE_TYPE ),
-      .USE_FPU   ( RISCY_FPU )
+      .CORE_TYPE_FC ( CORE_TYPE_FC ),
+      .CORE_TYPE_CL ( CORE_TYPE_CL ),
+      .USE_FPU      ( RISCY_FPU    ),
+      .USE_HWPE     ( USE_HWPE     ),
+      .USE_HWPE_CL  ( USE_HWPE_CL  )
    )
    i_dut (
       .pad_spim_sdio0     ( w_spi_master_sdio0 ),
