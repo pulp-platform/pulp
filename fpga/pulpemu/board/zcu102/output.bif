@@ -1,7 +1,0 @@
-//arch = zynqmp; split = false; format = BIN
-the_ROM_image:
-{
-	[fsbl_config]a53_x64
-	[bootloader]board/zcu102/fsbl.elf
-	[destination_device = pl]board/zcu102/pulpemu.bit
-}

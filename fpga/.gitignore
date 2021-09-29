@@ -1,5 +1,3 @@
-pulpissimo/*
-pulpissimo_genesys2.bin
-pulpissimo_genesys2.bit
-pulpissimo_zcu104.bin
-pulpissimo_zcu104.bit
+pulp/tcl/generated/*
+pulp_*.bin
+pulp_*.bit
