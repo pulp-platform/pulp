@@ -2,8 +2,8 @@
 
 mkfile_path := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 
-VOPT 				?= vopt
-VSIM        ?= vsim
+VOPT				?= vopt
+VSIM				?= vsim
 VLIB				?= vlib
 VMAP				?= vmap
 VSIM_FLAGS  = -gUSE_SDVT_SPI=0 -gUSE_SDVT_CPI=0 -gBAUDRATE=115200 \
@@ -37,14 +37,14 @@ simc:
 		-do "quit -code [examine -radix decimal sim:/tb_pulp/exit_status]"
 
 opt:
-ifdef BENDER
+ifndef IPAPPROX
 	$(VOPT) +acc=npr -o vopt_tb tb_pulp -floatparameters+tb_pulp -work work
 else
 	$(mkfile_path)/tcl_files/rtl_vopt.tcl
 endif
 
 build: build-deps
-ifdef BENDER
+ifndef IPAPPROX
 	$(VSIM) -c -do 'source compile.tcl; quit'
 else
 	@make --no-print-directory -f $(mkfile_path)/vcompile/ips.mk build
@@ -52,7 +52,7 @@ else
 endif
 
 lib:
-ifdef BENDER
+ifndef IPAPPROX
 	@$(VLIB) work
 	$(VMAP) work $(mkfile_path)/work
 else
@@ -61,7 +61,7 @@ else
 endif
 
 clean: clean-deps
-ifdef BENDER
+ifndef IPAPPROX
 	@mkdir -p work
 	rm -r work 
 else

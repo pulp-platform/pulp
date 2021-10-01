@@ -899,7 +899,65 @@ package jtag_pkg;
          assert(sbcs.sbaccess8 == 1'b0)
              else $error("sbaccess8 is signaled as supported");
 
-      endtask
+      endtask // test_read_sbcs
+
+      task readMemNoErrors(
+                           input logic [31:0]  addr_i,
+                           output logic [31:0] data_o,
+                           ref logic           s_tck,
+                           ref logic           s_tms,
+                           ref logic           s_trstn,
+                           ref logic           s_tdi,
+                           ref logic           s_tdo
+                           );
+         // this task attempts to read an address, then checks the SBCS register
+         // for errors. If error flags are present, they are cleared and the
+         // read is repeated until it can be executed without raising errors.
+         logic [31:0]                           data;
+         dm::sbcs_t                             sbcs;
+
+         // Attempt a read from addr_i
+         this.readMem(addr_i, data, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         // Get the SBCS register's contents
+         this.read_debug_reg(dm::SBCS, sbcs,
+                             s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         // repeat while there are errors stored in SBCS
+         while (sbcs.sbbusyerror || (|sbcs.sberror)) begin
+            this.write_debug_reg(dm::SBCS, sbcs,
+                                 s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+            this.readMem(addr_i, data, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+            this.read_debug_reg(dm::SBCS, sbcs,
+                                s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         end
+         // return result of error-free read
+         data_o = data;
+
+      endtask // readMemNoErrors
+
+
+      task clear_sbcserrors(
+                            ref logic s_tck,
+                            ref logic s_tms,
+                            ref logic s_trstn,
+                            ref logic s_tdi,
+                            ref logic s_tdo
+                            );
+
+         // writing to the error flags has "clear bit" behavior:
+         // if they are 1 and we write a 0, they will stay 1
+         // all other status/write combinations will leave them cleared, so reading SBCS
+         // and writing the same value back will always clear the error flags
+         dm::sbcs_t sbcs;
+
+         this.read_debug_reg(dm::SBCS, sbcs,
+                             s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+
+         if (sbcs.sbbusyerror || (|sbcs.sberror)) begin
+           this.write_debug_reg(dm::SBCS, sbcs,
+                                s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+         end
+      endtask // clear_sbcserrors
+
 
       task test_read_abstractcs(
          ref logic s_tck,

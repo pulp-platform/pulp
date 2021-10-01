@@ -2,18 +2,18 @@
 /__pycache__*
 /ips
 /ipstools
-modelsim*
+/sim/modelsim*
 /sim/ncompile/*
 !/sim/ncompile/build.mk
 /tests/*/
 /pulp-runtime
 /regression_tests
-/Bender.lock
-/.bender
+
+# Bender
 /bender
+/.bender
+/Bender.lock
 /sim/compile.tcl
 /sim/transcript
 /sim/work
-/work
-/scripts
-/aegis
+/working_dir

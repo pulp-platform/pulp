@@ -34,40 +34,103 @@ $(foreach file, $(INSTALL_FILES), $(eval $(call declareInstallFile,$(file))))
 
 BRANCH ?= master
 
-.PHONY: checkout scripts clean build
-ifdef BENDER 
+VLOG_ARGS += -suppress 2583 -suppress 13314
+BENDER_SIM_BUILD_DIR = sim
+BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
+
+.PHONY: checkout
+ifndef IPAPPROX
 checkout: bender
 	./bender update
+	touch Bender.lock
+
+Bender.lock: bender
+	./bender update
+	touch Bender.lock
+
 else
 checkout:
 	./update-ips
 endif
 	$(MAKE) scripts
 
-scripts: 
-ifdef BENDER
-	# Simulation compile script
-	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_BUILD_DIR)/compile.tcl
+# generic clean and build targets for the platform
+.PHONY: clean
+clean:
+	$(MAKE) -C sim IPAPPROX=$(IPAPPROX) clean
+
+
+.PHONY: scripts
+## Generate scripts for all tools
+ifndef IPAPPROX
+scripts: scripts-bender-vsim # scripts-bender-fpga
+
+scripts-bender-vsim: | Bender.lock
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
 	./bender script vsim \
 		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
 		-t rtl -t test \
-		| grep -v "set ROOT" >> $(BENDER_BUILD_DIR)/compile.tcl
-	# Aegis scripts
-	mkdir -p scripts
-	./bender script synopsys | cat > scripts/analyze.tcl
-	./bender script flist | cat > scripts/flist.txt
-	./bender script vivado | cat > scripts/analyze_vivado.tcl
-	./bender sources -f | cat > scripts/sources.json
+		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
+
+# scripts-bender-fpga: | Bender.lock
+# 	mkdir -p fpga/pulp/tcl/generated
+# 	./bender script vivado -t fpga -t xilinx > $(BENDER_FPGA_SCRIPTS_DIR)/compile.tcl
+
+$(BENDER_SIM_BUILD_DIR)/compile.tcl: Bender.lock
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	./bender script vsim \
+		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
+		-t rtl -t test \
+		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
+
+scripts-bender-vsim-vips: | Bender.lock
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	./bender script vsim \
+		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
+		-t rtl -t test -t rt_dpi -t i2c_vip -t flash_vip -t i2s_vip -t hyper_vip -t use_vips \
+		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
+
+scripts-bender-vsim-psram: | Bender.lock
+	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	./bender script vsim \
+		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
+		-t rtl -t test -t psram_vip \
+		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	sed -i 's/psram_fake.v/*.vp_modelsim/g' $(BENDER_SIM_BUILD_DIR)/compile.tcl # Workaround for unsupported file type in bender
+
 else
+scripts:
 	./generate-scripts
 endif
 
-# generic clean and build targets for the platform
-clean:
-	$(MAKE) -C sim BENDER=$(BENDER) clean
+scripts-vips:
+ifndef IPAPPROX
+	$(MAKE) scripts-bender-vsim-vips
+else
+	./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose
+endif
 
+scripts-psram:
+ifndef IPAPPROX
+	$(MAKE) scripts-bender-vsim-psram
+else
+	./generate-scripts --psram-vip
+endif
+
+.PHONY: build
+## Build the RTL model for vsim
+ifndef IPAPPROX
+build: $(BENDER_SIM_BUILD_DIR)/compile.tcl
+	@test -f Bender.lock || { echo "ERROR: Bender.lock file does not exist. Did you run make checkout in bender mode?"; exit 1; }
+	@test -f $(BENDER_SIM_BUILD_DIR)/compile.tcl || { echo "ERROR: sim/compile.tcl file does not exist. Did you run make scripts in bender mode?"; exit 1; }
+	$(MAKE) -C sim all
+	cp -r rtl/tb/* $(VSIM_PATH)
+else
 build:
-	$(MAKE) -C sim BENDER=$(BENDER) all
+	@[ "$$(ls -A ips/)" ] || { echo "ERROR: ips/ is an empty directory. Did you run ./update-ips?"; exit 1; }
+	$(MAKE) -C sim IPAPPROX=$(IPAPPROX) all
+	cp -r rtl/tb/* $(VSIM_PATH)
+endif
 
 # sdk specific targets
 install: $(INSTALL_HEADERS)
@@ -126,6 +189,13 @@ test-checkout-gitlab:
 
 
 # gitlab and local test runs
+test-fast-regressions:
+	mkdir -p regression_tests/riscv_tests_soc
+	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml simple-regression-tests.yaml
+
 test-local-regressions: 
 	mkdir -p regression_tests/riscv_tests_soc
 	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
@@ -137,25 +207,43 @@ git-ci-ml-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-ml-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
 
 git-ci-riscv-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-riscv-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
 
 git-ci-s-bare-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-sbare-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
 
 git-ci-p-bare-regs:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	touch regression_tests/simplified-pbare-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
+
+git-ci-periphs-regs:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-periph-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-periph-runtime.xml periph-tests.yaml
+
+git-ci-psram:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/simplified-psram-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-psram-runtime.xml psram-test.yaml
+
+git-boot:
+	source setup/vsim.sh; \
+	source pulp-runtime/configs/pulp.sh; \
+	touch regression_tests/boot-runtime.xml; \
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o boot-runtime.xml hello-test.yaml
 
 test-local-runtime: 
 	source setup/vsim.sh; \
@@ -165,11 +253,8 @@ test-local-runtime:
 
 # Bender integration
 
-VLOG_ARGS += -suppress 2583 -suppress 13314
-BENDER_BUILD_DIR = sim
-
 .PHONY: bender-rm
-BENDER_VERSION = 0.22.0
+BENDER_VERSION = 0.23.1
 
 bender: 
 ifeq (,$(wildcard ./bender))

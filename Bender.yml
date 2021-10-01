@@ -10,65 +10,90 @@ package:
     - "Francesco Conti <f.conti@unibo.it>"
 
 dependencies:
-  pulp_soc:     { git: "https://github.com/micprog/pulp_soc.git", rev: "space_pulp_tmp" } # To be updated with pulp-platform dependency
-  pulp_cluster: { git: "https://github.com/micprog/pulp_cluster.git", rev: "space_pulp_tmp" } # To be updated with pulp-platform dependency
-  tbtools:      { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
+  common_cells:       { git: "https://github.com/pulp-platform/common_cells.git", version: 1.22.1 }
+  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.5 }
+  jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", rev: "v0.1" }
+  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", version: 3.0.0 }
+  pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "e71ff80ab1e661a1ba4df78eceae42caeec074ad" }
+  tbtools:            { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
 
 export_include_dirs:
-  - rtl/includes 
-
-
-
-
-# workspace:
-#   checkout_dir: "./ips"
+  - rtl/includes
 
 sources:
   # Source files grouped in levels. Files in level 0 have no dependencies on files in this
   # package. Files in level 1 only depend on files in level 0, files in level 2 on files in
   # levels 1 and 0, etc. Files within a level are ordered alphabetically.
   # Level 0
+  # Open models
+  - target: any(test,simulation)
+    files:
+      - rtl/vip/spi_master_padframe.sv
+      - rtl/vip/uart_tb_rx.sv
+      - rtl/vip/camera/cam_vip.sv
+
+  # S25FS256_model (SPI Flash)
+  - target: all(any(test,simulation), flash_vip)
+    defines:
+      SPEEDSIM: ~
+    files:
+      - rtl/vip/spi_flash/S25fs256s/model/s25fs256s.v
+
+  # 24FC1025 model (I2C flash)
+  - target: all(any(test,simulation), i2c_vip)
+    defines:
+      SPEEDSIM: ~
+    files:
+      - rtl/vip/i2c_eeprom/24FC1025.v
+
+  # hyper models
+  - target: all(any(test,simulation), hyper_vip)
+    defines:
+      SPEEDSIM: ~
+    files:
+      - rtl/vip/hyperflash_model/s26ks512s.v
+      - rtl/vip/hyperram_model/s27ks0641.v
+
+  # psram model
+  - target: all(any(test, simulation), psram_vip)
+    defines:
+      SPEEDSIM: ~
+    files:
+      - rtl/vip/psram_model/psram_fake.v # Workaround for unsupported *.vp_modelsim filetype in bender
+
+  # i2s model
+  - target: all(any(test,simulation), i2s_vip)
+    defines:
+      SPEEDSIM: ~
+    files:
+      - rtl/vip/i2s/i2c_if.v
+      - rtl/vip/i2s/i2s_vip_channel.sv
+      - rtl/vip/i2s/i2s_vip.sv
+
+  - rtl/pulp/cluster_domain.sv
   - rtl/pulp/jtag_tap_top.sv
   - rtl/pulp/pad_control.sv
   - rtl/pulp/pad_frame.sv
-  - rtl/pulp/cluster_domain.sv
-  - rtl/pulp/soc_domain.sv
-  - rtl/pulp/rtc_date.sv
   - rtl/pulp/rtc_clock.sv
+  - rtl/pulp/rtc_date.sv
+  - rtl/pulp/soc_domain.sv
   # Level 1
   - rtl/pulp/safe_domain.sv
   # Level 2
   - rtl/pulp/pulp.sv
 
-  - target: simulation
+  # TB
+  - target: any(test, simulation)
     files:
+      # TB Level 0
       - rtl/tb/riscv_pkg.sv
-      - rtl/tb/jtag_pkg.sv
-      - rtl/tb/pulp_tap_pkg.sv
+      - rtl/tb/SimDTM.sv
+      - rtl/tb/SimJTAG.sv
       - rtl/tb/tb_clk_gen.sv
       - rtl/tb/tb_fs_handler.sv
-      # - rtl/tb/dpi_models/dpi_models.sv
-      # - rtl/tb/tb_driver/tb_driver.sv
-      - rtl/tb/SimJTAG.sv
-      - rtl/tb/SimDTM.sv
+      # TB Level 1
+      - rtl/tb/jtag_pkg.sv
+      # TB Level 2
+      - rtl/tb/pulp_tap_pkg.sv
+      # TB Level 3
       - rtl/tb/tb_pulp.sv
-  # - target: not(synthesis)
-  #   files:
-  #     - rtl/vip/spi_flash/S25fs256s/model/s25fs256s.v
-  #   defines: {"SPEEDSIM"}
-  # - target: not(synthesis)
-  #   files:
-  #     - rtl/vip/i2c_eeprom/24FC1025.v
-  #   defines: {"SPEEDSIM"}
-  - target: not(synthesis)
-    files:
-      - rtl/vip/i2s/i2c_if.v
-      - rtl/vip/i2s/i2s_vip_channel.sv
-      - rtl/vip/i2s/i2s_vip.sv
-    defines: {"SPEEDSIM"}
-  - target: not(synthesis)
-    files:
-      - rtl/vip/spi_master_padframe.sv
-      - rtl/vip/uart_tb_rx.sv
-      - rtl/vip/camera/cam_vip.sv
-      
