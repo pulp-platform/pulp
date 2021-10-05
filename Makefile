@@ -250,7 +250,7 @@ test-local-runtime:
 bender:
 ifeq (,$(wildcard ./bender))
 	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
-		| bash -s -- 0.22.0
+		| bash -s -- 0.23.1
 	touch bender
 endif
 
