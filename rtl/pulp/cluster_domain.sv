@@ -270,7 +270,7 @@ module cluster_domain
         .EVNT_WIDTH                   ( EVNT_WIDTH                   ),
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           ),
         .ECC_SRAM (1),
-        .ECC_INTC (0),
+        .ECC_INTC (1),
         .TCLS (1)
     )
 `endif    
