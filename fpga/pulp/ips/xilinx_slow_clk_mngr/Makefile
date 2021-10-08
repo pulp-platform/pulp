@@ -1,9 +1,11 @@
-PROJECT:=xilinx_clk_mngr
+PROJECT:=xilinx_slow_clk_mngr
 VIVADO ?= vivado
 VIVADOFLAGS ?= -nojournal -mode batch -source scripts/prologue.tcl
 MODE=batch
 
-include ../../fpga-settings.mk
+ifdef BOARD
+	include ../../../pulp-$(BOARD)/fpga-settings.mk
+endif
 
 .DEFAULT_GOAL:=help
 
@@ -15,7 +17,7 @@ gui: MODE=gui  ## Create and synthesize the IP in GUI mode.
 
 all gui: $(PROJECT).xpr
 
-$(PROJECT).xpr: ../../fpga-settings.mk tcl/run.tcl
+$(PROJECT).xpr: ../../../pulp-$(BOARD)/fpga-settings.mk tcl/run.tcl
 	$(MAKE) clean
 	$(VIVADO) -mode $(MODE) -source tcl/run.tcl
 

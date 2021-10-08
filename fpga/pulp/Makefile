@@ -1,4 +1,6 @@
-include fpga-settings.mk
+ifdef BOARD
+	include ../pulp-$(BOARD)/fpga-settings.mk
+endif
 
 PROJECT:=pulp-$(BOARD)
 VIVADO ?= vivado
@@ -18,8 +20,8 @@ ips: clk ## Synthesizes necessary xilinx IP
 clean-ips: clean-clk ## Clean all IPs
 
 clk: ## Synthesizes the Xilinx Clocking Manager IPs
-	$(MAKE) -C ips/xilinx_clk_mngr all
-	$(MAKE) -C ips/xilinx_slow_clk_mngr all
+	$(MAKE) -C ips/xilinx_clk_mngr all BOARD=$(BOARD)
+	$(MAKE) -C ips/xilinx_slow_clk_mngr all BOARD=$(BOARD)
 
 clean-clk: ## Removes all Clocking Wizard IP outputs
 	$(MAKE) -C ips/xilinx_clk_mngr clean
@@ -34,7 +36,7 @@ clean: ## Removes all bitstreams, *.log files and vivado related files (rm -rf v
 	rm -rf reports/*
 
 # download: ## Download the bitstream into the FPGA
-# 	$(VIVADO) -mode batch -source tcl/download_bitstream.tcl -tclargs $(PROJECT).runs/impl_1/xilinx_pulpissimo.bit pulpissimo_$(BOARD).bit
+# 	$(VIVADO) -mode batch -source tcl/download_bitstream.tcl -tclargs $(PROJECT).runs/impl_1/xilinx_pulp.bit pulp_$(BOARD).bit
 
 help:
 	@grep -E -h '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

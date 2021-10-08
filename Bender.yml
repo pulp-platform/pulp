@@ -55,7 +55,7 @@ sources:
       - rtl/vip/hyperram_model/s27ks0641.v
 
   # psram model
-  - target: all(any(test, simulation), psram_vip)
+  - target: all(any(test, simulation), psram_vip, vsim)
     defines:
       SPEEDSIM: ~
     files:
@@ -69,6 +69,12 @@ sources:
       - rtl/vip/i2s/i2c_if.v
       - rtl/vip/i2s/i2s_vip_channel.sv
       - rtl/vip/i2s/i2s_vip.sv
+
+  - target: all(fpga, xilinx)
+    files:
+      - fpga/pulp/rtl/fpga_clk_gen.sv
+      - fpga/pulp/rtl/fpga_slow_clk_gen.sv
+      - fpga/pulp/rtl/fpga_bootrom.sv
 
   - rtl/pulp/cluster_domain.sv
   - rtl/pulp/jtag_tap_top.sv

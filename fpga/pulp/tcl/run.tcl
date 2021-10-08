@@ -11,7 +11,7 @@ create_project $PROJECT . -force -part $::env(XILINX_PART)
 set_property board_part $XILINX_BOARD [current_project]
 
 # Add sources
-source ../pulp/tcl/add_sources.tcl
+source tcl/add_sources.tcl
 
 # Set Verilog Defines.
 set DEFINES "FPGA_TARGET_XILINX=1 PULP_FPGA_EMUL=1 AXI4_XCHECK_OFF=1"
@@ -29,16 +29,11 @@ if [info exists ::env(FC_CLK_PERIOD_NS)] {
 set CLK_HALFPERIOD_NS [expr ${FC_CLK_PERIOD_NS} / 2.0]
 
 # Add toplevel wrapper
-add_files -norecurse $FPGA_RTL/xilinx_pulp.v
+add_files -norecurse ../pulp-$BOARD/rtl/xilinx_pulp.v
 
 # Add Xilinx IPs
 read_ip $FPGA_IPS/xilinx_clk_mngr/xilinx_clk_mngr.srcs/sources_1/ip/xilinx_clk_mngr/xilinx_clk_mngr.xci
 read_ip $FPGA_IPS/xilinx_slow_clk_mngr/xilinx_slow_clk_mngr.srcs/sources_1/ip/xilinx_slow_clk_mngr/xilinx_slow_clk_mngr.xci
-
-# Add wrappers and xilinx specific techcells
-add_files -norecurse $FPGA_RTL/fpga_clk_gen.sv
-add_files -norecurse $FPGA_RTL/fpga_slow_clk_gen.sv
-add_files -norecurse $FPGA_RTL/fpga_bootrom.sv
 
 # set pulp as top
 set_property top xilinx_pulp [current_fileset]; #
@@ -47,12 +42,12 @@ set_property top xilinx_pulp [current_fileset]; #
 update_compile_order -fileset sources_1
 
 # Add constraints
-add_files -fileset constrs_1 -norecurse $CONSTRS/$BOARD.xdc
+add_files -fileset constrs_1 -norecurse ../pulp-$BOARD/$CONSTRS/$BOARD.xdc
 
 auto_detect_xpm
 
 # Elaborate design
-synth_design -rtl -name rtl_1 -sfcu;# sfcu -> run synthesis in single file compilation unit mode
+synth_design -rtl -name rtl_1 -gated_clock_conversion on -sfcu;# sfcu -> run synthesis in single file compilation unit mode
 
 # Launch synthesis
 set_property STEPS.SYNTH_DESIGN.ARGS.FLATTEN_HIERARCHY none [get_runs synth_1]
