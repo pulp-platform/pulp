@@ -1,5 +1,4 @@
 overrides:
-  pulp_cluster: { path: "working_dir/pulp_cluster" } # Temporary override by Bender using `bender clone` command
   icache-intc:         { git: "https://github.com/micprog/icache-intc.git", rev: "non_pow2" }
   icache_mp_128_pf:    { git: "https://github.com/micprog/icache_mp_128_pf.git", rev: "055dc3dcdea0321b2b6b1fcd3f3099911f62d107" }
   scm:                 { git: "https://github.com/micprog/scm.git", rev: "synthesis" }
