@@ -226,7 +226,7 @@ set_property -dict {PACKAGE_PIN U11 IOSTANDARD LVCMOS18} [get_ports FMC_i2c0_sda
 set_property -dict {PACKAGE_PIN K12 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sck]
 # PULP pad_i2s_mst_ws - FPGA AC7 - FMC C18
 set_property -dict {PACKAGE_PIN AC7 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_ws]
-# PULP pad_i2s_slv_sdi0 - FPGA AC1 - FMC D8
+# PULP pad_i2s_slv_sdi0 - FPGA AC1 - FMC C11
 set_property -dict {PACKAGE_PIN AC1 IOSTANDARD LVCMOS18} [get_ports FMC_i2s0_sdi]
 # PULP pad_i2s_slv_sdi1 - FPGA AC2 - FMC C10
 set_property -dict {PACKAGE_PIN AC2 IOSTANDARD LVCMOS18} [get_ports FMC_i2s1_sdi]
@@ -300,19 +300,33 @@ set_property -dict {PACKAGE_PIN AC6 IOSTANDARD LVCMOS18} [get_ports FMC_cam_vsyn
 # Hyper Bus
 ####################################################################
 
+# FPGA M14 - FMC G25
 set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_csn1]
+# FPGA M15 - FMC G24
 set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_csn0]
+# FPGA AB4 - FMC D8
 set_property -dict {PACKAGE_PIN AB4 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_ck]
+# FPGA AC4 - FMC D9
 set_property -dict {PACKAGE_PIN AC4 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_ckn]
+# FPGA AB8 - FMC D17
 set_property -dict {PACKAGE_PIN AB8 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_rwds0]
+# FPGA AB3 - FMC D11
 set_property -dict {PACKAGE_PIN AB3 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_dqio0]
+# FPGA AC3 - FMC D12
 set_property -dict {PACKAGE_PIN AC3 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_dqio1]
+# FPGA W2 - FMC D14
 set_property -dict {PACKAGE_PIN W2 IOSTANDARD LVCMOS18}   [get_ports FMC_hyper_dqio2]
+# FPGA W1 - FMC D15
 set_property -dict {PACKAGE_PIN W1 IOSTANDARD LVCMOS18}   [get_ports FMC_hyper_dqio3]
+# FPGA Y12 - FMC G18
 set_property -dict {PACKAGE_PIN Y12 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_dqio4]
+# FPGA AA12 - FMC G19
 set_property -dict {PACKAGE_PIN AA12 IOSTANDARD LVCMOS18} [get_ports FMC_hyper_dqio5]
+# FPGA N13 - FMC G21
 set_property -dict {PACKAGE_PIN N13 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_dqio6]
+# FPGA M13 - FMC G22
 set_property -dict {PACKAGE_PIN M13 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_dqio7]
+# FPGA M11 - FMC G27
 set_property -dict {PACKAGE_PIN M11 IOSTANDARD LVCMOS18}  [get_ports FMC_hyper_reset]
 
 #set_property -dict {PACKAGE_PIN D20 IOSTANDARD LVCMOS33} [get_ports test_hyper_cko]

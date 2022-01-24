@@ -3,18 +3,26 @@ export BENDER
 
 all: zcu102
 
-clean_all: clean_zcu102
+clean_all: clean_ips clean_zcu102
 
 zcu102: ## Generates the bistream for the zcu102 board
+ifdef gui
+	$(MAKE) -C pulp gui BOARD=zcu102
+else
 	$(MAKE) -C pulp all BOARD=zcu102
 	cp pulp/pulp-zcu102.runs/impl_1/xilinx_pulp.bit pulp_zcu102.bit
 	cp pulp/pulp-zcu102.runs/impl_1/xilinx_pulp.bin pulp_zcu102.bin
 	@echo "Bitstream generation for zcu102 board finished. The bitstream Configuration Memory File was copied to ./pulp_zcu102.bit and ./pulp_zcu102.bin"
+endif
 
 clean_zcu102: ## Removes all bitstreams, *.log files and vivado related files (rm -rf vivado*) for the zcu102 board.
 	$(MAKE) -C pulp clean BOARD=zcu102
 	rm -f pulp_zcu102.bit
 	rm -f pulp_zcu102.bin
+
+
+clean_ips: ## Cleans the generated IPs
+	$(MAKE) -C pulp clean-ips BOARD=zcu102
 
 help: ## Show help message
 	@echo "PULP on FPGA"

@@ -14,7 +14,7 @@ set_property board_part $XILINX_BOARD [current_project]
 source tcl/add_sources.tcl
 
 # Set Verilog Defines.
-set DEFINES "FPGA_TARGET_XILINX=1 PULP_FPGA_EMUL=1 AXI4_XCHECK_OFF=1"
+set DEFINES "FPGA_TARGET_XILINX=1 TARGET_FPGA=1 TARGET_XILINX=1 PULP_FPGA_EMUL=1 AXI4_XCHECK_OFF=1"
 if { $BOARD == "zcu102" } {
     set DEFINES "$DEFINES zcu102=1"
 }
