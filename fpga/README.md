@@ -4,6 +4,7 @@ PULP has been implemented on FPGA for various Xilinx FPGA boards. Please check t
 subdirectory for the various supported boards:
 
 * Xilinx ZCU102
+* Xilinx VCU118 (untested)
 
 ### Bitstream Generation
 In order to generate the PULP bitstream for a supported target FPGA board, first fetch the required
