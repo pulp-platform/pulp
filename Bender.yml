@@ -11,7 +11,7 @@ package:
 
 dependencies:
   common_cells:       { git: "https://github.com/pulp-platform/common_cells.git", version: 1.22.1 }
-  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.5 }
+  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.6 }
   jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", rev: "v0.1" }
   pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", version: 3.0.0 }
   pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "e71ff80ab1e661a1ba4df78eceae42caeec074ad" }
@@ -55,7 +55,7 @@ sources:
       - rtl/vip/hyperram_model/s27ks0641.v
 
   # psram model
-  - target: all(any(test, simulation), psram_vip)
+  - target: all(any(test, simulation), psram_vip, vsim)
     defines:
       SPEEDSIM: ~
     files:
@@ -69,6 +69,12 @@ sources:
       - rtl/vip/i2s/i2c_if.v
       - rtl/vip/i2s/i2s_vip_channel.sv
       - rtl/vip/i2s/i2s_vip.sv
+
+  - target: all(fpga, xilinx)
+    files:
+      - fpga/pulp/rtl/fpga_clk_gen.sv
+      - fpga/pulp/rtl/fpga_slow_clk_gen.sv
+      - fpga/pulp/rtl/fpga_bootrom.sv
 
   - rtl/pulp/cluster_domain.sv
   - rtl/pulp/jtag_tap_top.sv

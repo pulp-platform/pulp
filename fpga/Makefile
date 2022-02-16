@@ -1,48 +1,51 @@
-include fpga-settings.mk
+.DEFAULT_GOAL:=help
+export BENDER
 
-all: synth impl
+all: zcu102
 
-gui:
-	cd pulpemu; make clean-impl gui
+clean_all: clean_ips clean_zcu102 clean_vcu118
 
-impl:
-	cd pulpemu; make clean-impl impl
+zcu102: ## Generates the bistream for the zcu102 board
+ifdef gui
+	$(MAKE) -C pulp gui BOARD=zcu102
+else
+	$(MAKE) -C pulp all BOARD=zcu102
+	cp pulp/pulp-zcu102.runs/impl_1/xilinx_pulp.bit pulp_zcu102.bit
+	cp pulp/pulp-zcu102.runs/impl_1/xilinx_pulp.bin pulp_zcu102.bin
+	@echo "Bitstream generation for zcu102 board finished. The bitstream Configuration Memory File was copied to ./pulp_zcu102.bit and ./pulp_zcu102.bin"
+endif
 
-ips: mem clk
+clean_zcu102: ## Removes all bitstreams, *.log files and vivado related files (rm -rf vivado*) for the zcu102 board.
+	$(MAKE) -C pulp clean BOARD=zcu102
+	rm -f pulp_zcu102.bit
+	rm -f pulp_zcu102.bin
 
-generate_bitstream: ips synth-pulpcluster synth-pulpemu
 
-mem:
-	cd ips/xilinx_interleaved_ram; make clean all
-	cd ips/xilinx_private_ram; make clean all
-	cd ips/xilinx_rom_bank_2048x32; make clean all
-	cd ips/xilinx_tcdm_bank_1024x32; make clean all
-	cd ips/xilinx_tcdm_bank_2048x32; make clean all
+vcu118: ## Generates the bitstream for the vcu118 board
+ifdef gui
+	$(MAKE) -C pulp gui BOARD=vcu118
+else
+	$(MAKE) -C pulp all BOARD=vcu118
+	cp pulp/pulp-vcu118.runs/impl_1/xilinx_pulp.bit pulp_vcu118.bit
+	cp pulp/pulp-vcu118.runs/impl_1/xilinx_pulp.bin pulp_vcu118.bin
+	@echo "Bitstream generation for vcu118 board finished. The bitstream Configuration Memory File was copied to ./pulp_vcu118.bit and ./pulp_vcu118.bin"
+endif
 
-clk: ## Synthesizes the Xilinx Clocking Manager IPs
-	cd ips/xilinx_clk_mngr; make clean all
-	cd ips/xilinx_slow_clk_mngr; make clean all
+clean_vcu118: ## Removes all bitstreams, *.log files and vivado related files (rm -rf vivado*) for the vcu118 board.
+	$(MAKE) -C pulp clean BOARD=vcu118
+	rm -f pulp_vcu118.bit
+	rm -f pulp_vcu118.bin
 
-synth: synth-pulpcluster synth-pulpemu
 
-synth-pulpcluster:
-	cd pulp_cluster; make clean all
+clean_ips: ## Cleans the generated IPs
+	$(MAKE) -C pulp clean-ips BOARD=zcu102
 
-synth-pulpemu:
-	cd pulpemu; make clean all
-
-cleanall: clean-ips clean-ulpcluster clean-pulpemu
-
-clean-ulpcluster:
-	cd pulp_cluster; make clean
-
-clean-pulpemu:
-	cd pulpemu; make clean
-
-clean-ips:
-	cd ips/xilinx_interleaved_ram; make clean
-	cd ips/xilinx_private_ram; make clean
-	cd ips/xilinx_rom_bank_2048x32; make clean
-	cd ips/xilinx_tcdm_bank_1024x32; make clean
-	cd ips/xilinx_tcdm_bank_2048x32; make clean
-	cd ips/xilinx_clk_mngr; make clean
+help: ## Show help message
+	@echo "PULP on FPGA"
+	@echo ""
+	@echo "Call make with one of the supported FPGA boards as arguments to generate the bitstream in the corresponding folder. "
+	@echo "E.g. 'make zcu102' to generate the bitstream for the zcu102 board in pulp-zcu102 subdirectory."
+	@echo "By default make invokes 'vivado'  to start Xilinx Vivado. This behaviour can be overriden by setting the make variable 'VIVADO'"
+	@echo "e.g. make zcu102 VIVADO='vivado-2018.3 vivado' for ETH centos machines."
+	@echo ""
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

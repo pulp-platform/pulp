@@ -1,5 +1,0 @@
-group_path -name CORE_DATA_REQ -weight 2.000 -through [list [get_nets CORE*core_region_i/*_CORE/data_addr_o*] [get_nets CORE*core_region_i/*_CORE/data_wdata_o*] [get_nets CORE*core_region_i/*_CORE/data_we_o*] [get_nets CORE*core_region_i/*_CORE/data_req_o*] [get_nets CORE*core_region_i/*_CORE/data_be_o*] [get_nets CORE*core_region_i/*_CORE/data_gnt_i*]]
-group_path -name CORE_DATA_RESP -weight 2.000 -through [list [get_nets CORE*core_region_i/*_CORE/data_rdata_i*] [get_nets CORE*core_region_i/*_CORE/data_rvalid_i*]]
-group_path -name CORE_INSTR_REQ -weight 2.000 -through [list [get_nets CORE*core_region_i/*_CORE/instr_addr_o*] [get_nets CORE*core_region_i/*_CORE/instr_req_o*] [get_nets CORE*core_region_i/*_CORE/instr_gnt_i*]]
-group_path -name CORE_INSTR_RESP -weight 2.000 -through [list [get_nets CORE*core_region_i/*_CORE/instr_rdata_i*] [get_nets CORE*core_region_i/*_CORE/instr_rvalid_i*]]
-group_path -name CORE_R2R -weight 2.000 -from [filter [all_registers ] {name =~ CORE*core_region_i*}] -to [filter [all_registers ] {name =~ CORE*core_region_i*}]

@@ -60,7 +60,7 @@ clean:
 .PHONY: scripts
 ## Generate scripts for all tools
 ifndef IPAPPROX
-scripts: scripts-bender-vsim # scripts-bender-fpga
+scripts: scripts-bender-vsim scripts-bender-fpga
 
 scripts-bender-vsim: | Bender.lock
 	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
@@ -69,9 +69,9 @@ scripts-bender-vsim: | Bender.lock
 		-t rtl -t test \
 		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
 
-# scripts-bender-fpga: | Bender.lock
-# 	mkdir -p fpga/pulp/tcl/generated
-# 	./bender script vivado -t fpga -t xilinx > $(BENDER_FPGA_SCRIPTS_DIR)/compile.tcl
+scripts-bender-fpga: | Bender.lock
+	mkdir -p fpga/pulp/tcl/generated
+	./bender script vivado -t fpga -t xilinx > $(BENDER_FPGA_SCRIPTS_DIR)/compile.tcl
 
 $(BENDER_SIM_BUILD_DIR)/compile.tcl: Bender.lock
 	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
@@ -250,7 +250,7 @@ test-local-runtime:
 bender:
 ifeq (,$(wildcard ./bender))
 	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
-		| bash -s -- 0.22.0
+		| bash -s -- 0.23.1
 	touch bender
 endif
 
