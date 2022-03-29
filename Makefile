@@ -84,7 +84,7 @@ scripts-bender-vsim-vips: | Bender.lock
 	echo 'set ROOT [file normalize [file dirname [info script]]/..]' > $(BENDER_SIM_BUILD_DIR)/compile.tcl
 	./bender script vsim \
 		--vlog-arg="$(VLOG_ARGS)" --vcom-arg="" \
-		-t rtl -t test -t rt_dpi -t i2c_vip -t flash_vip -t i2s_vip -t hyper_vip -t use_vips \
+		-t rtl -t test -t rt_dpi -t i2c_vip -t flash_vip -t i2s_vip -t sdio_vip -t hyper_vip -t use_vips \
 		| grep -v "set ROOT" >> $(BENDER_SIM_BUILD_DIR)/compile.tcl
 
 scripts-bender-vsim-psram: | Bender.lock
@@ -104,7 +104,7 @@ scripts-vips:
 ifndef IPAPPROX
 	$(MAKE) scripts-bender-vsim-vips
 else
-	./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --hyper-vip --use-vip --verbose
+	./generate-scripts --rt-dpi --i2c-vip --flash-vip --i2s-vip --sdio-vip --hyper-vip --use-vip --verbose
 endif
 
 scripts-psram:

@@ -54,16 +54,19 @@ module tb_pulp;
      parameter  USE_24FC1025_MODEL  = 1;
      parameter  USE_I2S_MODEL       = 1;
      parameter  USE_HYPER_MODELS    = 1;
+     parameter  USE_SDIO_MODEL      = 1;
 `elsif USE_VIPS
      parameter  USE_S25FS256S_MODEL = 1;
      parameter  USE_24FC1025_MODEL  = 1;
      parameter  USE_I2S_MODEL       = 1;
      parameter  USE_HYPER_MODELS    = 1;
+     parameter  USE_SDIO_MODEL      = 1;
 `else
      parameter  USE_S25FS256S_MODEL = 0;
      parameter  USE_24FC1025_MODEL  = 0;
      parameter  USE_I2S_MODEL       = 0;
      parameter  USE_HYPER_MODELS    = 0;
+     parameter  USE_SDIO_MODEL      = 0;
 `endif
     //psram model, cannot be tested simultaneously with the hyperram
 `ifdef TARGET_PSRAM_VIP
@@ -178,6 +181,14 @@ module tb_pulp;
    tri                   w_spi_master_sck;
 
    tri                   w_sdio_data0;
+   tri                   w_sdio_data1;
+   tri                   w_sdio_data2;
+   tri                   w_sdio_data3;
+
+   tri                   w_sdio_clk;
+   tri                   w_sdio_cmd;
+
+
 
    wire                  w_i2c0_scl;
    wire                  w_i2c0_sda;
@@ -504,6 +515,7 @@ module tb_pulp;
          );
       end
    endgenerate
+
    /* SPI flash model (not open-source, from Spansion) */
    generate
       if(USE_S25FS256S_MODEL == 1) begin
@@ -557,6 +569,27 @@ module tb_pulp;
          .SCL   ( w_i2c1_scl ),
          .RESET ( 1'b0       )
       );
+   end
+
+   /* SDIO SDCard model */
+   if (USE_SDIO_MODEL==1) begin
+
+      pullup cmd_pullup_i   (w_sdio_cmd);
+      pullup data3_pullup_i (w_sdio_data3);
+      pullup data2_pullup_i (w_sdio_data2);
+      pullup data1_pullup_i (w_sdio_data1);
+      pullup data0_pullup_i (w_sdio_data0);
+
+      sdModel sdModelTB0(
+        .sdClk ( w_sdio_clk ),
+        .cmd   ( w_sdio_cmd ),
+        .dat   ( {
+                  w_sdio_data3,
+                  w_sdio_data2,
+                  w_sdio_data1,
+                  w_sdio_data0 } 
+                )
+        );
    end
 
    if (!ENABLE_DEV_DPI && CONFIG_FILE == "NONE") begin
@@ -718,12 +751,12 @@ module tb_pulp;
       .pad_cam_data7      ( w_cam_data[7]      ),
       .pad_cam_vsync      ( w_cam_vsync        ),
 
-      .pad_sdio_clk       (                    ),
-      .pad_sdio_cmd       (                    ),
+      .pad_sdio_clk       ( w_sdio_clk         ),
+      .pad_sdio_cmd       ( w_sdio_cmd         ),
       .pad_sdio_data0     ( w_sdio_data0       ),
-      .pad_sdio_data1     (                    ),
-      .pad_sdio_data2     (                    ),
-      .pad_sdio_data3     (                    ),
+      .pad_sdio_data1     ( w_sdio_data1       ),
+      .pad_sdio_data2     ( w_sdio_data2       ),
+      .pad_sdio_data3     ( w_sdio_data3       ),
 
       .pad_i2c0_sda       ( w_i2c0_sda         ),
       .pad_i2c0_scl       ( w_i2c0_scl         ),

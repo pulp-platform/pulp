@@ -24,6 +24,9 @@ parser.add_argument('--flash-vip', action='store_true',
 parser.add_argument('--i2s-vip', action='store_true',
                     help="""Use the i2s model (24FC1025).
                     Needs to be installed.""")
+parser.add_argument('--sdio-vip', action='store_true',
+                    help="""Use sdio sdModel.
+                    Needs to be installed.""")
 parser.add_argument('--hyper-vip', action='store_true',
                     help="""Use the hyperbus models (S27KS0641 and S26KS512S).
                     Needs to be installed.""")
@@ -85,6 +88,9 @@ if not args.psram_vip:
 
 if not args.i2s_vip:
     del (ipdb.rtl_dic['vip'].sub_ips['i2s_model'])
+
+if not args.sdio_vip:
+    del (ipdb.rtl_dic['vip'].sub_ips['sdio_model'])
 
 # generate ModelSim/QuestaSim compilation scripts
 ipdb.export_make(script_path="sim/vcompile/ips")

@@ -13,7 +13,7 @@ dependencies:
   common_cells:       { git: "https://github.com/pulp-platform/common_cells.git", version: 1.22.1 }
   tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.6 }
   jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", rev: "v0.1" }
-  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", version: 3.0.0 }
+  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", rev: "v3.0.0" }
   pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "e71ff80ab1e661a1ba4df78eceae42caeec074ad" }
   tbtools:            { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
 
@@ -31,6 +31,7 @@ sources:
       - rtl/vip/spi_master_padframe.sv
       - rtl/vip/uart_tb_rx.sv
       - rtl/vip/camera/cam_vip.sv
+      - rtl/vip/sdio/sdModel.v
 
   # S25FS256_model (SPI Flash)
   - target: all(any(test,simulation), flash_vip)
