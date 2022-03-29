@@ -31,7 +31,6 @@ hyperflash_model:
     skip_synthesis,
   ]
 
-
 hyperram_model:
   defines: [
     SPEEDSIM,
@@ -71,6 +70,7 @@ open_models:
   files: [
     spi_master_padframe.sv,
     uart_tb_rx.sv,
+    sdio/sdModel.v,
     camera/cam_vip.sv
   ]
   flags: [

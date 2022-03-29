@@ -31,6 +31,7 @@ sources:
       - rtl/vip/spi_master_padframe.sv
       - rtl/vip/uart_tb_rx.sv
       - rtl/vip/camera/cam_vip.sv
+      - rtl/vip/sdio/sdModel.v
 
   # S25FS256_model (SPI Flash)
   - target: all(any(test,simulation), flash_vip)
