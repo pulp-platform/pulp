@@ -37,14 +37,13 @@ BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
 
 .PHONY: checkout
 ifndef IPAPPROX
-checkout: bender
-	./bender update
-	touch Bender.lock
-
 Bender.lock: bender
-	./bender update
+	if [ ! -f Bender.lock ]; then\
+		./bender update;\
+	fi
 	touch Bender.lock
 
+checkout: bender Bender.lock
 else
 checkout:
 	./update-ips
