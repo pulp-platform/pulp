@@ -1,0 +1,3 @@
+overrides:
+  cv32e40p: { git: "https://github.com/pulp-platform/cv32e40p.git", rev: "pulpissimo-v3.4.0-rev4" }
+  udma_i2c: { git: "https://github.com/pulp-platform/udma_i2c.git", version: 1.0.3 }
