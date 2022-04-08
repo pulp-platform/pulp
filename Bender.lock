@@ -231,7 +231,7 @@ packages:
       - scm
   jtag_pulp:
     revision: 5ace3495a6d35552e2009e9dece75452ac3cd82b
-    version: ~
+    version: 0.1.0
     source:
       Git: "https://github.com/pulp-platform/jtag_pulp.git"
     dependencies: []
@@ -256,7 +256,7 @@ packages:
     dependencies:
       - axi_slice
   pulp_cluster:
-    revision: e71ff80ab1e661a1ba4df78eceae42caeec074ad
+    revision: 040fc3e3b2dbf11ce0d08bf7554f310c483b8c9f
     version: ~
     source:
       Git: "https://github.com/pulp-platform/pulp_cluster.git"
