@@ -193,31 +193,18 @@ sim_questa_multivers:
   parallel:
     matrix:
       - QUESTA_PREFIX:
-        - 'vsim'                   # Default
-        - 'questa-2019.3-kgf vsim'
-        - 'questa-2020.1-kgf vsim'
-        - 'questa-2021.1-bt vsim'  # Has errors
-        - 'questa-2021.2-bt vsim'  # Has errors
-        - 'vsim-10.0d-kgf'         # Incompatible
-        - 'vsim-10.1c-kgf'         # Incompatible
-        - 'vsim-10.2c-kgf'         # Incompatible
-        - 'vsim-10.3a-kgf'         # Incompatible
-        - 'vsim-10.3e-kgf'         # Incompatible
-        - 'vsim-10.4c-kgf'         # Incompatible
-        - 'vsim-10.5a-kgf'         # Incompatible
-        - 'vsim-10.5c-kgf'
-        - 'vsim-10.6b-kgf'
-        - 'vsim-10.7b-kgf'
-        - 'vsim-10.7e-kgf'
+        - 'questa-2019.3'
+        - 'questa-2020.1'
+        - 'questa-2021.3'
   before_script:
-    - export VSIM="$QUESTA_PREFIX"
-    - export VLOG="${QUESTA_PREFIX/vsim/vlog}"
-    - export VOPT="${QUESTA_PREFIX/vsim/vopt}"
-    - export VLIB="${QUESTA_PREFIX/vsim/vlib}"
-    - export VMAP="${QUESTA_PREFIX/vsim/vmap}"
-    - export VCOM="${QUESTA_PREFIX/vsim/vcom}"
+    - export VSIM="$QUESTA_PREFIX vsim"
+    - export VLOG="$QUESTA_PREFIX vlog"
+    - export VOPT="$QUESTA_PREFIX vopt"
+    - export VLIB="$QUESTA_PREFIX vlib"
+    - export VMAP="$QUESTA_PREFIX vmap"
+    - export VCOM="$QUESTA_PREFIX vcom"
     - export PULP_RISCV_GCC_TOOLCHAIN=/usr/pack/pulpsdk-1.0-kgf/artifactory/pulp-sdk-release/pkg/pulp_riscv_gcc/1.0.16/
-    - git clone https://github.com/pulp-platform/pulp-runtime.git -b vsim_version
+    - git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.15
     - mkdir hello
     - printf "#include <stdio.h>\nint main(){\n  printf(\"Hello World\\\n\");\n  return 0;\n}\n" > hello/hello.c
     - printf "PULP_APP = hello\nPULP_APP_FC_SRCS = hello.c\nPULP_APP_HOST_SRCS = hello.c\nPULP_CFLAGS = -O3 -g\n\ninclude \$(PULP_SDK_HOME)/install/rules/pulp_rt.mk\n" > hello/Makefile
