@@ -124,11 +124,10 @@ e.g. by running `export IPAPPROX=1`, and continue at your own risk.
 The easiest way to work on an individual IP is to clone it using bender with the following command:
 ```
 ./bender clone $IP
-./bender update
 ```
 This will checkout the IP to the `working_dir` directory, where it can be modified and the changes committed and pushed.
 The correct link will be set through an override in the `Bender.local` file, forcing the bender tool to use this version of the dependency.
-To build the platform, make sure to start at the `make scripts` step above after calling `./bender update`. 
+To build the platform, make sure to start at the `make scripts` step above after calling `./bender clone`. 
 
 Once the changes are complete, please ensure the `Bender.yml` files in the packages calling the IP dependency are accordingly updated with the new version.
 The `bender parents` command can assist in determining which dependencies' `Bender.yml` files need updating.

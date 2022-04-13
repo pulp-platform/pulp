@@ -38,9 +38,7 @@ BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
 .PHONY: checkout
 ifndef IPAPPROX
 Bender.lock: bender
-	if [ ! -f Bender.lock ]; then\
-		./bender update;\
-	fi
+	./bender checkout
 	touch Bender.lock
 
 checkout: bender Bender.lock
@@ -247,7 +245,7 @@ test-local-runtime:
 bender:
 ifeq (,$(wildcard ./bender))
 	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
-		| bash -s -- 0.25.1
+		| bash -s -- 0.25.2
 	touch bender
 endif
 
