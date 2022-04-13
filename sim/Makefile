@@ -54,6 +54,7 @@ endif
 lib:
 ifndef IPAPPROX
 	@$(VLIB) work
+	@chmod +w modelsim.ini
 	$(VMAP) work $(mkfile_path)/work
 else
 	@make --no-print-directory -f $(mkfile_path)/vcompile/ips.mk lib
@@ -69,4 +70,5 @@ else
 	@make --no-print-directory -f $(mkfile_path)/vcompile/rtl.mk clean
 endif
 	@touch modelsim.ini
+	@chmod +w modelsim.ini
 	rm modelsim.ini

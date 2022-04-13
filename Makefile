@@ -31,20 +31,17 @@ $(foreach file, $(INSTALL_FILES), $(eval $(call declareInstallFile,$(file))))
 
 BRANCH ?= master
 
-VLOG_ARGS += -suppress 2583 -suppress 13314
+VLOG_ARGS += -suppress 2583 -suppress 13314 \"+incdir+\$$ROOT/rtl/includes\"
 BENDER_SIM_BUILD_DIR = sim
 BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
 
 .PHONY: checkout
 ifndef IPAPPROX
-checkout: bender
-	./bender update
-	touch Bender.lock
-
 Bender.lock: bender
-	./bender update
+	./bender checkout
 	touch Bender.lock
 
+checkout: bender Bender.lock
 else
 checkout:
 	./update-ips
@@ -121,12 +118,10 @@ build: $(BENDER_SIM_BUILD_DIR)/compile.tcl
 	@test -f Bender.lock || { echo "ERROR: Bender.lock file does not exist. Did you run make checkout in bender mode?"; exit 1; }
 	@test -f $(BENDER_SIM_BUILD_DIR)/compile.tcl || { echo "ERROR: sim/compile.tcl file does not exist. Did you run make scripts in bender mode?"; exit 1; }
 	$(MAKE) -C sim all
-	cp -r rtl/tb/* $(VSIM_PATH)
 else
 build:
 	@[ "$$(ls -A ips/)" ] || { echo "ERROR: ips/ is an empty directory. Did you run ./update-ips?"; exit 1; }
 	$(MAKE) -C sim IPAPPROX=$(IPAPPROX) all
-	cp -r rtl/tb/* $(VSIM_PATH)
 endif
 
 # sdk specific targets
@@ -176,7 +171,7 @@ sdk-gitlab:
 
 # simplified runtime for PULP that doesn't need the sdk
 pulp-runtime:
-	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.13
+	git clone https://github.com/pulp-platform/pulp-runtime.git -b v0.0.15
 
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
@@ -191,7 +186,7 @@ test-fast-regressions:
 	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml simple-regression-tests.yaml
+	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 2000 --yaml -o simplified-runtime.xml simple-regression-tests.yaml
 
 test-local-regressions: 
 	mkdir -p regression_tests/riscv_tests_soc
@@ -250,7 +245,7 @@ test-local-runtime:
 bender:
 ifeq (,$(wildcard ./bender))
 	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
-		| bash -s -- 0.23.1
+		| bash -s -- 0.25.2
 	touch bender
 endif
 
