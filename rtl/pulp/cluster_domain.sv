@@ -271,7 +271,7 @@ module cluster_domain
         .CLUSTER_ALIAS_BASE           ( CLUSTER_ALIAS_BASE           ),
         .ECC_SRAM (1),
         .ECC_INTC (1),
-        .TCLS (1)
+        .ODRG (1)
     )
 `endif    
     cluster_i (

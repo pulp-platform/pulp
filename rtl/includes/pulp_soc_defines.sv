@@ -75,12 +75,12 @@
 //PARAMETRES
 `define FC_FPU 1
 `define FC_FP_DIVSQRT 1
-`define CLUST_FPU 1
-`define CLUST_FP_DIVSQRT 1
+`define CLUST_FPU 0
+`define CLUST_FP_DIVSQRT 0
 // set to 2 when APU is connected
-`define CLUST_SHARED_FP 2
+`define CLUST_SHARED_FP 0
 // set to 2 to have divsqrt in one unit
-`define CLUST_SHARED_FP_DIVSQRT 2
+`define CLUST_SHARED_FP_DIVSQRT 0
 
 
 

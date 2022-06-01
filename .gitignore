@@ -12,7 +12,6 @@
 # Bender
 /bender
 /.bender
-/Bender.lock
 /sim/compile.tcl
 /sim/transcript
 /sim/work
