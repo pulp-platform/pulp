@@ -18,6 +18,9 @@ set DEFINES "FPGA_TARGET_XILINX=1 TARGET_FPGA=1 TARGET_XILINX=1 PULP_FPGA_EMUL=1
 if { $BOARD == "zcu102" } {
     set DEFINES "$DEFINES zcu102=1"
 }
+if { $BOARD == "vcu118" } {
+    set DEFINES "$DEFINES vcu118=1"
+}
 set_property verilog_define $DEFINES [current_fileset]
 
 # detect target clock
