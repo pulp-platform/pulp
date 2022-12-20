@@ -96,16 +96,16 @@ packages:
     dependencies:
     - hci
   common_cells:
-    revision: b5ec8905ed7828655155b0ae971023adf793c600
-    version: 1.24.0
+    revision: 4dc9413990622dcbf4b37a19f792834c800da5c7
+    version: 1.28.0
     source:
       Git: https://github.com/pulp-platform/common_cells.git
     dependencies:
     - common_verification
     - tech_cells_generic
   common_verification:
-    revision: b616c1a25aea3b76e32dcbed2ec87d057efdcffd
-    version: 0.2.1
+    revision: 9c07fa860593b2caabd9b5681740c25fac04b878
+    version: 0.2.3
     source:
       Git: https://github.com/pulp-platform/common_verification.git
     dependencies: []
@@ -175,8 +175,8 @@ packages:
     - scm
     - tech_cells_generic
   hwpe-ctrl:
-    revision: 0336a85f7515fbd50ffab1a3290812401ef321b6
-    version: 1.6.2
+    revision: 4bf1487a463c262bf7d8ffee79d1cf392937daa2
+    version: 1.7.1
     source:
       Git: https://github.com/pulp-platform/hwpe-ctrl.git
     dependencies:
@@ -321,11 +321,12 @@ packages:
     - udma_sdio
     - udma_uart
   register_interface:
-    revision: 73de8e51b79f416350229b1d2420b2c527e002b8
-    version: 0.3.1
+    revision: e3a4955071fcf554febd4b29a7c7a52c7f1e7fc6
+    version: 0.3.8
     source:
       Git: https://github.com/pulp-platform/register_interface.git
     dependencies:
+    - apb
     - axi
     - common_cells
   riscv-dbg:
@@ -347,8 +348,8 @@ packages:
       Git: https://github.com/pulp-platform/tbtools.git
     dependencies: []
   tech_cells_generic:
-    revision: e6226a6f374eb88fed84d4989bb3f066cb470f33
-    version: 0.2.9
+    revision: a9cae21902e75b1434328ecf36f85327ba5717de
+    version: 0.2.11
     source:
       Git: https://github.com/pulp-platform/tech_cells_generic.git
     dependencies:
