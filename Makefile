@@ -173,7 +173,7 @@ sdk-gitlab:
 
 # simplified runtime for PULP that doesn't need the sdk
 pulp-runtime:
-	git clone https://github.com/pulp-platform/pulp-runtime.git -b f0ed3f12c23a39ed458b0a78fd9258a8b859df4d
+	git clone https://github.com/pulp-platform/pulp-runtime.git -b idma
 
 # the gitlab runner needs a special configuration to be able to access the
 # dependent git repositories
