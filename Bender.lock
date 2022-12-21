@@ -52,13 +52,14 @@ packages:
     dependencies:
     - apb
   axi:
-    revision: 527cf64a95f7aea36836b2db76dc4d767e150358
-    version: 0.29.2
+    revision: 2f395b176bee1c769c80f060a4345fda965bb04b
+    version: 0.38.0
     source:
       Git: https://github.com/pulp-platform/axi.git
     dependencies:
     - common_cells
     - common_verification
+    - tech_cells_generic
   axi2mem:
     revision: 6973e0434d26ba578cdb4aa69c26c1facd1a3f15
     version: null
@@ -228,6 +229,16 @@ packages:
     - common_cells
     - icache-intc
     - scm
+  idma:
+    revision: 6ad5695b85ce253f3095871b958fb76b36d074c6
+    version: 0.3.1
+    source:
+      Git: https://github.com/pulp-platform/idma.git
+    dependencies:
+    - axi
+    - common_cells
+    - common_verification
+    - register_interface
   jtag_pulp:
     revision: 5ace3495a6d35552e2009e9dece75452ac3cd82b
     version: 0.1.0
@@ -255,7 +266,7 @@ packages:
     dependencies:
     - axi_slice
   pulp_cluster:
-    revision: db2e173b8b7562092fb9d922d64e0a7bd21da411
+    revision: 51fd2597f097363d0410c280d6cc1861e04e73e4
     version: null
     source:
       Git: https://github.com/pulp-platform/pulp_cluster.git
@@ -275,6 +286,7 @@ packages:
     - hwpe-datamover-example
     - ibex
     - icache_mp_128_pf
+    - idma
     - mchan
     - per2axi
     - scm

@@ -1,0 +1,2 @@
+overrides:
+  pulp_cluster: { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "51fd2597f097363d0410c280d6cc1861e04e73e4" }
