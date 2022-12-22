@@ -139,7 +139,7 @@ module tb_pulp;
    parameter logic[1:0] JTAG_BRIDGE = 2'b10;
 
    // contains the program code
-   string stimuli_file;
+   string stimuli_file, srec_path;
 
    /* simulation variables & flags */
    string bootmode;
@@ -878,7 +878,7 @@ module tb_pulp;
 
                // read in the stimuli vectors  == address_value
                if ($value$plusargs("stimuli=%s", stimuli_file)) begin
-                  $display("[TB  ] %t - Loading custom stimuli from %s", stimuli_file);
+                  $display("[TB  ] %t - Loading custom stimuli from %s", $realtime, stimuli_file);
                   $readmemh(stimuli_file, stimuli);
                end else if ($value$plusargs("srec=%s", srec_path)) begin
                   $display("[TB  ] %t - Loading srec from %s", $realtime, srec_path);
@@ -887,7 +887,7 @@ module tb_pulp;
                   if (!$test$plusargs("srec_ignore_entry"))
                      begin_l2_instr = entry_point;
                end else begin
-                  $display("[TB  ] %t - Loading default stimuli");
+                  $display("[TB  ] %t - Loading default stimuli", $realtime);
                   $readmemh("./vectors/stim.txt", stimuli);
                end
 
