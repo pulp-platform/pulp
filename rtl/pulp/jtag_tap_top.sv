@@ -9,8 +9,9 @@
 // specific language governing permissions and limitations under the License.
 
 
-module jtag_tap_top
-(
+module jtag_tap_top#(
+    parameter logic [31:0] IDCODE_VALUE = 32'h10000db3
+) (
     input  logic              tck_i,
     input  logic              trst_ni,
     input  logic              tms_i,
@@ -48,8 +49,9 @@ module jtag_tap_top
 
 
     // jtag tap controller
-    tap_top tap_top_i
-    (
+    tap_top #(
+        .IDCODE_VALUE      ( IDCODE_VALUE       )
+    ) tap_top_i (
         .tms_i             ( tms_i              ),
         .tck_i             ( tck_i              ),
         .rst_ni            ( trst_ni            ),

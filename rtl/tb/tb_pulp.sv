@@ -28,6 +28,7 @@
 
 
 module tb_pulp;
+   import srec_pkg::*;
 
    parameter CONFIG_FILE = "NONE";
 
@@ -46,6 +47,8 @@ module tb_pulp;
    parameter CORE_TYPE_CL         = 0;
 
    parameter USE_HWPE_CL          = 0; // HWPE in Cluster
+
+   parameter SIM_STDOUT = 1;
 
    // the following parameters can activate instantiation of the verification IPs for SPI, I2C and I2s
    // see the instructions in rtl/vip/{i2c_eeprom,i2s,spi_flash} to download the verification IPs
@@ -139,6 +142,7 @@ module tb_pulp;
    string stimuli_file;
 
    /* simulation variables & flags */
+   string bootmode;
    logic                 uart_tb_rx_en = 1'b0;
    logic                 uart_vip_rx_en = 1'b0;
    string                uart_drv_mon_sel = "TB";
@@ -370,7 +374,7 @@ module tb_pulp;
          tmp_tdo        = w_tdo;
          tmp_bridge_tdo = w_tdo;
 
-      end else if (ENABLE_OPENOCD) begin
+      end else if (ENABLE_OPENOCD || $test$plusargs("jtag_openocd")) begin
          tmp_rst_n         = s_rst_n;
          tmp_clk_ref       = s_clk_ref;
          tmp_trstn         = sim_jtag_trstn;
@@ -525,17 +529,26 @@ module tb_pulp;
       end
    endgenerate
 
-   if (CONFIG_FILE == "NONE") begin
-      /* UART receiver */
-      uart_tb_rx #(
-         .BAUD_RATE ( BAUDRATE   ),
-         .PARITY_EN ( 0          )
-      ) i_rx_mod (
-         .rx        ( w_uart_rx       ),
-         .rx_en     ( uart_tb_rx_en ),
-         .word_done (               )
-      );
-   end
+   // if (CONFIG_FILE == "NONE") begin
+   //    /* UART receiver */
+   //    uart_tb_rx #(
+   //       .BAUD_RATE ( BAUDRATE   ),
+   //       .PARITY_EN ( 0          )
+   //    ) i_rx_mod (
+   //       .rx        ( w_uart_rx       ),
+   //       .rx_en     ( uart_tb_rx_en ),
+   //       .word_done (               )
+   //    );
+   // end
+
+   uart_sim #(
+      .BAUD_RATE(BAUDRATE),
+      .PARITY_EN(0)
+   ) i_uart_sim (
+      .rx (w_uart_rx),
+      .rx_en (uart_tb_rx_en),
+      .tx()
+   );
 
    /* I2C memory models */
    if (USE_24FC1025_MODEL == 1) begin
@@ -644,7 +657,8 @@ module tb_pulp;
 
     // jtag calls from dpi
     SimJTAG #(
-        .TICK_DELAY (1)
+        .TICK_DELAY (1),
+        .PORT (4567)
     )
     i_sim_jtag (
         .clock                ( w_clk_ref            ),
@@ -783,17 +797,25 @@ module tb_pulp;
 
          int entry_point;
          logic [31:0] begin_l2_instr;
+         automatic srec_record_t records[$];
+         automatic string jtag_tap_type;
 
+         uart_tb_rx_en = 1'b1;
          error   = 1'b0;
          num_err = 0;
          rd_cnt=0;
-         
+
+         // read boot mode from commandline
+         // read entry point from commandline
+         if (!$value$plusargs("bootmode=%s", bootmode))
+            bootmode = "jtag";
+
          // read entry point from commandline
          if ($value$plusargs("ENTRY_POINT=%h", entry_point))
              begin_l2_instr = entry_point;
          else
              begin_l2_instr = 32'h1C008080;
-         $display("[TB] %t - Entry point is set to 0x%h", $realtime, begin_l2_instr);
+         // $display("[TB] %t - Entry point is set to 0x%h", $realtime, begin_l2_instr);
 
          $display("[TB] %t - Asserting hard reset", $realtime);
          s_rst_n = 1'b0;
@@ -802,7 +824,7 @@ module tb_pulp;
 
          uart_tb_rx_en  = 1'b1; // enable uart rx in testbench
 
-         if (ENABLE_OPENOCD == 1) begin
+         if (ENABLE_OPENOCD == 1 || $test$plusargs("jtag_openocd")) begin
             // Use openocd to interact with the simulation
             s_bootsel = 2'b01;
             $display("[TB] %t - Releasing hard reset", $realtime);
@@ -817,31 +839,33 @@ module tb_pulp;
             // Use only the testbench to do the loading and running
 
             // determine if we want to load the binary with jtag or from flash
-            if (LOAD_L2 == "STANDALONE") begin
+            if (LOAD_L2 == "STANDALONE" || bootmode == "spi_flash" || bootmode == "hyper_flash") begin
                // jtag reset needed anyway
                jtag_pkg::jtag_reset(s_tck, s_tms, s_trstn, s_tdi);
                jtag_pkg::jtag_softreset(s_tck, s_tms, s_trstn, s_tdi);
                #5us;
                
-               s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
+               // s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
             
-               if (STIM_FROM == "HYPER_FLASH") begin
+               if (STIM_FROM == "HYPER_FLASH" || bootmode == "hyper_flash") begin
                    $display("[TB] %t - HyperFlash boot: Setting bootsel to 2'b10", $realtime);
-               end else if (STIM_FROM == "SPI_FLASH") begin
+                   s_bootsel = 2'b10;
+               end else if (STIM_FROM == "SPI_FLASH" || bootmode == "spi_flash") begin
                    $display("[TB] %t - QSPI boot: Setting bootsel to 2'b00", $realtime);
+                   s_bootsel = 2'b00;
                end
 
-            $display("[TB] %t - Releasing hard reset", $realtime);
-            s_rst_n = 1'b1;
-            debug_mode_if.init_dmi_access(s_tck, s_tms, s_trstn, s_tdi);
-            debug_mode_if.set_dmactive(1'b1, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-            #10us;   
+               $display("[TB] %t - Releasing hard reset", $realtime);
+               s_rst_n = 1'b1;
+               debug_mode_if.init_dmi_access(s_tck, s_tms, s_trstn, s_tdi);
+               debug_mode_if.set_dmactive(1'b1, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+               #10us;   
             end
             else if (LOAD_L2 == "JTAG") begin
                s_bootsel = 2'b01;
             end
 
-            if (LOAD_L2 == "JTAG") begin
+            if (LOAD_L2 == "JTAG" || bootmode == "jtag" || bootmode == "fast_debug_preload") begin
                if (USE_FLL)
                   $display("[TB] %t - Using FLL", $realtime);
                else
@@ -854,12 +878,20 @@ module tb_pulp;
 
                // read in the stimuli vectors  == address_value
                if ($value$plusargs("stimuli=%s", stimuli_file)) begin
-                  $display("Loading custom stimuli from %s", stimuli_file);
+                  $display("[TB  ] %t - Loading custom stimuli from %s", stimuli_file);
                   $readmemh(stimuli_file, stimuli);
+               end else if ($value$plusargs("srec=%s", srec_path)) begin
+                  $display("[TB  ] %t - Loading srec from %s", $realtime, srec_path);
+                  srec_read(srec_path, records);
+                  srec_records_to_stimuli(records, stimuli, entry_point);
+                  if (!$test$plusargs("srec_ignore_entry"))
+                     begin_l2_instr = entry_point;
                end else begin
-                  $display("Loading default stimuli");
+                  $display("[TB  ] %t - Loading default stimuli");
                   $readmemh("./vectors/stim.txt", stimuli);
                end
+
+               $display("[TB  ] %t - Entry point is set to 0x%h", $realtime, begin_l2_instr);
 
                // before starting the actual boot procedure we do some light
                // testing on the jtag link
@@ -1009,60 +1041,6 @@ module tb_pulp;
 
          end
       end
-
-
-   
-   `ifndef USE_NETLIST
-      /* File System access */
-      logic r_stdout_pready;
-
-      logic        fs_clk;
-      logic        fs_rst_n;
-      logic        fs_wen;
-      logic [0:0]  fs_csn;
-      logic [31:0] fs_add;
-      logic [3:0]  fs_be;
-      logic [31:0] fs_wdata;
-      logic [31:0] fs_rdata;
-
-      assign fs_clk = i_dut.soc_domain_i.pulp_soc_i.s_soc_clk;
-      assign fs_rst_n = i_dut.soc_domain_i.pulp_soc_i.s_soc_rstn;
-
-      assign fs_csn   = ~(i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.psel &
-         i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.penable &
-         r_stdout_pready);
-      assign fs_wen   = ~i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pwrite;
-      assign fs_add   = i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.paddr;
-      assign fs_wdata = i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pwdata;
-      assign fs_be    = 4'hF;
-      assign i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pready  = r_stdout_pready;
-      assign i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.pslverr = 1'b0;
-      assign i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.prdata  = fs_rdata;
-
-      always_ff @(posedge fs_clk or negedge fs_rst_n) begin
-         if(~fs_rst_n) begin
-            r_stdout_pready <= 0;
-         end
-         else begin
-            r_stdout_pready <= (i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.psel & i_dut.soc_domain_i.pulp_soc_i.soc_peripherals_i.s_stdout_bus.penable);
-         end
-      end
-
-      tb_fs_handler #(
-         .ADDR_WIDTH ( 32       ),
-         .DATA_WIDTH ( 32       ),
-         .NB_CORES   ( NB_CORES )
-      ) i_fs_handler (
-         .clk   ( fs_clk   ),
-         .rst_n ( fs_rst_n ),
-         .CSN   ( fs_csn   ),
-         .WEN   ( fs_wen   ),
-         .ADDR  ( fs_add   ),
-         .WDATA ( fs_wdata ),
-         .BE    ( fs_be    ),
-         .RDATA ( fs_rdata )
-      );
-   `endif
 
    /* tracing */
    integer               IOFILE[NB_CORES];

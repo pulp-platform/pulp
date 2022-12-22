@@ -33,7 +33,22 @@
 `define NB_L2_CHANNELS 4
 
 // JTAG
-`define DMI_JTAG_IDCODE 32'h249511C3
+// Part Number
+//   0001/fffe PULPissimo
+//   0002/fffd PULP
+//   cafe/3501 ControlPULP
+
+// LSB                       [0]:     1'h1
+// PULP Platform Manufacturer[11:1]:  11'h6d9
+// Part Number               [27:12]: 16'hcafe
+// Version                   [31:28]: 4'h5
+`define DMI_JTAG_IDCODE 32'h50001db3
+
+// LSB                       [0]:     1'h1
+// PULP Platform Manufacturer[11:1]:  11'h6d9
+// Part Number               [27:12]: 16'hcaff
+// Version                   [31:28]: 4'h5
+`define PULP_JTAG_IDCODE 32'h5fffedb3
 
 // Hardware Accelerator selection
 `define HWCRYPT

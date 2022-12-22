@@ -111,11 +111,12 @@ packages:
       Git: https://github.com/pulp-platform/common_verification.git
     dependencies: []
   cv32e40p:
-    revision: 8d58109ab61e1fb6c9dcbafefb8f3a56ee596427
+    revision: 800a09d97a1e9418e127e8bbf1763c1d1097c92f
     version: null
     source:
       Git: https://github.com/pulp-platform/cv32e40p.git
     dependencies:
+    - common_cells
     - fpnew
     - tech_cells_generic
   event_unit_flex:
@@ -141,7 +142,7 @@ packages:
     dependencies:
     - common_cells
   fpu_interco:
-    revision: 66b4084117546d5b748c30b5500769805f489d2f
+    revision: f6e7e1fe735160ea59ae3d10087b4e9ce5d5d437
     version: null
     source:
       Git: https://github.com/pulp-platform/fpu_interco.git
@@ -207,10 +208,10 @@ packages:
     dependencies:
     - tech_cells_generic
   ibex:
-    revision: 95b85ddd1c995ace9f89ee42530f9e24820c1051
+    revision: b18f7ef178ed07f5085051f96042c670a919fd5c
     version: null
     source:
-      Git: https://github.com/lowRISC/ibex.git
+      Git: https://github.com/pulp-platform/ibex.git
     dependencies:
     - tech_cells_generic
   icache-intc:
@@ -240,8 +241,8 @@ packages:
     - common_verification
     - register_interface
   jtag_pulp:
-    revision: 5ace3495a6d35552e2009e9dece75452ac3cd82b
-    version: 0.1.0
+    revision: d22e828aef0484c79355d97d12de044c97e1f20f
+    version: 0.2.0
     source:
       Git: https://github.com/pulp-platform/jtag_pulp.git
     dependencies: []
@@ -266,7 +267,7 @@ packages:
     dependencies:
     - axi_slice
   pulp_cluster:
-    revision: 51fd2597f097363d0410c280d6cc1861e04e73e4
+    revision: 75f3f8533690a4b37380202c550484dde5453a98
     version: null
     source:
       Git: https://github.com/pulp-platform/pulp_cluster.git
@@ -293,8 +294,8 @@ packages:
     - tech_cells_generic
     - timer_unit
   pulp_soc:
-    revision: d878151e0e40912642c5275d470cef76258f5fc6
-    version: 3.0.1
+    revision: 0573a85c8ec502ff5e3ef06946a75eaf567ce16a
+    version: 4.4.0
     source:
       Git: https://github.com/pulp-platform/pulp_soc.git
     dependencies:
@@ -342,11 +343,13 @@ packages:
     - axi
     - common_cells
   riscv-dbg:
-    revision: e19d69efe7d7e4da6c25ed91d5e7f501ab52dd68
-    version: 0.4.1
+    revision: 69be5ddc03ea1688c0eab47d6ed9d0e8725beda1
+    version: 0.5.1
     source:
       Git: https://github.com/pulp-platform/riscv-dbg.git
-    dependencies: []
+    dependencies:
+    - common_cells
+    - tech_cells_generic
   scm:
     revision: e1ad7dffd9d8702430131ec8bc1a0d9ff686ece2
     version: 1.1.0
@@ -409,8 +412,8 @@ packages:
       Git: https://github.com/pulp-platform/udma_hyper.git
     dependencies: []
   udma_i2c:
-    revision: 7b84fdb22b9c562528781a40b303ab8ef80c4c9a
-    version: 1.0.3
+    revision: 47d6892e38eb0e45692c81a5f47d71945098ffa0
+    version: 2.0.0
     source:
       Git: https://github.com/pulp-platform/udma_i2c.git
     dependencies:

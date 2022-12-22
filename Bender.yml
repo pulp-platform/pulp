@@ -12,9 +12,9 @@ package:
 dependencies:
   common_cells:       { git: "https://github.com/pulp-platform/common_cells.git", version: 1.22.1 }
   tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.6 }
-  jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", version: 0.1.0 }
-  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", version: ~3.0.0 }
-  pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "db2e173b8b7562092fb9d922d64e0a7bd21da411" }
+  jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", version: 0.2.0 }
+  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", version: ~4.4.0 }
+  pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "75f3f8533690a4b37380202c550484dde5453a98" }
   tbtools:            { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
 
 export_include_dirs:
@@ -29,7 +29,7 @@ sources:
   - target: any(test,simulation)
     files:
       - rtl/vip/spi_master_padframe.sv
-      - rtl/vip/uart_tb_rx.sv
+      - rtl/vip/uart_sim.sv
       - rtl/vip/camera/cam_vip.sv
 
   # S25FS256_model (SPI Flash)
@@ -96,10 +96,10 @@ sources:
       - rtl/tb/SimDTM.sv
       - rtl/tb/SimJTAG.sv
       - rtl/tb/tb_clk_gen.sv
-      - rtl/tb/tb_fs_handler.sv
       # TB Level 1
       - rtl/tb/jtag_pkg.sv
       # TB Level 2
       - rtl/tb/pulp_tap_pkg.sv
+      - rtl/tb/srec/srec_pkg.sv
       # TB Level 3
       - rtl/tb/tb_pulp.sv

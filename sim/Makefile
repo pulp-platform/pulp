@@ -22,14 +22,14 @@ clean-deps:
 
 sim:
 	$(VSIM) -64 -gui vopt_tb -L models_lib -L vip_lib \
-		-suppress vsim-3009 -suppress vsim-8683 \
+		-suppress vsim-3009 -suppress vsim-8683 -suppress 8386 \
 		+UVM_NO_RELNOTES -stats -t ps \
 		-sv_lib $(SVLIB) $(VSIM_FLAGS) \
 		-do "set StdArithNoWarnings 1; set NumericStdNoWarnings 1"
 
 simc:
 	$(VSIM) -64 -c vopt_tb -L models_lib -L vip_lib \
-		-suppress vsim-3009 -suppress vsim-8683 \
+		-suppress vsim-3009 -suppress vsim-8683 -suppress 8386 \
 		+UVM_NO_RELNOTES -stats -t ps \
 		-sv_lib $(SVLIB) $(VSIM_FLAGS) \
 		-do "set StdArithNoWarnings 1; set NumericStdNoWarnings 1" \

@@ -41,6 +41,7 @@ quietly set warning_args "\
   +nowarnTRAN \
   +nowarnTSCALE \
   +nowarnTFMPC \
+  -suppress 8386 \
   "
 
 quietly set define_args "\
