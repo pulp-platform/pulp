@@ -148,7 +148,7 @@ module tb_pulp;
    string                uart_drv_mon_sel = "TB";
 
    int                   num_stim;
-   logic [95:0]          stimuli  [100000:0];                // array for the stimulus vectors
+   logic [95:0]          stimuli  [$];                // array for the stimulus vectors
 
    logic [1:0]           jtag_mux = 2'b00;
 
@@ -879,7 +879,7 @@ module tb_pulp;
                // read in the stimuli vectors  == address_value
                if ($value$plusargs("stimuli=%s", stimuli_file)) begin
                   $display("[TB  ] %t - Loading custom stimuli from %s", $realtime, stimuli_file);
-                  $readmemh(stimuli_file, stimuli);
+                  load_stim(stimuli_file, stimuli);
                end else if ($value$plusargs("srec=%s", srec_path)) begin
                   $display("[TB  ] %t - Loading srec from %s", $realtime, srec_path);
                   srec_read(srec_path, records);
@@ -888,7 +888,7 @@ module tb_pulp;
                      begin_l2_instr = entry_point;
                end else begin
                   $display("[TB  ] %t - Loading default stimuli", $realtime);
-                  $readmemh("./vectors/stim.txt", stimuli);
+                  load_stim("./vectors/stim.txt", stimuli);
                end
 
                $display("[TB  ] %t - Entry point is set to 0x%h", $realtime, begin_l2_instr);
@@ -968,7 +968,7 @@ module tb_pulp;
                    s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
                // long debug module + jtag tests
-               if(ENABLE_DM_TESTS == 1) begin
+               if(ENABLE_DM_TESTS == 1 || $test$plusargs("jtag_dm_tests")) begin
                   debug_mode_if.run_dm_tests(FC_CORE_ID, begin_l2_instr,
                                            error, num_err, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
                   // we don't have any program to load so we finish the testing
@@ -981,15 +981,30 @@ module tb_pulp;
                   $stop;
                end
 
-               $display("[TB] %t - Loading L2", $realtime);
-               if (USE_PULP_BUS_ACCESS) begin
-                  // use pulp tap to load binary 
-                  pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+               if (bootmode == "jtag") begin
+                  $display("[TB] %t - Loading L2", $realtime);
+                  if (USE_PULP_BUS_ACCESS && !$value$plusargs("jtag_load_tap=%s", jtag_tap_type)) begin
+                     jtag_tap_type = "pulp"; // default
+                  end else if (!$value$plusargs("jtag_load_tap=%s", jtag_tap_type)) begin
+                     jtag_tap_type = "riscv"; // main alternate
+                  end
+                  if (jtag_tap_type == "pulp") begin
+                     // use pulp tap to load binary 
+                     pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
 
+                  end else if (jtag_tap_type == "riscv") begin
+                     // use debug module to load binary
+                     debug_mode_if.load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+
+                  end else begin
+                     $fatal(1, "Unknown tap type +jtag_load_tap=%s", jtag_tap_type);
+                  end
+               end else if (bootmode == "fast_debug_preload") begin
+                  $warning(
+                     "[TB  ] - Preloading the memory via direct simulator access. \nNEVER EVER USE THIS MODE TO VERIFY THE BOOT BEHAVIOR OF A CHIP. THIS BOOTMODE IS IMPOSSIBLE ON A PHYSICAL CHIP!!!");
+                  preload_l2(num_stim, stimuli);
                end else begin
-                  // use debug module to load binary
-                  debug_mode_if.load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-
+                  $error("Unknown L2 loading mechnism chosen (bootmode == %s)", bootmode);
                end
 
                // configure for debug module dmi access again
@@ -1026,8 +1041,17 @@ module tb_pulp;
 
             jtag_data[0] = 0;
             while(jtag_data[0][31] == 0) begin
-               // use the error-checking readMem function to avoid getting stuck
-               debug_mode_if.readMemNoErrors(32'h1A1040A0, jtag_data[0], s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+               // every 10th loop iteration, clear the debug module's SBA unit CSR to make
+               // sure there's no error blocking our reads. Sometimes a TCDM read
+               // request issued by the debug module takes longer than it takes
+               // for the read request to the debug module to arrive and it
+               // stores an error in the SBCS register. By clearing it
+               // periodically we make sure the test can terminate.
+               if (rd_cnt % 10 == 0) begin
+                debug_mode_if.clear_sbcserrors(s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+               end
+               debug_mode_if.readMem(32'h1A1040A0, jtag_data[0], s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+               rd_cnt++;
                #50us;
             end
 
@@ -1059,6 +1083,59 @@ module tb_pulp;
          end
       end
 
+
+  task load_stim(input string stim, output logic [95:0] stimuli[$]);
+    int stim_fd, ret;
+    logic [95:0] rdata;
+    stim_fd = $fopen(stim, "r");
+
+    if (stim_fd == 0)
+      $fatal(1, "Could not open stimuli file!");
+
+    while (!$feof(stim_fd)) begin
+      ret= $fscanf(stim_fd, "%h\n", rdata);
+      stimuli.push_back(rdata);
+    end
+
+    $fclose(stim_fd);
+  endtask  // load_stim
+
+
+  task automatic preload_l2(input int num_stim, ref logic [95:0] stimuli[$]);
+    logic more_stim;
+    static logic [95:0] stim_entry;
+    more_stim = 1'b1;
+    $info("Preloading L2 with stimuli through direct access.");
+    while (more_stim == 1'b1) begin
+      @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+      stim_entry = stimuli[num_stim];
+      force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.req = 1'b1;
+      force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.add = stim_entry[95:64];
+      force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wdata = stim_entry[31:0];
+      force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wen = 1'b0;
+      force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.be = '1;
+      do begin
+        @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+      end while (~i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.gnt);
+      force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.add   = stim_entry[95:64]+4;
+      force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wdata = stim_entry[63:32];
+      do begin
+        @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+      end while (~i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.gnt);
+
+      num_stim = num_stim + 1;
+      if (num_stim > $size(stimuli) || stimuli[num_stim] === 96'bx) begin  // make sure we have more stimuli
+        more_stim = 0;  // if not set variable to 0, will prevent additional stimuli to be applied
+        break;
+      end
+    end  // while (more_stim == 1'b1)
+    release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.req;
+    release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.add;
+    release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wdata;
+    release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wen;
+    release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.be;
+    @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+  endtask // preload_l2
 
 endmodule // tb_pulp
 

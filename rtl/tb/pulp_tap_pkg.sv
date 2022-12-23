@@ -328,7 +328,7 @@ package pulp_tap_pkg;
          jtag_soc_dbg.update_and_goto_shift(s_tck, s_tms, s_trstn, s_tdi);
          jtag_soc_dbg.update_and_goto_shift(s_tck, s_tms, s_trstn, s_tdi);
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] NOP command.");
+         $display("[PULP] %t - NOP command.", $realtime);
       endtask
 
       task write8(
@@ -352,7 +352,7 @@ package pulp_tap_pkg;
             jtag_soc_dbg.shift_nbits_noex(8, data[i], dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'h11111111}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] WRITE8 burst @%h for %d bytes.", addr, nwords);
+         $display("[PULP] %t - WRITE8 burst @%h for %d bytes.", $realtime, addr, nwords);
       endtask
 
       task write16(
@@ -376,7 +376,7 @@ package pulp_tap_pkg;
             jtag_soc_dbg.shift_nbits_noex(16, data[i], dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'h11111111}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] WRITE16 burst @%h for %d bytes.", addr, nwords*2);
+         $display("[PULP] %t - WRITE16 burst @%h for %d bytes.", $realtime, addr, nwords*2);
       endtask
 
       task write32(
@@ -401,7 +401,7 @@ package pulp_tap_pkg;
             jtag_soc_dbg.shift_nbits_noex(32, data[i], dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'h11111111}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] WRITE32 burst @%h for %d bytes.", addr, nwords*4);
+         $display("[PULP] %t - WRITE32 burst @%h for %d bytes.", $realtime, addr, nwords*4);
       endtask
 
       task write64(
@@ -425,7 +425,7 @@ package pulp_tap_pkg;
             jtag_soc_dbg.shift_nbits_noex(64, data[i], dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'h11111111}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] WRITE64 burst @%h for %d bytes.", addr, nwords*8);
+         $display("[PULP] %t - WRITE64 burst @%h for %d bytes.", $realtime, addr, nwords*8);
       endtask
 
       task read8(
@@ -457,7 +457,7 @@ package pulp_tap_pkg;
          end
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'b0}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] READ8 burst @%h for %d bytes.", addr, nwords);
+         $display("[PULP] %t - READ8 burst @%h for %d bytes.", $realtime, addr, nwords);
       endtask
 
       task read16(
@@ -489,7 +489,7 @@ package pulp_tap_pkg;
          end
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'b0}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] READ16 burst @%h for %d bytes.", addr, nwords*2);
+         $display("[PULP] %t - READ16 burst @%h for %d bytes.", $realtime, addr, nwords*2);
       endtask
 
       task read32(
@@ -521,7 +521,7 @@ package pulp_tap_pkg;
          end
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'b0}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         // $display("[pulp_tap_if] READ32 burst @%h for %d bytes.", addr, nwords*4);
+         // $display("[PULP] READ32 burst @%h for %d bytes.", addr, nwords*4);
       endtask
 
       task read64(
@@ -553,14 +553,14 @@ package pulp_tap_pkg;
          end
          jtag_soc_dbg.shift_nbits(34, {2'b0, 32'b0}, dataout, s_tck, s_tms, s_trstn, s_tdi, s_tdo); // for now we completely ignore CRC
          jtag_soc_dbg.idle(s_tck, s_tms, s_trstn, s_tdi);
-         $display("[pulp_tap_if] READ64 burst @%h for %d bytes.", addr, nwords*8);
+         $display("[PULP] %t - READ64 burst @%h for %d bytes.", $realtime, addr, nwords*8);
       endtask
 
    endclass
 
    task automatic load_L2(
       input int          num_stim,
-      ref   logic [95:0] stimuli [100000:0],
+      ref   logic [95:0] stimuli [$],
       ref logic s_tck,
       ref logic s_tms,
       ref logic s_trstn,
@@ -577,7 +577,7 @@ package pulp_tap_pkg;
       spi_addr        = stimuli[num_stim][95:64]; // assign address
       jtag_data[0]    = stimuli[num_stim][63:0];  // assign data
 
-      $display("[JTAG] Loading L2 with pulp tap jtag interface");
+      $display("[JTAG] %t - Loading L2 with pulp tap jtag interface", $realtime);
       pulp_tap.init(s_tck, s_tms, s_trstn, s_tdi);
 
       spi_addr_old = spi_addr - 32'h8;
