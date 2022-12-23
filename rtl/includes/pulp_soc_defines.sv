@@ -40,15 +40,15 @@
 
 // LSB                       [0]:     1'h1
 // PULP Platform Manufacturer[11:1]:  11'h6d9
-// Part Number               [27:12]: 16'hcafe
+// Part Number               [27:12]: 16'h0002
 // Version                   [31:28]: 4'h5
-`define DMI_JTAG_IDCODE 32'h50001db3
+`define DMI_JTAG_IDCODE 32'h50002db3
 
 // LSB                       [0]:     1'h1
 // PULP Platform Manufacturer[11:1]:  11'h6d9
-// Part Number               [27:12]: 16'hcaff
+// Part Number               [27:12]: 16'hfffd
 // Version                   [31:28]: 4'h5
-`define PULP_JTAG_IDCODE 32'h5fffedb3
+`define PULP_JTAG_IDCODE 32'h5fffddb3
 
 // Hardware Accelerator selection
 `define HWCRYPT
