@@ -807,8 +807,17 @@ module tb_pulp;
 
          // read boot mode from commandline
          // read entry point from commandline
-         if (!$value$plusargs("bootmode=%s", bootmode))
-            bootmode = "jtag";
+         if (!$value$plusargs("bootmode=%s", bootmode)) begin
+            if (LOAD_L2 == "JTAG") begin
+               bootmode = "jtag";
+            end else if (LOAD_L2 == "STANDALONE") begin
+               bootmode = "standalone";
+            end else if (LOAD_L2 == "FAST_DEBUG_PRELOAD") begin
+               bootmode = "fast_debug_preload";
+            end else begin
+               bootmode = "jtag";
+            end
+         end 
 
          // read entry point from commandline
          if ($value$plusargs("ENTRY_POINT=%h", entry_point))
@@ -865,7 +874,7 @@ module tb_pulp;
                s_bootsel = 2'b01;
             end
 
-            if (LOAD_L2 == "JTAG" || bootmode == "jtag" || bootmode == "fast_debug_preload") begin
+            if (LOAD_L2 == "JTAG" || bootmode == "jtag" || LOAD_L2 == "FAST_DEBUG_PRELOAD" || bootmode == "fast_debug_preload") begin
                if (USE_FLL)
                   $display("[TB] %t - Using FLL", $realtime);
                else
