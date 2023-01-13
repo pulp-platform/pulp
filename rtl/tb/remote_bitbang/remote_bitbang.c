@@ -13,6 +13,22 @@
 
 #include "remote_bitbang.h"
 
+int rbs_err;
+
+unsigned char tck;
+unsigned char tms;
+unsigned char tdi;
+unsigned char trstn;
+unsigned char tdo;
+unsigned char quit;
+
+int socket_fd;
+int client_fd;
+
+const ssize_t buf_size = 64 * 1024;
+char recv_buf[64 * 1024];
+ssize_t recv_start, recv_end;
+
 int rbs_init(uint16_t port)
 {
     socket_fd  = 0;
