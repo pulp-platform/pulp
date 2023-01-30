@@ -76,6 +76,15 @@ sources:
       - fpga/pulp/rtl/fpga_slow_clk_gen.sv
       - fpga/pulp/rtl/fpga_bootrom.sv
 
+  # Synopsys & Innovus
+  - target: all(asic, not(all(fpga, xilinx)))
+    defines:
+      USE_CLUSTER_NETLIST: ~
+    files:
+      - gf22/macro_wrap/memwrap_gf22.sv
+      - gf22/macro_wrap/tc_sram_gf22.sv
+      - gf22/macro_wrap/tc_clk_gf22.sv
+
   - rtl/pulp/cluster_domain.sv
   - rtl/pulp/jtag_tap_top.sv
   - rtl/pulp/pad_control.sv
