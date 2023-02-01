@@ -1,296 +1,40 @@
-# Copyright 2021 ETH Zurich and University of Bologna.
+# Copyright 2023 ETH Zurich and University of Bologna.
 # Solderpad Hardware License, Version 0.51, see LICENSE for details.
 # SPDX-License-Identifier: SHL-0.51
 #
 # Author: Luca Rufer (lrufer@student.ethz.ch)
 
-# Description: This file is used to extract specific groups of nets from
-#              Mempool, that can be used in a fault injection script
+# Description: This file provides some generic procs to extract next from a
+#              circuit.
 
-
-# == Base Path for the Simulations ==
-# proc base_path {group tile core} {return "/mempool_tb/dut/i_mempool_cluster/gen_groups\[$group\]/i_group/gen_tiles\[$tile\]/i_tile/gen_cores\[$core\]/gen_mempool_cc/riscv_core/i_snitch"}
-proc base_path {core} {return "/tb_pulp/i_dut/cluster_domain_i/cluster_i/CORE\[$core\]/core_region_i"} 
-
-# == Determine the snitch core parameters ==
-# set is_dmr_enabled [examine -radix dec /snitch_dmr_pkg::DualModularRedundancy]
-# set is_ecc_enabled [examine -radix binary [base_path 0 0 0]/EnableECCReg]
-
-# == Nets to ignore for transient bit flips ==
-# nets used for debugging
-lappend core_netlist_ignore *gen_stack_overflow_check*
-# nets that would crash the simulation if flipped
-lappend core_netlist_ignore *dmr*
-lappend core_netlist_ignore *hart_id*
-lappend core_netlist_ignore *clk_i
-lappend core_netlist_ignore *rst_ni
-lappend core_netlist_ignore *rst_i
-lappend core_netlist_ignore *rst
-# registers/memories
-lappend core_netlist_ignore *mem
-lappend core_netlist_ignore *_q
-# Others
-# - none -
-
-####################
-#  State Netlists  #
-####################
-
-proc get_protected_master_state_netlist {group tile core} {
-  if {$core % 2 != 0} {
-    throw {CORE SEL} {Core $group $tile $core is not a Master.}
-  }
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  # Snitch state
-  if {$::is_dmr_enabled} {
-    lappend netlist $base/DMR_state/mst/i_pc/data_q
-    lappend netlist $base/DMR_state/mst/i_wfi/data_q
-    lappend netlist $base/DMR_state/mst/i_wake_up/data_q
-    lappend netlist $base/DMR_state/mst/i_sb/data_q
-  } elseif {$::is_ecc_enabled} {
-    lappend netlist $base/state/TMR/i_pc/data_q
-    lappend netlist $base/state/TMR/i_wfi/data_q
-    lappend netlist $base/state/TMR/i_wake_up/data_q
-    lappend netlist $base/state/TMR/i_sb/data_q
-  }
-  return $netlist
-}
-
-proc get_protected_slave_state_netlist {group tile core} {
-  if {$core % 2 != 1} {
-    throw {CORE SEL} {Core $group $tile $core is not a slave.}
-  }
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  # Snitch state
-  if {$::is_ecc_enabled} {
-    if {$::is_dmr_enabled} {
-      lappend netlist $base/DMR_state/slv/TMR/i_pc/data_q
-      lappend netlist $base/DMR_state/slv/TMR/i_wfi/data_q
-      lappend netlist $base/DMR_state/slv/TMR/i_wake_up/data_q
-      lappend netlist $base/DMR_state/slv/TMR/i_sb/data_q
-    } else {
-      lappend netlist $base/state/TMR/i_pc/data_q
-      lappend netlist $base/state/TMR/i_wfi/data_q
-      lappend netlist $base/state/TMR/i_wake_up/data_q
-      lappend netlist $base/state/TMR/i_sb/data_q
-    }
-  }
-  return $netlist
-}
-
-proc get_unprotected_master_state_netlist {group tile core} {
-  if {$core % 2 != 0} {
-    throw {CORE SEL} {Core $group $tile $core is not a Master.}
-  }
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  # Snitch state
-  if {!$::is_dmr_enabled && !$::is_ecc_enabled} {
-    lappend netlist $base/pc_q
-    lappend netlist $base/wfi_q
-    lappend netlist $base/wake_up_q
-    lappend netlist $base/sb_q
-  }
-  return $netlist
-}
-
-proc get_unprotected_slave_state_netlist {group tile core} {
-  if {$core % 2 != 1} {
-    throw {CORE SEL} {Core $group $tile $core is not a slave.}
-  }
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  # Snitch state
-  if {!$::is_ecc_enabled} {
-    if {$::is_dmr_enabled} {
-      lappend netlist $base/DMR_state/slv/pc_qq
-      lappend netlist $base/DMR_state/slv/wfi_qq
-      lappend netlist $base/DMR_state/slv/wake_up_qq
-      lappend netlist $base/DMR_state/slv/sb_qq
-    } else {
-      lappend netlist $base/pc_q
-      lappend netlist $base/wfi_q
-      lappend netlist $base/wake_up_q
-      lappend netlist $base/sb_q
-    }
-  }
-  return $netlist
-}
-
-proc get_slave_state_netlist {group tile core} {
-  if {$core % 2 != 1} {
-    throw {CORE SEL} {Core $group $tile $core is not a slave.}
-  }
-  set protected_netlist [get_protected_slave_state_netlist $group $tile $core]
-  set unprotected_netlist [get_unprotected_slave_state_netlist $group $tile $core]
-  return [concat $protected_netlist $unprotected_netlist]
-}
-
-proc get_master_state_netlist {group tile core} {
-  if {$core % 2 != 0} {
-    throw {CORE SEL} {Core $group $tile $core is not a master.}
-  }
-  set protected_netlist [get_protected_master_state_netlist $group $tile $core]
-  set unprotected_netlist [get_unprotected_master_state_netlist $group $tile $core]
-  return [concat $protected_netlist $unprotected_netlist]
-}
-
-proc get_unprotected_state_netlist {group tile core} {
-  if {$core % 2 == 0} {
-    return [get_unprotected_master_state_netlist $group $tile $core]
-  } else {
-    return [get_unprotected_slave_state_netlist $group $tile $core]
-  }
-}
-
-proc get_protected_state_netlist {group tile core} {
-  if {$core % 2 == 0} {
-    return [get_protected_master_state_netlist $group $tile $core]
-  } else {
-    return [get_protected_slave_state_netlist $group $tile $core]
-  }
-}
-
-proc get_state_netlist {group tile core} {
-  if {$core % 2 == 0} {
-    return [get_master_state_netlist $group $tile $core]
-  } else {
-    return [get_slave_state_netlist $group $tile $core]
-  }
-}
-
-proc get_protected_regfile_mem_netlist {group tile core} {
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  if {$core % 2 == 0} {
-    # Protected Master
-    if {$::is_dmr_enabled} {
-      for {set i 0} {$i < 32} {incr i} {
-        lappend netlist $base/gen_dmr_master_regfile/i_snitch_regfile/mem\[$i\]
-      }
-    } elseif {$::is_ecc_enabled} {
-      for {set i 0} {$i < 32} {incr i} {
-        lappend netlist $base/gen_regfile/ECC/i_snitch_regfile/mem\[$i\]
-      }
-    }
-  } else {
-    # Protected Slave
-    if {$::is_ecc_enabled} {
-      for {set i 0} {$i < 32} {incr i} {
-        lappend netlist $base/gen_regfile/ECC/i_snitch_regfile/mem\[$i\]
-      }
-    }
-  }
-  return $netlist
-}
-
-proc get_unprotected_regfile_mem_netlist {group tile core} {
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  if {$::is_ecc_enabled || ($core % 2 == 0 && $::is_dmr_enabled)}{return $netlist}
-
-  for {set i 0} {$i < 32} {incr i} {
-    lappend netlist $base/gen_regfile/noECC/i_snitch_regfile/mem\[$i\]
-  }
-  
-  return $netlist
-}
-
-proc lsu_is_dmr_master {group tile core} {
-  set is_master 0
-  if {$::is_dmr_enabled} {
-    set base [base_path $group $tile $core]/gen_DMR_lsu/i_snitch_lsu
-    set is_master [examine -radix decimal $base/IsDMRMaster]
-  }
-  return $is_master
-}
-
-proc get_protected_lsu_state_netlist {group tile core} {
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  if {$::is_dmr_enabled} {
-    set NumOutstandingLoads [examine -radix decimal $base/gen_DMR_lsu/i_snitch_lsu/NumOutstandingLoads]
-    if {[lsu_is_dmr_master $group $tile $core]} {
-      lappend netlist $base/gen_DMR_lsu/i_snitch_lsu/mst_state/i_id/data_q
-      for {set i 0} {$i < $NumOutstandingLoads} {incr i} {
-      lappend netlist $base/gen_DMR_lsu/i_snitch_lsu/metadata_q\[$i\]
-      }
-    } else {
-      if {$::is_ecc_enabled} {
-        lappend netlist $base/gen_DMR_lsu/i_snitch_lsu/slv_state/ECC/i_id/data_q
-        for {set i 0} {$i < $NumOutstandingLoads} {incr i} {
-          lappend netlist $base/gen_DMR_lsu/i_snitch_lsu/metadata_q\[$i\]
-        }
-      }
-    }
-  } else {
-    set NumOutstandingLoads [examine -radix decimal $base/gen_lsu/i_snitch_lsu/NumOutstandingLoads]
-    if {$::is_ecc_enabled} {
-      lappend netlist $base/gen_lsu/i_snitch_lsu/ECC/i_id/data_q
-      for {set i 0} {$i < $NumOutstandingLoads} {incr i} {
-        lappend netlist $base/gen_lsu/i_snitch_lsu/metadata_q\[$i\]
-      }
-    }
-  }
-
-  return $netlist
-}
-
-proc get_unprotected_lsu_state_netlist {group tile core} {
-  set base [base_path $group $tile $core]
-  set netlist [list]
-  # LSU state
-  if {$::is_dmr_enabled} {
-    set NumOutstandingLoads [examine -radix decimal $base/gen_DMR_lsu/i_snitch_lsu/NumOutstandingLoads]
-    if {![lsu_is_dmr_master $group $tile $core] && !$::is_ecc_enabled} {
-      lappend netlist $base/gen_DMR_lsu/i_snitch_lsu/id_available_q
-      for {set i 0} {$i < $NumOutstandingLoads} {incr i} {
-        lappend netlist $base/gen_DMR_lsu/i_snitch_lsu/metadata_q\[$i\]
-      }
-    }
-  } else {
-    set NumOutstandingLoads [examine -radix decimal $base/gen_lsu/i_snitch_lsu/NumOutstandingLoads]
-    if {!$::is_ecc_enabled} {
-      set lsu_netlist [find signal $base/gen_lsu/i_snitch_lsu/*_q]
-      set netlist [concat $netlist $lsu_netlist]
-    }
-  }
-  return $netlist
-}
-
-######################
-#  Core Output Nets  #
-######################
-
-proc get_output_netlist {core} {
-  return [find nets -out [base_path $core]/*]
-  # return [find signal [base_path $group $tile $core]/*_o]
-}
-
-#####################
-#  Next State Nets  #
-#####################
-
-proc get_next_state_netlist {group tile core} {
-  set next_state_netlist [find signal -r [base_path $group $tile $core]/*_d]
-  # Note: CSRs currently not included
-  # Note: Regfile not included
-  return $next_state_netlist
-}
-
-################
-#  Assertions  #
-################
-
-proc get_assertions {group tile core} {
-  set assertion_list [list]
-  lappend assertion_list [base_path $group $tile $core]/InstructionInterfaceStable
-  lappend assertion_list [base_path $group $tile $core]/**/i_snitch_lsu/invalid_resp_id
-  lappend assertion_list [base_path $group $tile $core]/**/i_snitch_lsu/invalid_req_id
-  return $assertion_list
-}
+# ================================= Overview ==================================
+# ----------------------- General Netlist utility procs -----------------------
+# 'get_net_type'           : Get the type of a Net using the describe command.
+#                            Example return type are "Register", "Net", "Enum",
+#                            "Array", "Record" (struct), and others
+# 'get_net_array_length'   : Get the length of an Array using the describe
+#                            command.
+# 'get_net_reg_width'      : Get the width (number of bits) of a Register or
+#                            Net using the describe command
+# 'get_record_field_names' : Get the names of all fiels of a Record (struct).
+# ------------------------- Netlist Extraction procs --------------------------
+# 'get_state_netlist'      : Example function for how to extract state nets.
+#                            Non-recursive implementation.
+# 'get_state_netlist_revursive' : Example function for how to extract state nets
+#                            Recursive implementation.
+# 'get_next_state_netlist' : Example function for how to extract next state
+#                            nets. Non-recursive implementation.
+# 'get_next_state_netlist_recursive' : Example function for how to extract
+#                            next state nets. Recursive implementation.
+# 'get_output_netlist'     : Example function for how to extract output nets
+#                            of a circuit.
+# 'extract_netlists'       : Given a list of nets obtained e.g. from the 'find'
+#                            command, recursively extract signals until only
+#                            signals of type "Register", "Net" and "Enum"
+#                            remain.
+# 'extract_all_nets_recursive_filtered' : Extract all nets from a circuit,
+#                            filter them using the given patterns, and
+#                            recursively extract them using 'extract_netlists'.
 
 ##################################
 #  Net extraction utility procs  #
@@ -359,39 +103,81 @@ proc extract_netlists {item_list} {
   return $extract_list
 }
 
-##############################
-#  Get all nets from a core  #
-##############################
+####################
+#  State Netlists  #
+####################
 
-proc get_all_core_nets {core} {
+# Example proc on how to extract state nets (not recursive)
+# This is not guaranteed to work for every circuit, as net may not be named
+# according to conventions!
+proc get_state_netlist {base_path} {
+  return [extract_netlists [find signal $base_path/*_q]]
+}
 
-  # Path of the core
-  set core_path [base_path $core]/*
+# Example proc on how to extract state nets.
+# This is not guaranteed to work for every circuit, as net may not be named
+# according to conventions!
+proc get_state_netlist_revursive {base_path} {
+  return [extract_netlists [find signal -r $base_path/*_q]]
+}
 
-  # extract all signals from the core
-  set core_netlist [find signal -r $core_path];
+#####################
+#  Next State Nets  #
+#####################
+
+# Example proc on how to extract next state nets (not recursive).
+# This is not guaranteed to work for every circuit, as net may not be named
+# according to conventions!
+proc get_next_state_netlist {base_path} {
+  return [find signal $base_path/*_d]
+}
+
+# Example proc on how to extract next state nets.
+# This is not guaranteed to work for every circuit, as net may not be named
+# according to conventions!
+proc get_next_state_netlist_recursive {base_path} {
+  return [find signal -r $base_path/*_d]
+}
+
+#########################
+#  Circuit Output Nets  #
+#########################
+
+proc get_output_netlist {base_path} {
+  return [find signal -out $base_path/*]
+}
+
+##################
+#  Get all nets  #
+##################
+
+proc extract_all_nets_recursive_filtered {base_path filter_list} {
+
+  # recursively extract all signals from the circuit
+  set netlist [find signal -r $base_path/*];
 
   # filter and sort the signals
-  set core_netlist_filtered [list];
-  foreach core_net $core_netlist {
+  set netlist_filtered [list];
+  foreach net $netlist {
     set ignore_net 0
     # ignore any net that matches any ignore pattern
-    foreach ignore_pattern $::core_netlist_ignore {
-      if {[string match $ignore_pattern $core_net]} {
+    foreach ignore_pattern $filter_list {
+      if {[string match $ignore_pattern $net]} {
         set ignore_net 1
+        break
       }
     }
     # add all nets that are not ignored
     if {$ignore_net == 0} {
-      lappend core_netlist_filtered $core_net
+      lappend netlist_filtered $net
     }
   }
 
   # sort the filtered nets alphabetically
-  set core_netlist_filtered [lsort -dictionary $core_netlist_filtered]
+  set netlist_filtered [lsort -dictionary $netlist_filtered]
 
   # recursively extract all nets and enums from arrays and structs
-  set core_netlist_extracted [extract_netlists $core_netlist_filtered]
+  set netlist_extracted [extract_netlists $netlist_filtered]
 
-  return $core_netlist_extracted
+  return $netlist_extracted
 }
