@@ -83,8 +83,8 @@ packages:
     dependencies:
     - common_cells
   cluster_interconnect:
-    revision: 7d0a4f8acae71a583a6713cab5554e60b9bb8d27
-    version: 1.2.1
+    revision: 89e1019d64a86425211be6200770576cbdf3e8b3
+    version: null
     source:
       Git: https://github.com/pulp-platform/cluster_interconnect.git
     dependencies:
@@ -111,7 +111,7 @@ packages:
       Git: https://github.com/pulp-platform/common_verification.git
     dependencies: []
   cv32e40p:
-    revision: 800a09d97a1e9418e127e8bbf1763c1d1097c92f
+    revision: 846df8acb80eba89b41fa4f43f491b567313c0b3
     version: null
     source:
       Git: https://github.com/pulp-platform/cv32e40p.git
@@ -120,7 +120,7 @@ packages:
     - fpnew
     - tech_cells_generic
   event_unit_flex:
-    revision: 53fb3a1093aaaedfe883739fd8a3155d601210bc
+    revision: 28e0499374117c7b0ef4c6ad81b60d7526af886f
     version: null
     source:
       Git: https://github.com/pulp-platform/event_unit_flex.git
@@ -215,24 +215,14 @@ packages:
     dependencies:
     - tech_cells_generic
   icache-intc:
-    revision: 663c3b6d3c2bf63ff25cda46f33c799c647b3985
-    version: 1.0.1
+    revision: c40221325c7de9158c39fecc8e2fea2316cadc28
+    version: null
     source:
       Git: https://github.com/pulp-platform/icache-intc.git
     dependencies: []
-  icache_mp_128_pf:
-    revision: 6f2e54102001230db9c82432bf9e011842419a48
-    version: null
-    source:
-      Git: https://github.com/pulp-platform/icache_mp_128_pf.git
-    dependencies:
-    - axi_slice
-    - common_cells
-    - icache-intc
-    - scm
   idma:
-    revision: 6ad5695b85ce253f3095871b958fb76b36d074c6
-    version: 0.3.1
+    revision: 85d265e21dba8be8ce1b345d13329aab90d0dec9
+    version: null
     source:
       Git: https://github.com/pulp-platform/idma.git
     dependencies:
@@ -267,7 +257,7 @@ packages:
     dependencies:
     - axi_slice
   pulp_cluster:
-    revision: 75f3f8533690a4b37380202c550484dde5453a98
+    revision: 59763109584353ab02ab031df0659a2d5a0e0d33
     version: null
     source:
       Git: https://github.com/pulp-platform/pulp_cluster.git
@@ -286,16 +276,17 @@ packages:
     - hier-icache
     - hwpe-datamover-example
     - ibex
-    - icache_mp_128_pf
     - idma
     - mchan
     - per2axi
+    - redundancy_cells
+    - register_interface
     - scm
     - tech_cells_generic
     - timer_unit
   pulp_soc:
-    revision: 0573a85c8ec502ff5e3ef06946a75eaf567ce16a
-    version: 4.4.0
+    revision: d54b51b10e2dc030b6f686c3098ee295c9bafa69
+    version: null
     source:
       Git: https://github.com/pulp-platform/pulp_soc.git
     dependencies:
@@ -333,6 +324,16 @@ packages:
     - udma_qspi
     - udma_sdio
     - udma_uart
+  redundancy_cells:
+    revision: 6d9d428ed342abc0844efc06eedf057e93e63c3d
+    version: null
+    source:
+      Git: https://github.com/pulp-platform/redundancy_cells.git
+    dependencies:
+    - common_cells
+    - common_verification
+    - register_interface
+    - tech_cells_generic
   register_interface:
     revision: e3a4955071fcf554febd4b29a7c7a52c7f1e7fc6
     version: 0.3.8

@@ -1,4 +1,20 @@
 overrides:
-  # cv32e40p: { path: "working_dir/cv32e40p" } # Temporary override by Bender using `bender clone` command
-  # fpu_interco: { path: "working_dir/fpu_interco" } # Temporary override by Bender using `bender clone` command
-  # pulp_cluster: { path: "working_dir/pulp_cluster" }
+  # For 12 cores
+  icache-intc: { git: "https://github.com/pulp-platform/icache-intc.git", rev: "c40221325c7de9158c39fecc8e2fea2316cadc28" }
+  cluster_interconnect: { git: "https://github.com/pulp-platform/cluster_interconnect.git", rev: "89e1019" } # Temporary override by Bender using `bender clone` command
+  
+  # For HMR
+#  cv32e40p: { path: "working_dir/cv32e40p" } # Temporary override by Bender using `bender clone` command
+  cv32e40p: { git: "https://github.com/pulp-platform/cv32e40p.git", rev: "846df8a" }
+#  pulp_soc: { path: "working_dir/pulp_soc" } # Temporary override by Bender using `bender clone` command
+#  pulp_soc: { git: "https://github.com/pulp-platform/pulp_soc.git", rev: "d54b51b" }
+#  pulp_cluster: { path: "working_dir/pulp_cluster" } # Temporary override by Bender using `bender clone` command
+#  pulp_cluster: { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "5976310" }
+
+  # For idma compatibility
+#  idma: { path: "working_dir/idma" } # Temporary override by Bender using `bender clone` command
+  idma: { git: "https://github.com/pulp-platform/idma.git", rev: "85d265e" }
+
+  # For clean update call
+  apb: { git: "https://github.com/pulp-platform/apb.git", version: 0.1.0 }
+  axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.38.0 }
