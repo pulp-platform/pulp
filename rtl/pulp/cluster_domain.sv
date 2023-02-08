@@ -48,7 +48,7 @@ module cluster_domain
 `endif
 
 `ifdef PRIVATE_ICACHE
-    parameter NB_CACHE_BANKS        = `NB_CORES,
+    parameter NB_CACHE_BANKS        = 8,
 `endif
 
     parameter CACHE_LINE            = 1,

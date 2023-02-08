@@ -57,7 +57,7 @@
 //`define NO_SCM
 
 //`define APU_CLUSTER
-`define SHARED_FPU_CLUSTER
+// `define SHARED_FPU_CLUSTER
 
 // uncomment if you want to place the DEMUX peripherals (EU, MCHAN) rigth before the Test and set region.
 // This will steal 16KB from the 1MB TCDM reegion.
@@ -104,7 +104,7 @@
 
 //PARAMETRES
 `define NB_CLUSTERS   1
-`define NB_CORES      8
+`define NB_CORES      12
 `define NB_DMAS       4
 `define NB_MPERIPHS   1
 `define NB_SPERIPHS   10
