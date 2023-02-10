@@ -14,8 +14,8 @@ dependencies:
   tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.6 }
   jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", version: 0.2.0 }
   # For HMR
-  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", rev: "d54b51b" }
-  pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "5976310" }
+  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git",     rev: "d54b51b" }
+  pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "4db79a7" }
   tbtools:            { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
 
 export_include_dirs:

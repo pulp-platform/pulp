@@ -257,7 +257,7 @@ packages:
     dependencies:
     - axi_slice
   pulp_cluster:
-    revision: 59763109584353ab02ab031df0659a2d5a0e0d33
+    revision: 4db79a7447e5e8feefd5292cdb2bbb27052da618
     version: null
     source:
       Git: https://github.com/pulp-platform/pulp_cluster.git
@@ -325,7 +325,7 @@ packages:
     - udma_sdio
     - udma_uart
   redundancy_cells:
-    revision: 6d9d428ed342abc0844efc06eedf057e93e63c3d
+    revision: dd5878a937bfed3297308537b932feee19c03ee9
     version: null
     source:
       Git: https://github.com/pulp-platform/redundancy_cells.git
