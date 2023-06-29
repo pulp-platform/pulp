@@ -1515,7 +1515,7 @@ package jtag_pkg;
 
       task load_L2(
          input int   num_stim,
-         ref   logic [95:0] stimuli [100000:0],
+         ref   logic [95:0] stimuli [$],
          ref   logic s_tck,
          ref   logic s_tms,
          ref   logic s_trstn,

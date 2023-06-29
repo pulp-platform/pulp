@@ -93,6 +93,7 @@ sources:
     files:
       # TB Level 0
       - rtl/tb/riscv_pkg.sv
+      - rtl/tb/srec/srec_pkg.sv
       - rtl/tb/SimDTM.sv
       - rtl/tb/SimJTAG.sv
       - rtl/tb/tb_clk_gen.sv
