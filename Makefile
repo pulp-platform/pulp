@@ -1,6 +1,14 @@
 
 SHELL=bash
 
+MAESTRO_DIR := $(shell git rev-parse --show-toplevel 2>/dev/null || echo $$MAESTRO_DIR)
+ROOT_DIR := ${MAESTRO_DIR}
+
+# Bender version
+BENDER_VERSION = 0.27.1
+BENDER_INSTALL_DIR    ?= install/bender
+BENDER ?= install/bender
+
 PKG_DIR ?= $(PWD)/pulp-runtime
 
 export VSIM_PATH=$(PWD)/sim
@@ -36,6 +44,27 @@ BENDER_SIM_BUILD_DIR = sim
 BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
 BENDER_MIN_VERSION = 0.26.1
 BENDER = ./bender # Adapt this if using a local bender install
+
+
+############
+#  Bender  #
+############
+
+bender: check-bender
+check-bender:
+	@if [ -x $(BENDER_INSTALL_DIR)/bender ]; then \
+		req="bender $(BENDER_VERSION)"; \
+		current="$$($(BENDER_INSTALL_DIR)/bender --version)"; \
+		if [ "$$(printf '%s\n' "$${req}" "$${current}" | sort -V | head -n1)" != "$${req}" ]; then \
+			rm -rf $(BENDER_INSTALL_DIR); \
+		fi \
+	fi
+	@$(MAKE) -C $(ROOT_DIR) $(BENDER_INSTALL_DIR)/bender
+
+$(BENDER_INSTALL_DIR)/bender:
+	mkdir -p $(BENDER_INSTALL_DIR) && cd $(BENDER_INSTALL_DIR) && \
+	curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh -s -- $(BENDER_VERSION)
+
 
 .PHONY: checkout
 ifndef IPAPPROX
@@ -190,7 +219,7 @@ test-fast-regressions:
 	source pulp-runtime/configs/pulp.sh; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 2000 --yaml -o simplified-runtime.xml simple-regression-tests.yaml
 
-test-local-regressions: 
+test-local-regressions:
 	mkdir -p regression_tests/riscv_tests_soc
 	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
 	source setup/vsim.sh; \
@@ -239,7 +268,7 @@ git-boot:
 	touch regression_tests/boot-runtime.xml; \
 	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o boot-runtime.xml hello-test.yaml
 
-test-local-runtime: 
+test-local-runtime:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
