@@ -4,10 +4,12 @@ SHELL=bash
 MAESTRO_DIR := $(shell git rev-parse --show-toplevel 2>/dev/null || echo $$MAESTRO_DIR)
 ROOT_DIR := ${MAESTRO_DIR}
 
+INSTALL_PREFIX        ?= install
+INSTALL_DIR           ?= ${ROOT_DIR}/${INSTALL_PREFIX}
 # Bender version
 BENDER_VERSION = 0.27.1
-BENDER_INSTALL_DIR    ?= install/bender
-BENDER ?= install/bender
+BENDER_INSTALL_DIR    ?= ${INSTALL_DIR}/bender
+BENDER ?= ${BENDER_INSTALL_DIR}/bender
 
 PKG_DIR ?= $(PWD)/pulp-runtime
 
@@ -43,7 +45,6 @@ VLOG_ARGS += -suppress 2583 -suppress 13314 \"+incdir+\$$ROOT/rtl/includes\"
 BENDER_SIM_BUILD_DIR = sim
 BENDER_FPGA_SCRIPTS_DIR = fpga/pulp/tcl/generated
 BENDER_MIN_VERSION = 0.26.1
-BENDER = ./bender # Adapt this if using a local bender install
 
 
 ############
@@ -65,6 +66,8 @@ $(BENDER_INSTALL_DIR)/bender:
 	mkdir -p $(BENDER_INSTALL_DIR) && cd $(BENDER_INSTALL_DIR) && \
 	curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh -s -- $(BENDER_VERSION)
 
+update:
+	$(BENDER) update
 
 .PHONY: checkout
 ifndef IPAPPROX
@@ -209,8 +212,6 @@ pulp-runtime:
 test-checkout-gitlab:
 	./update-regression-tests
 
-
-
 # gitlab and local test runs
 test-fast-regressions:
 	mkdir -p regression_tests/riscv_tests_soc
@@ -272,13 +273,6 @@ test-local-runtime:
 	source setup/vsim.sh; \
 	source pulp-runtime/configs/pulp.sh; \
 	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
-
-bender:
-ifeq (,$(wildcard ./bender))
-	curl --proto '=https' --tlsv1.2 -sSf https://pulp-platform.github.io/bender/init \
-		| bash -s -- $(BENDER_MIN_VERSION)
-	touch bender
-endif
 
 .PHONY: bender-rm
 bender-rm:
