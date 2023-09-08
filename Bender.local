@@ -1,4 +1,4 @@
 overrides:
-  # cv32e40p: { path: "working_dir/cv32e40p" } # Temporary override by Bender using `bender clone` command
-  # fpu_interco: { path: "working_dir/fpu_interco" } # Temporary override by Bender using `bender clone` command
-  # pulp_cluster: { path: "working_dir/pulp_cluster" }
+  axi:                     { git: "https://github.com/pulp-platform/axi.git", version: =0.39.1-beta } # Spatz deps
+
+
