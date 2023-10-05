@@ -15,11 +15,13 @@ else
 	@echo "Bitstream generation for zcu102 board finished. The bitstream Configuration Memory File was copied to ./pulp_zcu102.bit and ./pulp_zcu102.bin"
 endif
 
+flash_zcu102: ## flashes the ZCU102 bitstream to the board.
+	$(MAKE) -C pulp flash BOARD=zcu102
+
 clean_zcu102: ## Removes all bitstreams, *.log files and vivado related files (rm -rf vivado*) for the zcu102 board.
 	$(MAKE) -C pulp clean BOARD=zcu102
 	rm -f pulp_zcu102.bit
 	rm -f pulp_zcu102.bin
-
 
 vcu118: ## Generates the bitstream for the vcu118 board
 ifdef gui
@@ -31,11 +33,13 @@ else
 	@echo "Bitstream generation for vcu118 board finished. The bitstream Configuration Memory File was copied to ./pulp_vcu118.bit and ./pulp_vcu118.bin"
 endif
 
+flash_vcu118: ## flashes the VCU118 bitstream to the board.
+	$(MAKE) -C pulp flash BOARD=vcu118
+
 clean_vcu118: ## Removes all bitstreams, *.log files and vivado related files (rm -rf vivado*) for the vcu118 board.
 	$(MAKE) -C pulp clean BOARD=vcu118
 	rm -f pulp_vcu118.bit
 	rm -f pulp_vcu118.bin
-
 
 clean_ips: ## Cleans the generated IPs
 	$(MAKE) -C pulp clean-ips BOARD=zcu102

@@ -12,6 +12,9 @@ VIVADO ?= vivado
 all: ips ## Generate the bitstream for pulpissimo with vivado in batch mode. The vivado invocation command may be overriden with the env variable VIVADO.
 	$(VIVADO) -mode batch -source tcl/run.tcl
 
+flash:
+	$(VIVADO) -mode batch -source tcl/flash_bitstream.tcl
+
 gui: ips ## Generates the bitstream for pulpissimo with vivado in GUI mode. The vivado invocation command may be overriden with the env variable VIVADO.
 	$(VIVADO) -mode gui -source tcl/run.tcl &
 

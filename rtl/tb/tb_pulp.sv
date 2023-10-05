@@ -159,6 +159,8 @@ module tb_pulp;
    jtag_pkg::debug_mode_if_t  debug_mode_if = new;
    pulp_tap_pkg::pulp_tap_if_soc_t pulp_tap = new;
 
+   logic                 bypass_enable;
+
    /* system wires */
    // the w_/s_ prefixes are used to mean wire/tri-type and logic-type (respectively)
 
@@ -186,7 +188,7 @@ module tb_pulp;
 
    tri                   w_i2c1_scl;
    tri                   w_i2c1_sda;
-   
+
    wire [7:0]            w_hyper_dq0    ;
    wire [7:0]            w_hyper_dq1    ;
    wire                  w_hyper_ck     ;
@@ -664,8 +666,8 @@ module tb_pulp;
    // GPIO TEST
    genvar i;
    //genvar j;
-   
-   
+
+
    assign w_gpios[16] = w_gpios[0]  ? 1'b1 : 1'b0 ;
    assign w_gpios[17] = w_gpios[1]  ? 1'b1 : 1'b0 ;
    assign w_gpios[18] = w_gpios[2]  ? 1'b1 : 1'b0 ;
@@ -778,7 +780,7 @@ module tb_pulp;
          logic        error;
          int         num_err;
          int         rd_cnt;
-         
+
          automatic logic [9:0]  FC_CORE_ID = {5'd31, 5'd0};
 
          int entry_point;
@@ -787,7 +789,7 @@ module tb_pulp;
          error   = 1'b0;
          num_err = 0;
          rd_cnt=0;
-         
+
          // read entry point from commandline
          if ($value$plusargs("ENTRY_POINT=%h", entry_point))
              begin_l2_instr = entry_point;
@@ -822,9 +824,9 @@ module tb_pulp;
                jtag_pkg::jtag_reset(s_tck, s_tms, s_trstn, s_tdi);
                jtag_pkg::jtag_softreset(s_tck, s_tms, s_trstn, s_tdi);
                #5us;
-               
+
                s_bootsel= (STIM_FROM=="SPI_FLASH") ? 2'b00 : ( (STIM_FROM=="HYPER_FLASH") ? 2'b10 : 2'b00 );
-            
+
                if (STIM_FROM == "HYPER_FLASH") begin
                    $display("[TB] %t - HyperFlash boot: Setting bootsel to 2'b10", $realtime);
                end else if (STIM_FROM == "SPI_FLASH") begin
@@ -835,22 +837,22 @@ module tb_pulp;
             s_rst_n = 1'b1;
             debug_mode_if.init_dmi_access(s_tck, s_tms, s_trstn, s_tdi);
             debug_mode_if.set_dmactive(1'b1, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-            #10us;   
-            end
-            else if (LOAD_L2 == "JTAG") begin
+            #10us;
+            end else if (LOAD_L2 == "JTAG" || LOAD_L2 == "FAST_DEBUG_PRELOAD") begin
                s_bootsel = 2'b01;
             end
 
-            if (LOAD_L2 == "JTAG") begin
+            if (LOAD_L2 == "JTAG" || LOAD_L2 == "FAST_DEBUG_PRELOAD") begin
+
                if (USE_FLL)
-                  $display("[TB] %t - Using FLL", $realtime);
+                 $display("[TB] %t - Using FLL", $realtime);
                else
-                  $display("[TB] %t - Not using FLL", $realtime);
+                 $display("[TB] %t - Not using FLL", $realtime);
 
                if (USE_SDVT_CPI)
-                  $display("[TB] %t - Using CAM SDVT", $realtime);
+                 $display("[TB] %t - Using CAM SDVT", $realtime);
                else
-                  $display("[TB] %t - Not using CAM SDVT", $realtime);
+                 $display("[TB] %t - Not using CAM SDVT", $realtime);
 
                // read in the stimuli vectors  == address_value
                if ($value$plusargs("stimuli=%s", stimuli_file)) begin
@@ -865,7 +867,7 @@ module tb_pulp;
                // testing on the jtag link
                jtag_pkg::jtag_reset(s_tck, s_tms, s_trstn, s_tdi);
                jtag_pkg::jtag_softreset(s_tck, s_tms, s_trstn, s_tdi);
-               #5us;
+               #50us;
 
                jtag_pkg::jtag_bypass_test(s_tck, s_tms, s_trstn, s_tdi, s_tdo);
                #5us;
@@ -949,31 +951,35 @@ module tb_pulp;
                   $stop;
                end
 
-               $display("[TB] %t - Loading L2", $realtime);
-               if (USE_PULP_BUS_ACCESS) begin
-                  // use pulp tap to load binary 
-                  pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-
-               end else begin
-                  // use debug module to load binary
-                  debug_mode_if.load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
-
+               if (LOAD_L2 == "JTAG") begin
+                  $display("[TB] %t - Loading L2 via JTAG", $realtime);
+                  if (USE_PULP_BUS_ACCESS) begin
+                     // use pulp tap to load binary, put debug module in bypass
+                     pulp_tap_pkg::load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+                  end else begin
+                     // use debug module to load binary
+                     debug_mode_if.load_L2(num_stim, stimuli, s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+                  end
                end
-
+               else if (LOAD_L2 == "FAST_DEBUG_PRELOAD") begin
+                  $warning("[TB] - Preloading the memory via direct simulator access. \nNEVER EVER USE THIS MODE TO VERIFY THE BOOT BEHAVIOR OF A CHIP. THIS BOOTMODE IS IMPOSSIBLE ON A PHYSICAL CHIP!!!");
+                  preload_l2(num_stim, stimuli);
+               end
                // configure for debug module dmi access again
                debug_mode_if.init_dmi_access(s_tck, s_tms, s_trstn, s_tdi);
 
                // we have set dpc and loaded the binary, we can go now
                $display("[TB] %t - Resuming the CORE", $realtime);
                debug_mode_if.resume_harts(s_tck, s_tms, s_trstn, s_tdi, s_tdo);
+
+               bypass_enable  = 1'b0;
             end
 
             if (ENABLE_DPI == 1) begin
                jtag_mux = JTAG_DPI;
             end
 
-
-            #500us;
+            #800us;
 
             // Select UART driver/monitor
             if ($value$plusargs("uart_drv_mon=%s", uart_drv_mon_sel)) begin
@@ -1011,7 +1017,7 @@ module tb_pulp;
       end
 
 
-   
+
    `ifndef USE_NETLIST
       /* File System access */
       logic r_stdout_pready;
@@ -1080,6 +1086,93 @@ module tb_pulp;
             is_Read[index]  = 0;
          end
       end
+
+`ifndef USE_NETLIST
+
+   task automatic preload_l2(
+                             input int        num_stim,
+                             ref logic [95:0] stimuli [100000:0]
+                             );
+      logic                                   more_stim;
+      static logic [95:0]                     stim_entry;
+      more_stim = 1'b1;
+      $info("Preloading L2 with stimuli through direct access.");
+      while (more_stim == 1'b1) begin
+         @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+         stim_entry = stimuli[num_stim];
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.req = 1'b1;
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.add = stim_entry[95:64];
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wdata = stim_entry[31:0];
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wen = 1'b0;
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.be  = '1;
+         do begin
+            @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+         end while (~i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.gnt);
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.add   = stim_entry[95:64]+4;
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wdata = stim_entry[63:32];
+         do begin
+            @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+         end while (~i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.gnt);
+
+         num_stim = num_stim + 1;
+         if (num_stim > $size(stimuli) || stimuli[num_stim]===96'bx ) begin // make sure we have more stimuli
+            more_stim = 0;                    // if not set variable to 0, will prevent additional stimuli to be applied
+            break;
+         end
+      end // while (more_stim == 1'b1)
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.req;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.add;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wdata;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.wen;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug.be;
+      @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+      $info("Done with direct preloading of L2!");
+   endtask // preload_l2
+
+`else
+
+   task automatic preload_l2(
+                             input int        num_stim,
+                             ref logic [95:0] stimuli [100000:0]
+                             );
+      logic                                   more_stim;
+      static logic [95:0]                     stim_entry;
+      more_stim = 1'b1;
+      $info("Preloading L2 with stimuli through direct access.");
+      while (more_stim == 1'b1) begin
+         @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+         stim_entry = stimuli[num_stim];
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_req = 1'b1;
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_add = stim_entry[95:64];
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_wdata = stim_entry[31:0];
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_wen = 1'b0;
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_be  = '1;
+         do begin
+            @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+         end while (~i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_gnt);
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_add   = stim_entry[95:64]+4;
+         force i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_wdata = stim_entry[63:32];
+         do begin
+            @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+         end while (~i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_gnt);
+
+         num_stim = num_stim + 1;
+         if (num_stim > $size(stimuli) || stimuli[num_stim]===96'bx ) begin // make sure we have more stimuli
+            more_stim = 0;                    // if not set variable to 0, will prevent additional stimuli to be applied
+            break;
+         end
+      end // while (more_stim == 1'b1)
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_req;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_add;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_wdata;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_wen;
+      release i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.tcdm_debug_be;
+      @(posedge i_dut.soc_domain_i.pulp_soc_i.i_soc_interconnect_wrap.clk_i);
+      $info("Done with direct preloading of L2!");
+   endtask // preload_l2
+
+
+`endif
 
 
 endmodule // tb_pulp
