@@ -1,8 +1,8 @@
 ---
 packages:
   adv_dbg_if:
-    revision: 19eeef8cae1cbec7413877b3f29fe0bd078748d7
-    version: 0.0.2
+    revision: c4d7aa177ef96b0fdff8748f81bd15489446c95a
+    version: 0.0.5
     source:
       Git: "https://github.com/pulp-platform/adv_dbg_if.git"
     dependencies: []
@@ -97,8 +97,8 @@ packages:
     dependencies:
       - hci
   common_cells:
-    revision: b5ec8905ed7828655155b0ae971023adf793c600
-    version: 1.24.0
+    revision: 88a08fd4e365ec258375a326c30c20726eaa4fa2
+    version: 1.24.1
     source:
       Git: "https://github.com/pulp-platform/common_cells.git"
     dependencies:
