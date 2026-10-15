@@ -8,6 +8,7 @@
 /tests/*/
 /pulp-runtime
 /regression_tests
+nonfree
 
 # Bender
 /bender
@@ -16,3 +17,44 @@
 /sim/transcript
 /sim/work
 /working_dir
+
+# logs
+*.log
+*.db
+*.bin
+.qsim
+sim/**/*.txt
+
+# External SDKs / tools checked out locally
+/Deeploy/
+/gvsoc/
+/pulp-sdk/
+/pulp-builder/
+
+# Simulation outputs
+/sim/stdout/
+/sim/vectors/
+/sim/*.vstf
+
+# Waveform / EDA artifacts
+*.vcd
+*.fst
+*.wdb
+*.jou
+*.str
+
+# Python
+*.pyc
+*.egg-info/
+# venv created by generate_idma_rtl to run the iDMA RTL generator
+/venv/
+
+# Editor / OS
+.DS_Store
+*.swp
+*~
+
+# other tools
+.vscode
+.claude
+

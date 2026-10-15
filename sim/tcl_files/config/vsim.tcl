@@ -85,13 +85,25 @@ quietly set vsim_custom_args "\
   "
 
 quietly set vopt_args ""
-if {$vopt_acc_ena == "YES"} {
-  #+ quietly append vopt_args $vopt_args "+acc=abflmnprstv"
-  quietly append vopt_args $vopt_args "+acc=mnprv \
+
+# if {$vopt_acc_ena == "YES"} {
+#   #+ quietly append vopt_args $vopt_args "+acc=abflmnprstv"
+#   quietly append vopt_args $vopt_args "+acc=mnprv \
+#                                        -assertdebug \
+#                                        -bitscalars \
+#                                        -fsmdebug \
+#                                        -linedebug"
+# }
+if {[info exists ::env(USE_QONE)] && $::env(USE_QONE) == 1} {
+  quietly append vopt_args $vopt_args ""
+} else {
+  if {$vopt_acc_ena == "YES"} {
+    quietly append vopt_args $vopt_args "+acc=mnprv \
                                        -assertdebug \
                                        -bitscalars \
                                        -fsmdebug \
                                        -linedebug"
+  }
 }
 if {[info exists vopt_cov]} {
   quietly append vopt_args $vopt_args $vopt_cov
@@ -117,15 +129,28 @@ if {[info exists ::env(VOPT_FLOW)]} {
 
 
 } {
-  set vsim_cmd "vsim -c -quiet $TB \
-                -t ps \
-                $vsim_cov \
-                $common_args \
-                $custom_args \
-                $common_sdvt_args \
-                $vsim_custom_args \
-                $vsim_vopt_args \
-                "
+  if {[info exists ::env(USE_QONE)] && $::env(USE_QONE) == 1} {
+    set vsim_cmd "qsim $TB \
+                  -qwavedb=+signal+memory \
+                  -t ps \
+                  $vsim_cov \
+                  $common_args \
+                  $custom_args \
+                  $common_sdvt_args \
+                  $vsim_custom_args \
+                  $vsim_vopt_args \
+                  "
+  } else {
+    set vsim_cmd "vsim -quiet $TB \
+                  -t ps \
+                  $vsim_cov \
+                  $common_args \
+                  $custom_args \
+                  $common_sdvt_args \
+                  $vsim_custom_args \
+                  $vsim_vopt_args \
+                  "
+  }
 
     eval $vsim_cmd
     eval $vsimcmd_test_path

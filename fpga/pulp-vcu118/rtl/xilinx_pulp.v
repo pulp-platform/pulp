@@ -81,7 +81,6 @@ module xilinx_pulp (
 
   input wire  pad_reset,
 
-  input wire  pad_jtag_trst,
   input wire  pad_jtag_tck,
   input wire  pad_jtag_tdi,
   output wire pad_jtag_tdo,
@@ -96,7 +95,7 @@ module xilinx_pulp (
 
   wire        reset_n;
 
-  assign reset_n = ~pad_reset & pad_jtag_trst;
+  assign reset_n = ~pad_reset & vio_reset;
 
   wire [7:0] s_pad_hyper_dq0;
 
@@ -118,6 +117,25 @@ module xilinx_pulp (
     .I (ref_clk_p),
     .IB(ref_clk_n),
     .O (ref_clk  )
+  );
+
+  wire clk_50;
+
+  xlnx_clk_wiz i_xlnx_clk_wiz (
+    .clk_in1 ( ref_clk  ),
+    .reset   ( 1'b0     ),
+    .clk_100 ( ),
+    .clk_50  ( clk_50   ),
+    .clk_20  ( ),
+    .clk_10  ( )
+  );
+
+  
+  wire vio_reset;
+
+  xilinx_vio i_xlnx_vio (
+    .clk(clk_50),
+    .probe_out0(vio_reset)
   );
 
   pulp #(
@@ -179,7 +197,7 @@ module xilinx_pulp (
     .pad_jtag_tdi   (pad_jtag_tdi   ), //keep
     .pad_jtag_tdo   (pad_jtag_tdo   ), //keep
     .pad_jtag_tms   (pad_jtag_tms   ), //keep
-    .pad_jtag_trst  (1'b1           ), //keep
+    .pad_jtag_trst  (1'b1 	    ), //keep
     
     .pad_xtal_in    (ref_clk        ), //keep
     .pad_bootsel0   (               ), //keep

@@ -10,12 +10,12 @@ package:
     - "Francesco Conti <f.conti@unibo.it>"
 
 dependencies:
-  common_cells:       { git: "https://github.com/pulp-platform/common_cells.git", version: 1.22.1 }
-  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.6 }
-  jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", version: 0.1.0 }
-  pulp_soc:           { git: "https://github.com/pulp-platform/pulp_soc.git", version: ~3.0.0 }
-  pulp_cluster:       { git: "https://github.com/pulp-platform/pulp_cluster.git", rev: "db2e173b8b7562092fb9d922d64e0a7bd21da411" }
-  tbtools:            { git: "https://github.com/pulp-platform/tbtools.git", version: 0.2.1 }
+  common_cells:       { git: "https://github.com/pulp-platform/common_cells.git", version: =1.22.1 }
+  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: =0.2.6 }
+  jtag_pulp:          { git: "https://github.com/pulp-platform/jtag_pulp.git", version: =0.2.0 }
+  pulp_soc:           { git: "git@github.com:FondazioneChipsIT/pulp_soc.git", rev: "a6967f9d654f1754e0564f9947e3a88409747ab7" }
+  pulp_cluster:       { git: "git@github.com:FondazioneChipsIT/pulp_cluster.git", rev: "5aa38cea318ee62924f7724398a609c24bd2105e" } #chips-it
+  tbtools:            { git: "https://github.com/pulp-platform/tbtools.git", version: =0.2.1 }
 
 export_include_dirs:
   - rtl/includes
