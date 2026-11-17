@@ -93,7 +93,7 @@ module pulp
   localparam AXI_SOC_CLUSTER_ID_WIDTH   = pkg_soc_interconnect::AXI_ID_OUT_WIDTH; // Backrouting through the AXI-XBAR in pulp_soc requries some extra ID bits. Check axi_xbar docu for details
   localparam AXI_CLUSTER_SOC_ID_WIDTH   = AXI_SOC_CLUSTER_ID_WIDTH + $clog2(`NB_SLAVE);
 
-  localparam AXI_USER_WIDTH             = 6;
+  localparam AXI_USER_WIDTH             = 10;
   localparam AXI_CLUSTER_SOC_STRB_WIDTH = AXI_CLUSTER_SOC_DATA_WIDTH/8;
   localparam AXI_SOC_CLUSTER_STRB_WIDTH = AXI_SOC_CLUSTER_DATA_WIDTH/8;
 
@@ -1160,7 +1160,7 @@ cluster_domain#(
         .NB_CORES            (`NB_CORES),
         .NB_HWPE_PORTS       (4),
         .NB_DMAS             (4),
-        .TCDM_SIZE           (64*1024),
+        .TCDM_SIZE           (256*1024),
         .NB_TCDM_BANKS       (16),
         .L2_SIZE             (512*1024),
   // ICACHE PARAMETERS

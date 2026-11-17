@@ -106,10 +106,24 @@ source setup/vsim.sh
 
 make checkout
 
-make scripts
+make generate_idma_rtl
 
+make scripts-bender-vsim
+```
+
+or alternatively: 
+```
+make init
+```
+which does all of the above. Then, to build the RTL platform for QuestaSim:
+```
 make build
 ```
+To build the RTL platform for QuestaOne:
+```
+make build_qone
+```
+
 **NOTE:** An error might occur running the scripts (*Failed to spawn child process.Too many open files (os error 24).*) while a fix is WIP a workaround is to increase the number of processes avilable to your machine by setting for example ulimit to 4096 (ulimit -n 4096).
 
 This command builds a version of the simulation platform with no dependencies on
@@ -196,6 +210,12 @@ To do this, the `LOAD_L2` parameter of the testbench has to be switched from
 ## PULP-SDK
 
 If you are a software developer, you can find the PULP-SDK here: https://github.com/pulp-platform/pulp-sdk.
+The PULP-SDK can also be cloned with the following:
+```
+make pulp_sdk
+```
+This will automatically point to a stable version of the SDK for the PULP-OPEN platform.
+Once in pulp-sdk refer to the related README.md.
 
 ## PULP platform structure
 After being fully setup as explained in the Getting Started section, this root
@@ -209,6 +229,35 @@ repository is structured as follows:
 - `pulp-sdk` contains the PULP software development kit; `pulp-sdk/tests`
   contains all tests released with the SDK.
 - `Bender.yml` contains all dependency and source file information for the bender tool.
+
+## GVSOC
+
+GVSOC is now to be treated as a standalone module, no longer to be used a submodule of PULP-SDK.
+It can be cloned with the following command:
+```
+make gvsoc
+```
+Build with the following (once you are inside the gvsoc dir):
+```
+source sourceme.sh
+make build TARGETS=pulp-open
+```
+Once in gvsoc refer to the related README.md.
+
+## DEEPLOY
+
+Deeploy can now be cloned and used inside the pulp top directory.
+The following command clones deeploy, updates its submodules and clones the main dependencies needed for execution on the pulp-open platform. 
+```
+make deeploy
+```
+After having cloned Deeploy and its dependencies, do the following: 
+```
+source setup/deeploy.sh
+```
+This script will set the needed environment variables for Deeploy execution. **IMPORTANT**: this version takes for granted that the llvm toolchain is installed in `/opt/llvm_toolchain`. Also, the strongly suggested gcc versions to be used are `gcc 11.4.0` or `gcc 11.5.0`.
+Once these are done and a configuration has been selected in the sdk, you can refer to the README inside Deeploy for launching tests on the pulp-open platform: both gvsoc and rtl platforms are now supported. They are to be selected inside the individual python testrunners inside Deeploy.
+
 
 ## Requirements
 The RTL platform has the following requirements:

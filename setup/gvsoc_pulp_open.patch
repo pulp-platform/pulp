@@ -1,0 +1,135 @@
+diff --git a/pulp/chips/pulp_open/cluster.json b/pulp/chips/pulp_open/cluster.json
+index dc157e8..7c8380e 100644
+--- a/pulp/chips/pulp_open/cluster.json
++++ b/pulp/chips/pulp_open/cluster.json
+@@ -13,7 +13,7 @@
+         "first_external_pcer": 12,
+         "riscv_dbg_unit": true,
+         "debug_binaries": [],
+-        "debug_handler" : "0x1a190800",
++        "debug_handler" : "0x1a110800",
+         "power_models_file": "pulp/chips/pulp_open/power_models/core/riscy.json"
+     },
+
+@@ -38,12 +38,12 @@
+     "l1": {
+         "mapping": {
+             "base": "0x10000000",
+-            "size": "0x00010000",
++            "size": "0x00040000",
+             "remove_offset": "0x10000000"
+         },
+         "ts_mapping": {
+             "base": "0x10100000",
+-            "size": "0x00010000",
++            "size": "0x00040000",
+             "remove_offset": "0x10100000"
+         },
+         "banking_factor": 2,
+@@ -173,7 +173,7 @@
+
+         "dma": {
+             "version": 7,
+-            "kind": "mchan",
++            "kind": "idma",
+             "nb_tcdm_banks": 2,
+             "mapping": {
+                 "base": "0x10201800",
+@@ -209,4 +209,4 @@
+             }
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/pulp/chips/pulp_open/l2_subsystem.py b/pulp/chips/pulp_open/l2_subsystem.py
+index ca58304..a03c081 100644
+--- a/pulp/chips/pulp_open/l2_subsystem.py
++++ b/pulp/chips/pulp_open/l2_subsystem.py
+@@ -25,14 +25,14 @@ class L2SharedAttr(Tree):
+     def __init__(self, parent, name):
+         super().__init__(parent, name)
+         self.nb_banks = Value(self, 'nb_banks', 4)
+-        self.nb_regions = Value(self, 'nb_regions', 12)
++        self.nb_regions = Value(self, 'nb_regions', 4)
+         self.interleaving_bits = Value(self, 'interleaving_bits', 2)
+-        self.range = Area(self, 'range', 0x1C010000, 0x00180000, description='L2 shared banks')
++        self.range = Area(self, 'range', 0x1C010000, 0x00080000, description='L2 shared banks')
+
+ class L2Attr(Tree):
+     def __init__(self, parent, name):
+         super().__init__(parent, name)
+-        self.range = Area(self, 'range', 0x1C000000, 0x00190000, description='L2 whole address range')
++        self.range = Area(self, 'range', 0x1C000000, 0x00090000, description='L2 whole address range')
+         self.priv0 = Area(self, 'priv0', 0x1C000000, 0x00008000, description='L2 private bank 0')
+         self.priv1 = Area(self, 'priv1', 0x1C008000, 0x00008000, description='L2 private bank 1')
+         self.shared = L2SharedAttr(self, 'shared')
+diff --git a/pulp/chips/pulp_open/soc.json b/pulp/chips/pulp_open/soc.json
+index 8f7f6e3..68678d5 100644
+--- a/pulp/chips/pulp_open/soc.json
++++ b/pulp/chips/pulp_open/soc.json
+@@ -21,7 +21,7 @@
+
+     "l2": {
+         "base": "0x1C000000",
+-        "size": "0x00190000",
++        "size": "0x00090000",
+
+         "priv0": {
+             "mapping": {
+@@ -48,11 +48,11 @@
+
+         "shared": {
+             "nb_banks"          : 4,
+-            "nb_regions"        : 12,
++            "nb_regions"        : 4,
+             "interleaving_bits" : 2,
+             "mapping": {
+                 "base"         : "0x1C010000",
+-                "size"         : "0x00180000"
++                "size"         : "0x00080000"
+             }
+         },
+         "xip": {
+@@ -156,15 +156,15 @@
+             },
+
+             "fc_dbg_unit": {
+-                "base"          : "0x1A190000",
++                "base"          : "0x1A110000",
+                 "size"          : "0x00000800",
+-                "remove_offset" : "0x1A190000"
++                "remove_offset" : "0x1A110000"
+             },
+
+             "debug_rom": {
+-                "base"          : "0x1A190800",
++                "base"          : "0x1A110800",
+                 "size"          : "0x00000800",
+-                "remove_offset" : "0x1A190800"
++                "remove_offset" : "0x1A110800"
+             }
+
+         }
+@@ -198,7 +198,7 @@
+             "has_jtag_reg" : true,
+             "config": {
+                 "nb_harts": 10,
+-                "nb_l2_shared_banks": 12
++                "nb_l2_shared_banks": 4
+             }
+         },
+
+diff --git a/pulp/cpu/iss/pulp_cores.py b/pulp/cpu/iss/pulp_cores.py
+index e83549b..6e7f650 100644
+--- a/pulp/cpu/iss/pulp_cores.py
++++ b/pulp/cpu/iss/pulp_cores.py
+@@ -70,7 +70,7 @@ class PulpCore(cpu.iss.riscv.RiscvCommon):
+
+         super().__init__(parent, name, isa=isa,
+             riscv_dbg_unit=True, fetch_enable=fetch_enable, boot_addr=boot_addr,
+-            first_external_pcer=12, debug_handler=0x1a190800, misa=0x40000000, core="ri5ky",
++            first_external_pcer=12, debug_handler=0x1a110800, misa=0x40000000, core="ri5ky",
+             cluster_id=cluster_id, core_id=core_id, wrapper="pulp/cpu/iss/pulp_iss_wrapper.cpp",
+             scoreboard=True, timed=True, handle_misaligned=True, external_pccr=external_pccr)
+

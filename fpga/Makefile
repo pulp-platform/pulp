@@ -20,6 +20,9 @@ clean_zcu102: ## Removes all bitstreams, *.log files and vivado related files (r
 	rm -f pulp_zcu102.bit
 	rm -f pulp_zcu102.bin
 
+vcu118_elaborate:
+	$(MAKE) -C pulp elaborate BOARD=vcu118
+
 
 vcu118: ## Generates the bitstream for the vcu118 board
 ifdef gui

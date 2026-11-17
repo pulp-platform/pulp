@@ -1,9 +1,5 @@
 #!/usr/bin/env tclsh
 
-source ./tcl_files/config/vsim_ips.tcl
-source ./tcl_files/config/vsim_rtl.tcl
-
-
 proc color {foreground text} {
     # tput is a little Unix utility that lets you use the termcap database
     # *much* more easily...
