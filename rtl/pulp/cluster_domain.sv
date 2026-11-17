@@ -260,7 +260,7 @@ module cluster_domain
     BootRomBaseAddr: 32'h1C008080,
     BootAddr:  32'h1C008080,
     EnablePrivateFpu: 1,
-    EnablePrivateFpDivSqrt: 0,
+    EnablePrivateFpDivSqrt: 1,
     NumAxiIn: NumAxiSubordinatePorts,
     NumAxiOut: NumAxiManagerPorts,
     AxiIdInWidth: AXI_ID_IN_WIDTH,

@@ -19,7 +19,7 @@ if {[info exists ::env(VSIM_FLAGS)]} {
 }
 
 if {[info exists ::env(VSIM_RUNNER_FLAGS)]} {
-    quietly set VSIM_FLAGS_TCL "$VSIM_FLAGS_TCL $::env(VSIM_RUNNER_FLAGS)"
+    quietly set VSIM_FLAGS_TCL [concat $VSIM_FLAGS_TCL $::env(VSIM_RUNNER_FLAGS)]
 }
 
 quietly set VSIM_TB_PATH $VSIM_SCRIPTS_PATH/../tb

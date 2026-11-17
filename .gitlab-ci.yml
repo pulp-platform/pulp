@@ -24,6 +24,7 @@ init:
       - nonfree/new_testing_setup/.gitlab-ci_new_rtl.yml
       - nonfree/new_testing_setup/.gitlab-ci_new_gvsoc.yml
       - nonfree/new_testing_setup/.gitlab-ci_new_fpga.yml
+      - nonfree/new_testing_setup/.gitlab-ci_new_deeploy.yml
 
 subpipe_rtl:
   stage: nonfree
@@ -56,5 +57,17 @@ subpipe_fpga:
   trigger:
     include:
       - artifact: nonfree/new_testing_setup/.gitlab-ci_new_fpga.yml
+        job: init
+    strategy: depend
+
+subpipe_deeploy:
+  stage: PULP_CI
+  needs: [ init ]
+  when: manual
+  variables:
+    PARENT_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+  trigger:
+    include:
+      - artifact: nonfree/new_testing_setup/.gitlab-ci_new_deeploy.yml
         job: init
     strategy: depend
