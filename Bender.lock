@@ -239,11 +239,12 @@ packages:
       Git: https://github.com/pulp-platform/icache-intc.git
     dependencies: []
   idma:
-    revision: 7073edd83950232c12f900d2b6d65016b886a50a
+    revision: e4aa77f4c69972242b4776ae54a9aa0daa3a49e1
     version: null
     source:
       Git: https://github.com/FondazioneChipsIT/iDMA.git
     dependencies:
+    - apb
     - axi
     - axi_stream
     - common_cells
@@ -296,7 +297,7 @@ packages:
     dependencies:
     - axi_slice
   pulp_cluster:
-    revision: 2ddf6de97e39a46ee5eecc50eb6cc9e63819579d
+    revision: 96d1ea8cac82574525c1e66b7ea8f41af4d2e2ca
     version: null
     source:
       Git: https://github.com/pulp-platform/pulp_cluster.git
