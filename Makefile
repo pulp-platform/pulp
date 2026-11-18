@@ -144,13 +144,13 @@ else
 	./generate-scripts --psram-vip
 endif
 
-idma_venv:
-	python3 -m venv $(VENV) && \
-	$(VENV)/bin/python -m pip install -U pip && \
-	$(VENV)/bin/python -m pip install -r $(shell ./bender path idma)/requirements.txt
+uv:
+	cd $(shell bender path idma) && \
+	curl -LsSf https://astral.sh/uv/install.sh | sh && \
+	uv sync --locked
 
-generate_idma_rtl: idma_venv
-	. "$(VENV)/bin/activate" && $(MAKE) -C $(shell ./bender path idma) idma_hw_all
+generate_idma_rtl: uv
+	. "$(shell bender path idma)/.venv/bin/activate" && $(MAKE) -C $(shell bender path idma) idma_hw_all
 
 .PHONY: build
 ## Build the RTL model for vsim
