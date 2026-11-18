@@ -6,11 +6,12 @@ packages:
       Git: https://github.com/pulp-platform/adv_dbg_if.git
     dependencies: []
   apb:
-    revision: d077333a7e5cc80008935dc2761440532dfdce81
-    version: 0.1.0
+    revision: 06bdbe0da39b3615e116a4fd866589014fa50bf2
+    version: null
     source:
-      Git: https://github.com/pulp-platform/apb.git
-    dependencies: []
+      Git: https://github.com/FondazioneChipsIT/apb.git
+    dependencies:
+    - common_cells
   apb2per:
     revision: 6fc13fc0bfa71772d91391893e57306d0d95befa
     version: 0.1.0
@@ -115,10 +116,10 @@ packages:
     dependencies:
     - hci
   common_cells:
-    revision: 9afda9abb565971649c2aa0985639c096f351171
-    version: 1.38.0
+    revision: 50b637eebcb566555c3a9ce9cb6b60fdbfff8c21
+    version: null
     source:
-      Git: https://github.com/pulp-platform/common_cells.git
+      Git: https://github.com/FondazioneChipsIT/common_cells.git
     dependencies:
     - common_verification
     - tech_cells_generic
@@ -444,8 +445,8 @@ packages:
       Git: https://github.com/pulp-platform/tbtools.git
     dependencies: []
   tech_cells_generic:
-    revision: 7968dd6e6180df2c644636bc6d2908a49f2190cf
-    version: 0.2.13
+    revision: 55cb54513e2d426be5992d311cb9d5dbcad10c78
+    version: null
     source:
       Git: https://github.com/pulp-platform/tech_cells_generic.git
     dependencies:
