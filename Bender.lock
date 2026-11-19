@@ -445,10 +445,10 @@ packages:
       Git: https://github.com/pulp-platform/tbtools.git
     dependencies: []
   tech_cells_generic:
-    revision: 55cb54513e2d426be5992d311cb9d5dbcad10c78
+    revision: 4559d87f3c0f016cc16c4b5facc28fd1a0b706ce
     version: null
     source:
-      Git: https://github.com/pulp-platform/tech_cells_generic.git
+      Git: https://github.com/FondazioneChipsIT/tech_cells_generic.git
     dependencies:
     - common_verification
   timer_unit:
