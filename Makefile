@@ -253,7 +253,7 @@ deeploy:
 	git checkout ${DEEPLOY_COMMIT}; \
 	git submodule update --init --recursive; \
 	pip install -e . --extra-index-url=https://pypi.ngc.nvidia.com; \
-	make minimalloc xtensor; \
+	make minimalloc xtensor pulp-nn-mixed; \
 
 # Build the final Deeploy image for chipsit CI
 deeploy_container_CI:
