@@ -408,7 +408,7 @@ cdc:
 
 PULP_NONFREE_REMOTE ?= git@gitlab.chips.it:digitalresearchline/chips-restricted/pulp-nonfree.git
 PULP_NONFREE_DIR	?= $(ROOT_DIR)/nonfree
-PULP_NONFREE_COMMIT ?= 73dcd1f07f679c0c992ccb1db40fdcc886e5ac81
+PULP_NONFREE_COMMIT ?= 6a182c136041f3732e3648388acd4386fdb945c2
 
 pulp_nonfree_init:
 	git clone $(PULP_NONFREE_REMOTE) $(PULP_NONFREE_DIR)
@@ -421,6 +421,7 @@ pulp_nonfree_clean:
 ## Rule called by CI script to test Deeploy gvsoc regreession on the container
 run_deeploy_container_gvsoc:
 	podman run --rm \
+	-e PULP_BRANCH \
 	-v /tools:/tools:ro \
 	-v /opt/riscv:/opt/riscv:ro \
 	-v /opt/rh:/opt/rh \
@@ -430,6 +431,7 @@ run_deeploy_container_gvsoc:
 ## Rule called by CI script to test Deeploy rtl regreession on the container
 run_deeploy_container_rtl:
 	podman run --rm \
+	-e PULP_BRANCH \
 	-v /tools:/tools:ro \
 	-v /opt/riscv:/opt/riscv:ro \
 	-v /opt/rh:/opt/rh \
