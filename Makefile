@@ -145,12 +145,12 @@ else
 endif
 
 uv:
-	cd $(shell bender path idma) && \
+	cd $(shell ./bender path idma) && \
 	curl -LsSf https://astral.sh/uv/install.sh | sh && \
 	uv sync --locked
 
 generate_idma_rtl: uv
-	. "$(shell bender path idma)/.venv/bin/activate" && $(MAKE) -C $(shell bender path idma) idma_hw_all
+	. "$(shell ./bender path idma)/.venv/bin/activate" && $(MAKE) -C $(shell ./bender path idma) idma_hw_all
 
 .PHONY: build
 ## Build the RTL model for vsim
