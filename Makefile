@@ -1,8 +1,6 @@
 
 SHELL=bash
 
-PKG_DIR ?= $(PWD)/pulp-runtime
-
 export VSIM_PATH=$(PWD)/sim
 export PULP_PATH=$(PWD)
 
@@ -311,85 +309,6 @@ test:
 sdk-gitlab:
 	sdk-releases/get-sdk-2019.11.03-CentOS_7.py; \
 
-## Clone pulp-runtime as SW stack
-pulp-runtime:
-	git clone https://github.com/FondazioneChipsIT/pulp-runtime.git $@
-	cd $@; git checkout ab958e06b37bc05b981dabca9680f72660b8dee1; cd ..
-
-## Clone regression tests for bare-metal verification
-regression-tests:
-	git clone https://github.com/FondazioneChipsIT/regression_tests.git $@
-	cd $@; git checkout 6fac940e924c7de83b37d7be14bfd9febbf04678; cd ..
-
-# the gitlab runner needs a special configuration to be able to access the
-# dependent git repositories
-test-checkout-gitlab:
-	./update-regression-tests
-
-
-
-# gitlab and local test runs
-test-fast-regressions:
-	mkdir -p regression_tests/riscv_tests_soc
-	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 2000 --yaml -o simplified-runtime.xml simple-regression-tests.yaml
-
-test-local-regressions:
-	mkdir -p regression_tests/riscv_tests_soc
-	cp -r regression_tests/riscv_tests/* regression_tests/riscv_tests_soc
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 1800 --yaml -o simplified-runtime.xml regression-tests.yaml
-
-git-ci-ml-regs:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	touch regression_tests/simplified-ml-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-ml-runtime.xml ml-tests.yaml
-
-git-ci-riscv-regs:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	touch regression_tests/simplified-riscv-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-riscv-runtime.xml riscv-tests.yaml
-
-git-ci-s-bare-regs:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	touch regression_tests/simplified-sbare-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-sbare-runtime.xml sequential-bare-tests.yaml
-
-git-ci-p-bare-regs:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	touch regression_tests/simplified-pbare-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-pbare-runtime.xml parallel-bare-tests.yaml
-
-git-ci-periphs-regs:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	touch regression_tests/simplified-periph-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-periph-runtime.xml periph-tests.yaml
-
-git-ci-psram:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	touch regression_tests/simplified-psram-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o simplified-psram-runtime.xml psram-test.yaml
-
-git-boot:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	touch regression_tests/boot-runtime.xml; \
-	cd regression_tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 7200 --yaml -o boot-runtime.xml hello-test.yaml
-
-test-local-runtime:
-	source setup/vsim.sh; \
-	source pulp-runtime/configs/pulp.sh; \
-	cd tests && ../pulp-runtime/scripts/bwruntests.py --proc-verbose -v --report-junit -t 600 --yaml -o simplified-runtime.xml runtime-tests.yaml
-
 bender:
 	ln -sf $(BENDER_BIN) bender
 
@@ -408,7 +327,7 @@ cdc:
 
 PULP_NONFREE_REMOTE ?= git@gitlab.chips.it:digitalresearchline/chips-restricted/pulp-nonfree.git
 PULP_NONFREE_DIR	?= $(ROOT_DIR)/nonfree
-PULP_NONFREE_COMMIT ?= 6a182c136041f3732e3648388acd4386fdb945c2
+PULP_NONFREE_COMMIT ?= b645f27f3133ad2f5aac2438133ea042afd0f22f
 
 pulp_nonfree_init:
 	git clone $(PULP_NONFREE_REMOTE) $(PULP_NONFREE_DIR)
