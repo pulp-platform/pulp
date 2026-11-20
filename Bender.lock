@@ -108,10 +108,10 @@ packages:
     dependencies:
     - common_cells
   cluster_peripherals:
-    revision: da4d88f0d9325b7a713243dacd46abd5cb37c2de
+    revision: 51b2ea91753405e3afab4392044f15250e308ffe
     version: null
     source:
-      Git: https://github.com/FondazioneChipsIT/cluster_peripherals.git
+      Git: https://github.com/pulp-platform/cluster_peripherals.git
     dependencies:
     - hci
   common_cells:
@@ -296,10 +296,10 @@ packages:
     dependencies:
     - axi_slice
   pulp_cluster:
-    revision: 2121e4f5a5f2ab06549a23603caa205e0c8e894c
+    revision: 2ddf6de97e39a46ee5eecc50eb6cc9e63819579d
     version: null
     source:
-      Git: https://github.com/FondazioneChipsIT/pulp_cluster.git
+      Git: https://github.com/pulp-platform/pulp_cluster.git
     dependencies:
     - axi
     - axi2mem
