@@ -258,6 +258,15 @@ source setup/deeploy.sh
 This script will set the needed environment variables for Deeploy execution. **IMPORTANT**: this version takes for granted that the llvm toolchain is installed in `/opt/llvm_toolchain`. Also, the strongly suggested gcc versions to be used are `gcc 11.4.0` or `gcc 11.5.0`.
 Once these are done and a configuration has been selected in the sdk, you can refer to the README inside Deeploy for launching tests on the pulp-open platform: both gvsoc and rtl platforms are now supported. They are to be selected inside the individual python testrunners inside Deeploy.
 
+## CI
+
+A Gitlab CI is running on this repository, testing the following:
+
+- RTL Regression tests
+- GVSOC Regression tests
+- Deeploy RTL regression
+- Deeploy GVSOC regression
+- FPGA Elaboration for VCU118
 
 ## Requirements
 The RTL platform has the following requirements:
