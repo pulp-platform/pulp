@@ -242,7 +242,7 @@ build_gvsoc_mchan:
 	$(MAKE) build_gvsoc GVSOC_DMA=mchan
 
 DEEPLOY_REMOTE := https://github.com/FondazioneChipsIT/Deeploy.git
-DEEPLOY_COMMIT := b20e5dd750f2c96d13017e0383f07e841ce22f08
+DEEPLOY_COMMIT := d1523f2928b75b396f8867d6397ff5e08a2ca621
 
 deeploy:
 	source setup/deeploy.sh; \
@@ -251,7 +251,7 @@ deeploy:
 	git checkout ${DEEPLOY_COMMIT}; \
 	git submodule update --init --recursive; \
 	pip install -e . --extra-index-url=https://pypi.ngc.nvidia.com; \
-	make minimalloc xtensor; \
+	make minimalloc xtensor pulp-nn-mixed; \
 
 # Build the final Deeploy image for chipsit CI
 deeploy_container_CI:
